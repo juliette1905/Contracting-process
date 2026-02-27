@@ -1,1 +1,562 @@
-<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>Contracting Process</title>\n    <style>\n        body { font-family: Arial, sans-serif; margin: 20px; }\n        h1 { color: #333; }\n        .form-group { margin: 10px 0; }\n        label { display: block; margin-bottom: 5px; }\n        input, select, button { padding: 10px; width: 100%; }\n        button { background-color: #28a745; color: white; border: none; cursor: pointer; }\n        button:hover { background-color: #218838; }\n    </style>\n</head>\n<body>\n    <h1>Contracting Process Application</h1>\n    <form id="contractForm">\n        <div class="form-group">\n            <label for="contractorName">Contractor Name:</label>\n            <input type="text" id="contractorName" required>\n        </div>\n        <div class="form-group">\n            <label for="projectDetails">Project Details:</label>\n            <input type="text" id="projectDetails" required>\n        </div>\n        <div class="form-group">\n            <label for="contractAmount">Contract Amount:</label>\n            <input type="number" id="contractAmount" required>\n        </div>\n        <button type="submit">Submit Contract</button>\n    </form>\n    <script>\n        document.getElementById('contractForm').addEventListener('submit', function(event) {\n            event.preventDefault(); // Prevent default form submission\n            const name = document.getElementById('contractorName').value;\n            const details = document.getElementById('projectDetails').value;\n            const amount = document.getElementById('contractAmount').value;\n            // Here you can add your processing logic\n            alert(`Contract submitted by ${name} for ${details} with amount $${amount}`);\n        });\n    </script>\n</body>\n</html>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processus de Contracting</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .card-shadow { box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .level-badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+        .l3-badge { background-color: #FEE2E2; color: #991B1B; }
+        .l2-badge { background-color: #DBEAFE; color: #1E40AF; }
+        .l1-badge { background-color: #DCFCE7; color: #166534; }
+    </style>
+</head>
+<body class="bg-slate-100 py-8">
+    <div class="container mx-auto px-4">
+        <div class="max-w-5xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <h1 id="main-title" class="text-4xl font-bold text-slate-800 mb-2">Processus de Contracting</h1>
+                <p id="subtitle" class="text-lg text-slate-600">Naviguer à travers les domaines et les types de transactions</p>
+            </div>
+
+            <!-- Breadcrumb Navigation -->
+            <div id="breadcrumb" class="mb-8 flex items-center gap-2 text-sm text-slate-600">
+                <a href="#" onclick="resetApp(); return false;" class="text-blue-600 hover:underline">Accueil</a>
+            </div>
+
+            <!-- Section 1: Level Selection -->
+            <div id="level-1" class="section mb-8">
+                <div class="grid md:grid-cols-3 gap-6">
+                    <button onclick="showProcurementDomains()" class="card-hover card-shadow bg-white rounded-2xl p-8 text-center border-2 border-transparent hover:border-blue-200">
+                        <div class="text-5xl mb-4">🏢</div>
+                        <h2 class="text-xl font-bold text-slate-800 mb-2">Procurement</h2>
+                        <p class="text-slate-600 text-sm">Transactions contractuelles externes via Procurement</p>
+                    </button>
+                    <button onclick="showNonProcurementDomains()" class="card-hover card-shadow bg-white rounded-2xl p-8 text-center border-2 border-transparent hover:border-blue-200">
+                        <div class="text-5xl mb-4">📋</div>
+                        <h2 class="text-xl font-bold text-slate-800 mb-2">Non-Procurement</h2>
+                        <p class="text-slate-600 text-sm">Contrats gérés directement par les départements</p>
+                    </button>
+                    <button onclick="showInternalExpertProcess()" class="card-hover card-shadow bg-white rounded-2xl p-8 text-center border-2 border-transparent hover:border-blue-200">
+                        <div class="text-5xl mb-4">👤</div>
+                        <h2 class="text-xl font-bold text-slate-800 mb-2">Internal Expert</h2>
+                        <p class="text-slate-600 text-sm">Support interne sans transaction externe</p>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Section 2: Procurement Domains -->
+            <div id="procurement-domains" class="section hidden mb-8"></div>
+
+            <!-- Section 3: Non-Procurement Domains -->
+            <div id="non-procurement-domains" class="section hidden mb-8"></div>
+
+            <!-- Section 4: Domain Details -->
+            <div id="domain-details" class="section hidden mb-8"></div>
+
+            <!-- Section 5: Transaction Details -->
+            <div id="transaction-details" class="section hidden mb-8"></div>
+        </div>
+    </div>
+
+    <script>
+        const defaultConfig = {
+            main_title: 'Processus de Contracting',
+            subtitle: 'Naviguer à travers les domaines et les types de transactions'
+        };
+        
+        const config = defaultConfig;
+        
+        const domainData = {
+            'procurement-goods': {
+                name: 'Procurement Goods',
+                icon: '📦',
+                transactions: [
+                    {
+                        id: 'pg-direct-buy',
+                        name: 'Direct Buy / PO',
+                        codes: 'PG-DB-001',
+                        defaultLevel: 'L1',
+                        template: 'PO + Standard T&Cs',
+                        l3Criteria: [],
+                        exceptions: []
+                    },
+                    {
+                        id: 'pg-framework',
+                        name: 'Framework Agreement',
+                        codes: 'PG-FA-001',
+                        defaultLevel: 'L2',
+                        template: 'Framework_Agreement_Template',
+                        l3Criteria: ['Multi-year commitment (>3 years)', 'Strategic vendor'],
+                        exceptions: ['Ad-hoc amendments within scope']
+                    },
+                    {
+                        id: 'pg-supply',
+                        name: 'Supply Agreement',
+                        codes: 'PG-SA-001',
+                        defaultLevel: 'L3',
+                        template: 'Supply_Agreement_Template',
+                        l3Criteria: ['Critical commodity', 'Volume commitment >€500k annually'],
+                        exceptions: ['Volume increases <10%']
+                    }
+                ]
+            },
+            'procurement-services': {
+                name: 'Procurement Services',
+                icon: '🔧',
+                transactions: [
+                    {
+                        id: 'ps-consulting',
+                        name: 'Consulting Services',
+                        codes: 'PS-CS-001',
+                        defaultLevel: 'L2',
+                        template: 'Service_Agreement_Template',
+                        l3Criteria: ['Strategic initiative', 'Cost >€250k'],
+                        exceptions: ['Internal training only']
+                    },
+                    {
+                        id: 'ps-maintenance',
+                        name: 'Maintenance & Support',
+                        codes: 'PS-MS-001',
+                        defaultLevel: 'L1/L2',
+                        template: 'Service_Agreement_Template',
+                        l3Criteria: [],
+                        exceptions: []
+                    }
+                ]
+            },
+            'non-procurement-employment': {
+                name: 'Employment & Labor',
+                icon: '👥',
+                transactions: [
+                    {
+                        id: 'np-emp-contractor',
+                        name: 'Independent Contractor Agreement',
+                        codes: 'NP-EMP-001',
+                        defaultLevel: 'L2',
+                        template: 'Contractor_Agreement_Template',
+                        l3Criteria: ['Executive level', 'IP transfer required'],
+                        exceptions: ['One-off projects <€50k']
+                    }
+                ]
+            },
+            'non-procurement-commercial': {
+                name: 'Commercial & Partnerships',
+                icon: '🤝',
+                transactions: [
+                    {
+                        id: 'np-com-reseller',
+                        name: 'Reseller / Distribution Agreement',
+                        codes: 'NP-COM-001',
+                        defaultLevel: 'L3',
+                        template: 'Reseller_Agreement_Template',
+                        l3Criteria: ['Revenue sharing model', 'Territory exclusivity', 'IP license grant'],
+                        exceptions: ['Non-exclusive, EU-wide territories']
+                    },
+                    {
+                        id: 'np-com-partnership',
+                        name: 'Strategic Partnership',
+                        codes: 'NP-COM-002',
+                        defaultLevel: 'L3',
+                        template: 'Partnership_Agreement_Template',
+                        l3Criteria: ['Joint ventures', 'IP co-ownership', 'Revenue sharing'],
+                        exceptions: []
+                    }
+                ]
+            }
+        };
+
+        let currentPath = [];
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+
+        function updateBreadcrumb() {
+            const breadcrumb = document.getElementById('breadcrumb');
+            let html = '<a href="#" onclick="resetApp(); return false;" class="text-blue-600 hover:underline">Accueil</a>';
+            
+            currentPath.forEach((item, index) => {
+                html += ' / <span class="text-slate-600">' + item.name + '</span>';
+            });
+            
+            breadcrumb.innerHTML = html;
+        }
+
+        function resetApp() {
+            currentPath = [];
+            updateBreadcrumb();
+            showSection('level-1');
+        }
+
+        function showProcurementDomains() {
+            currentPath = [];
+            updateBreadcrumb();
+            
+            const domains = ['procurement-goods', 'procurement-services'];
+            let html = '<div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">';
+            
+            domains.forEach(domainId => {
+                const domain = domainData[domainId];
+                html += `
+                    <button onclick="selectDomain('${domainId}')" class="card-hover card-shadow bg-white rounded-xl p-6 text-left border-2 border-transparent hover:border-blue-200">
+                        <div class="text-3xl mb-3">${domain.icon}</div>
+                        <h3 class="text-lg font-bold text-slate-800 mb-2">${domain.name}</h3>
+                        <p class="text-xs text-slate-500">${domain.transactions.length} type(s) de transaction</p>
+                    </button>
+                `;
+            });
+            
+            html += '</div>';
+            document.getElementById('procurement-domains').innerHTML = html;
+            showSection('procurement-domains');
+        }
+
+        function showNonProcurementDomains() {
+            currentPath = [];
+            updateBreadcrumb();
+            
+            const domains = ['non-procurement-employment', 'non-procurement-commercial'];
+            let html = '<div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">';
+            
+            domains.forEach(domainId => {
+                const domain = domainData[domainId];
+                html += `
+                    <button onclick="selectDomain('${domainId}')" class="card-hover card-shadow bg-white rounded-xl p-6 text-left border-2 border-transparent hover:border-blue-200">
+                        <div class="text-3xl mb-3">${domain.icon}</div>
+                        <h3 class="text-lg font-bold text-slate-800 mb-2">${domain.name}</h3>
+                        <p class="text-xs text-slate-500">${domain.transactions.length} type(s) de transaction</p>
+                    </button>
+                `;
+            });
+            
+            html += '</div>';
+            document.getElementById('non-procurement-domains').innerHTML = html;
+            showSection('non-procurement-domains');
+        }
+
+        function showInternalExpertProcess() {
+            currentPath.push({ name: 'Internal Expert Process', type: 'process' });
+            updateBreadcrumb();
+            
+            const details = document.getElementById('domain-details');
+            details.innerHTML = `
+        <div class="max-w-2xl mx-auto">
+          <div class="card-shadow bg-white rounded-2xl p-6 border-l-4 border-slate-400">
+            <h3 class="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+              </svg>
+              Processus Internal Expert
+            </h3>
+            <ul class="space-y-3 text-sm text-slate-600">
+              <li class="flex items-start gap-2">
+                <span class="text-slate-400 mt-1">•</span>
+                <span>Pas de transaction contractuelle externe</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-slate-400 mt-1">•</span>
+                <span>Support et conseil des équipes internes</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-slate-400 mt-1">•</span>
+                <span>Contactez votre expert métier désigné</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      `;
+            showSection('domain-details');
+        }
+
+        function selectDomain(domainId) {
+            const domain = domainData[domainId];
+            if (!domain) return;
+            
+            currentPath.push({ name: domain.name, type: 'domain', value: domainId });
+            updateBreadcrumb();
+            
+            const details = document.getElementById('domain-details');
+            let transactionsHtml = domain.transactions.map(t => `
+        <button onclick="selectTransaction('${domainId}', '${t.id}')" class="card-hover card-shadow bg-white rounded-xl p-5 text-left border-2 border-transparent hover:border-blue-200 w-full">
+          <div class="flex items-start justify-between mb-3">
+            <h4 class="font-semibold text-slate-800">${t.name}</h4>
+            <span class="level-badge ${t.defaultLevel === 'L3' ? 'l3-badge' : t.defaultLevel === 'L1/L2' ? 'l1-badge' : 'l2-badge'}">${t.defaultLevel}</span>
+          </div>
+          <p class="text-xs text-slate-500 mb-2">Codes: ${t.codes}</p>
+          ${t.l3Criteria.length > 0 ? `
+            <div class="flex items-center gap-1 text-xs" style="color: #F28C28;">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+              </svg>
+              <span>${t.l3Criteria.length} critère(s) L3</span>
+            </div>
+          ` : ''}
+        </button>
+      `).join('');
+            
+            details.innerHTML = `
+        <div class="text-center mb-8 fade-in">
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-4" style="background: rgba(0, 76, 151, 0.1); color: #004C97;">
+            <span class="text-2xl mr-1">${domain.icon}</span>
+            ${domain.name}
+          </div>
+          <h2 class="text-2xl font-bold text-slate-800 mb-2">Types de Transactions</h2>
+          <p class="text-slate-500">Sélectionnez le type de transaction applicable</p>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+          ${transactionsHtml}
+        </div>
+        
+        <div class="text-center mt-6">
+          <button onclick="goBack()" class="text-sm text-slate-500 hover:text-slate-700 flex items-center gap-1 mx-auto">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Retour
+          </button>
+        </div>
+      `;
+            
+            showSection('domain-details');
+        }
+
+        function selectTransaction(domainId, transactionId) {
+            const domain = domainData[domainId];
+            const transaction = domain.transactions.find(t => t.id === transactionId);
+            if (!transaction) return;
+            
+            currentPath.push({ name: transaction.name, type: 'transaction', value: transactionId });
+            updateBreadcrumb();
+            
+            const details = document.getElementById('transaction-details');
+            
+            const l3Html = transaction.l3Criteria.length > 0 ? `
+        <div class="card-shadow bg-white rounded-xl p-5 border-l-4" style="border-color: #F28C28;">
+          <h4 class="font-semibold text-slate-800 mb-3 flex items-center gap-2">
+            <svg class="w-5 h-5" style="color: #F28C28;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            Critères L3 (Legal Review)
+          </h4>
+          <ul class="space-y-2">
+            ${transaction.l3Criteria.map(c => `
+              <li class="flex items-center gap-2 text-sm text-slate-600">
+                <span class="w-2 h-2 rounded-full" style="background: #F28C28;"></span>
+                ${c}
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      ` : '';
+            
+            const exceptionsHtml = transaction.exceptions.length > 0 ? `
+        <div class="card-shadow bg-white rounded-xl p-5 border-l-4 border-green-400">
+          <h4 class="font-semibold text-slate-800 mb-3 flex items-center gap-2">
+            <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Exceptions (restent L2)
+          </h4>
+          <ul class="space-y-2">
+            ${transaction.exceptions.map(e => `
+              <li class="flex items-center gap-2 text-sm text-slate-600">
+                <span class="w-2 h-2 rounded-full bg-green-400"></span>
+                ${e}
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      ` : '';
+            
+            details.innerHTML = `
+        <div class="fade-in">
+          <div class="text-center mb-8">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-4" style="background: rgba(0, 76, 151, 0.1); color: #004C97;">
+              <span class="level-badge ${transaction.defaultLevel === 'L3' ? 'l3-badge' : 'l2-badge'}">${transaction.defaultLevel}</span>
+              ${transaction.codes}
+            </div>
+            <h2 class="text-2xl font-bold text-slate-800 mb-2">${transaction.name}</h2>
+            <p class="text-slate-500">${domain.name}</p>
+          </div>
+          
+          <div class="max-w-3xl mx-auto space-y-4">
+            <!-- RACI Block -->
+            ${buildRACIBlock('P', transaction.defaultLevel, true)}
+            
+            <!-- Template Info -->
+            <div class="card-shadow bg-white rounded-xl p-5 border-l-4" style="border-color: #004C97;">
+              <h4 class="font-semibold text-slate-800 mb-3 flex items-center gap-2">
+                <svg class="w-5 h-5" style="color: #004C97;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Template Contractuel
+              </h4>
+              <p class="text-sm text-slate-600 bg-slate-50 rounded-lg p-3 font-mono">${transaction.template}</p>
+            </div>
+            
+            <!-- Process Info -->
+            <div class="card-shadow bg-white rounded-xl p-5">
+              <h4 class="font-semibold text-slate-800 mb-3 flex items-center gap-2">
+                <svg class="w-5 h-5" style="color: #004C97;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                </svg>
+                Processus
+              </h4>
+              <div class="grid grid-cols-3 gap-4 text-center">
+                <div class="p-3 rounded-lg bg-blue-50">
+                  <div class="text-xs text-slate-500 mb-1">S2V Support</div>
+                  <div class="font-semibold" style="color: #004C97;">OUI</div>
+                </div>
+                <div class="p-3 rounded-lg bg-blue-50">
+                  <div class="text-xs text-slate-500 mb-1">CLM System</div>
+                  <div class="font-semibold" style="color: #004C97;">LEO Coupa</div>
+                </div>
+                <div class="p-3 rounded-lg bg-blue-50">
+                  <div class="text-xs text-slate-500 mb-1">Drafter</div>
+                  <div class="font-semibold" style="color: #004C97;">${transaction.defaultLevel === 'L3' ? 'Legal' : 'S2V Specialist'}</div>
+                </div>
+              </div>
+            </div>
+            
+            ${l3Html}
+            ${exceptionsHtml}
+          </div>
+          
+          <div class="text-center mt-6">
+            <button onclick="goBack()" class="text-sm text-slate-500 hover:text-slate-700 flex items-center gap-1 mx-auto">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+              </svg>
+              Retour
+            </button>
+          </div>
+        </div>
+      `;
+            
+            showSection('transaction-details');
+        }
+
+        function goBack() {
+            if (currentPath.length > 0) {
+                currentPath.pop();
+                updateBreadcrumb();
+                
+                if (currentPath.length === 0) {
+                    showSection('level-1');
+                } else {
+                    const lastItem = currentPath[currentPath.length - 1];
+                    if (lastItem.type === 'domain') {
+                        selectDomain(lastItem.value);
+                    }
+                }
+            }
+        }
+
+        function getRACIRoles(transactionType, level, s2vSupported) {
+            let requestor = '';
+            let specialist = '';
+            let drafter = '';
+            
+            if (transactionType === 'P') {
+                requestor = 'Procurement (Contract Requestor)';
+            } else if (transactionType === 'NP') {
+                requestor = 'Transaction Owner / Dept. (Contract Requestor)';
+            } else if (transactionType === 'IE') {
+                requestor = 'Department Expert (Contract Requestor)';
+            }
+            
+            if (level === 'L2' || level === 'L1/L2') {
+                if (s2vSupported) {
+                    specialist = 'S2V Contract Specialist';
+                } else {
+                    specialist = 'Dept. Contract Specialist (ou Contract Requestor)';
+                }
+            }
+            
+            if (level === 'L1') {
+                drafter = 'n/a – PO + T&Cs';
+            } else if (level === 'L2' || level === 'L1/L2') {
+                if (s2vSupported) {
+                    drafter = 'S2V Contract Specialist';
+                } else {
+                    drafter = 'Dept. Contract Specialist (ou Contract Requestor)';
+                }
+            } else if (level === 'L3') {
+                drafter = 'Legal (end-to-end)';
+            }
+            
+            return { requestor, specialist, drafter };
+        }
+
+        function buildRACIBlock(transactionType, level, s2vSupported) {
+            const roles = getRACIRoles(transactionType, level, s2vSupported);
+            
+            let html = `
+        <div class="card-shadow bg-gradient-to-r from-slate-50 to-blue-50 rounded-lg p-4 border-l-4" style="border-color: #004C97; margin-top: 12px;">
+          <div class="flex items-start justify-between mb-3">
+            <h5 class="font-semibold text-slate-800 flex items-center gap-2">
+              <svg class="w-4 h-4" style="color: #004C97;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              RÔLES & RACI
+            </h5>
+            <span class="text-xs text-slate-500 hover:text-slate-700 cursor-help" title="Réf. §2.1/2.2/2.3">ℹ️ Réf. §2.1-2.3</span>
+          </div>
+          <div class="space-y-2 text-sm">
+      `;
+            
+            html += `
+        <div class="flex items-start gap-3">
+          <span class="inline-block w-3 h-3 rounded-full mt-1" style="background: #004C97; flex-shrink: 0;"></span>
+          <div>
+            <div class="font-medium text-slate-700">Contract Requestor</div>
+            <div class="text-slate-600">${roles.requestor}</div>
+          </div>
+        </div>
+      `;
+            
+            if (level === 'L2' || level === 'L1/L2') {
+                html += `
+          <div class="flex items-start gap-3">
+            <span class="inline-block w-3 h-3 rounded-full mt-1" style="background: #7c3aed; flex-shrink: 0;"></span>
+            <div>
+              <div class="font-medium text-slate-700">Contract Specialist</div>
+              <div class="text-slate-600">${roles.specialist}</div>
+            </div>
+          </div>
+        `;
+            }
+            
+            html += `
+        <div class="flex items-start gap-3">
+          <span class="inline-block w-3 h-3 rounded-full mt-1" style="background: #F28C28; flex-shrink: 0;"></span>
+          <div>
+            <div class="font-medium text-slate-700">Contract Drafter</div>
+            <div class="text-slate-600">${roles.drafter}</div>
+          </div>
+        </div>
+      `;
+            
+            html += `
+          </div>
+        </div>
+      `;
+            
+            return html;
+        }
+
+        document.getElementById('main-title').textContent = config.main_title || defaultConfig.main_title;
+        document.getElementById('subtitle').textContent = config.subtitle || defaultConfig.subtitle;
+    </script>
+</body>
+</html>
