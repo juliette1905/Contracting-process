@@ -1,252 +1,42 @@
-<!doctype html>
-<html lang="fr" class="h-full">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Opella Contracting Decision Tree</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    * { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .gradient-bg { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%); }
-    .card-shadow { box-shadow: 0 4px 20px rgba(0, 76, 151, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04); }
-    .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0, 76, 151, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08); }
-    .pulse-dot { animation: pulse 2s infinite; }
-    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.1); } }
-    .fade-in { animation: fadeIn 0.4s ease-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .breadcrumb-item::after { content: '›'; margin: 0 8px; color: #94a3b8; }
-    .breadcrumb-item:last-child::after { content: ''; }
-    .level-badge { font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
-    .l1-badge { background: #dcfce7; color: #166534; }
-    .l2-badge { background: #dbeafe; color: #1e40af; }
-    .l3-badge { background: #fef3c7; color: #92400e; }
-    .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
-    .scrollbar-thin::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 3px; }
-    .scrollbar-thin::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-    .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-  </style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
- </head>
- <body class="h-full gradient-bg overflow-auto scrollbar-thin">
-  <div id="app" class="h-full w-full">
-   <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-sm border-b border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 py-4">
-     <div class="flex items-center justify-between">
-      <div class="flex items-center gap-4">
-       <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background: #004C97;">
-        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
-       </div>
-       <div>
-        <h1 id="main-title" class="text-xl font-bold" style="color: #004C97;">Arbre de Décision Opella</h1>
-        <p id="subtitle" class="text-sm text-slate-500">Contracting Standard - Processus de contractualisation</p>
-       </div>
-      </div>
-      <button id="reset-btn" class="px-4 py-2 text-sm font-medium text-slate-600 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors flex items-center gap-2">
-       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg> Recommencer </button>
-     </div>
-     <nav id="breadcrumb" class="mt-3 flex flex-wrap items-center text-sm text-slate-500"><span class="breadcrumb-item font-medium" style="color: #004C97;">🌐 Accueil</span></nav>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <title>Opella Contracting Decision Tree</title>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-5">
+        <h1 class="text-3xl font-bold mb-5">Opella Contracting Decision Tree</h1>
+        <div class="decision-tree">
+            <!-- Procurement Domains -->
+            <h2 class="text-2xl font-semibold">Procurement Domains</h2>
+            <ul>
+                <li>1. Sales & Marketing</li>
+                <li>2. External Manufacturing</li>
+                <li>3. Logistics & Digital</li>
+                <li>4. Directs</li>
+                <li>5. Professional Services</li>
+                <li>6. Facility Management</li>
+                <li>7. Travel & Fleet</li>
+            </ul>
+
+            <!-- Non-Procurement Categories -->
+            <h2 class="text-2xl font-semibold">Non-Procurement Categories</h2>
+            <ul>
+                <li>A. Régions Commercial</li>
+                <li>B. Medical</li>
+                <li>C. Global Strategy</li>
+                <li>D. M&A Divestments</li>
+                <li>E. Alliance Management</li>
+                <li>F. Global R&D External Innovation</li>
+                <li>G. Global Legal Transactions IP</li>
+                <li>H. Manufacturing Supply NP</li>
+                <li>I. Cross-Functional Items</li>
+            </ul>
+        </div>
+        <script>
+            // JavaScript functionality goes here
+            console.log('Opella Contracting Decision Tree Initialized');
+        </script>
     </div>
-   </header>
-   <main class="max-w-7xl mx-auto px-4 py-8">
-    <div id="content-area" class="fade-in">
-     <div id="level-1" class="space-y-6">
-      <div class="text-center mb-8">
-       <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-4" style="background: rgba(0, 76, 151, 0.1); color: #004C97;"><span class="w-2 h-2 rounded-full pulse-dot" style="background: #004C97;"></span> NIVEAU 1</div>
-       <h2 class="text-2xl font-bold text-slate-800 mb-2">Détermination du Type de Transaction</h2>
-       <p class="text-slate-500">Quelle est la nature de la transaction ?</p>
-      </div>
-      <div class="grid md:grid-cols-3 gap-6">
-       <button onclick="selectTransactionType('P')" class="card-hover card-shadow bg-white rounded-2xl p-6 text-left border-2 border-transparent hover:border-blue-200 group">
-        <div class="w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform" style="background: linear-gradient(135deg, #004C97, #0066cc);"><span class="text-2xl">📦</span></div>
-        <h3 class="text-lg font-bold text-slate-800 mb-2">Type P</h3>
-        <p class="text-sm font-medium mb-3" style="color: #004C97;">Procurement</p>
-        <p class="text-sm text-slate-500 mb-4">Transactions d'approvisionnement standard via Coupa CLM</p>
-        <div class="flex flex-wrap gap-2"><span class="level-badge l2-badge">S2V Supported</span> <span class="level-badge l2-badge">LEO Coupa</span></div>
-       </button>
-       <button onclick="selectTransactionType('NP')" class="card-hover card-shadow bg-white rounded-2xl p-6 text-left border-2 border-transparent hover:border-orange-200 group">
-        <div class="w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform" style="background: linear-gradient(135deg, #F28C28, #ff9f43);"><span class="text-2xl">📋</span></div>
-        <h3 class="text-lg font-bold text-slate-800 mb-2">Type NP</h3>
-        <p class="text-sm font-medium mb-3" style="color: #F28C28;">Non-Procurement</p>
-        <p class="text-sm text-slate-500 mb-4">Transactions hors périmètre procurement standard</p>
-        <div class="flex flex-wrap gap-2"><span class="level-badge l3-badge">Process spécifique</span></div>
-       </button>
-       <button onclick="selectTransactionType('IE')" class="card-hover card-shadow bg-white rounded-2xl p-6 text-left border-2 border-transparent hover:border-slate-200 group">
-        <div class="w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform" style="background: linear-gradient(135deg, #64748b, #94a3b8);"><span class="text-2xl">👤</span></div>
-        <h3 class="text-lg font-bold text-slate-800 mb-2">Type IE</h3>
-        <p class="text-sm font-medium text-slate-600 mb-3">Internal Expert</p>
-        <p class="text-sm text-slate-500 mb-4">Consultations avec experts internes Opella</p>
-        <div class="flex flex-wrap gap-2"><span class="level-badge" style="background: #f1f5f9; color: #475569;">Interne</span></div>
-       </button>
-      </div>
-     </div>
-     <div id="procurement-domains" class="hidden space-y-6"></div>
-     <div id="domain-details" class="hidden space-y-6"></div>
-     <div id="transaction-details" class="hidden space-y-6"></div>
-    </div>
-   </main>
-   <footer class="border-t border-slate-200 bg-white/80 backdrop-blur-sm mt-auto">
-    <div class="max-w-7xl mx-auto px-4 py-4">
-     <div class="flex flex-wrap items-center justify-center gap-6 text-xs">
-      <div class="flex items-center gap-2"><span class="level-badge l1-badge">L1</span> <span class="text-slate-600">Self-Service</span></div>
-      <div class="flex items-center gap-2"><span class="level-badge l2-badge">L2</span> <span class="text-slate-600">S2V Contract Specialist</span></div>
-      <div class="flex items-center gap-2"><span class="level-badge l3-badge">L3</span> <span class="text-slate-600">Legal Review Required</span></div>
-      <div class="flex items-center gap-2"><span class="w-3 h-3 rounded" style="background: #004C97;"></span> <span class="text-slate-600">Opella Blue</span></div>
-      <div class="flex items-center gap-2"><span class="w-3 h-3 rounded" style="background: #F28C28;"></span> <span class="text-slate-600">Exception/L3 Criteria</span></div>
-     </div>
-    </div>
-   </footer>
-  </div>
-  <script>
-const domainData = {
-  sales: { name: 'Sales & Marketing', icon: '📣', transactions: [{id: 'content-media', name: 'Content / Media', codes: 'MK1004–MK1019', template: 'Framework Advertisement Services Agreement', l3Criteria: ['Exclusivité', 'IP concerns', 'Valeur élevée'], exceptions: ['Term extension', 'Price update', 'Add/remove product'], defaultLevel: 'L2'}, {id: 'ecommerce', name: 'E-commerce / Events', codes: 'MK2001–MK2014', template: 'Framework Event Services Agreement', l3Criteria: ['Global event', 'Exclusivité', 'Valeur > 1M€'], exceptions: [], defaultLevel: 'L2'}, {id: 'market-research', name: 'Market Research / POSM', codes: 'MK3001–MK4004', template: 'Market Research Agreement / Printing Agreement', l3Criteria: [], exceptions: [], defaultLevel: 'L2'}, {id: 'sales-support', name: 'Sales Support', codes: 'MK6001–MK6003', template: 'Sales Support Services Agreement', l3Criteria: [], exceptions: [], defaultLevel: 'L2'}]},
-  manufacturing: { name: 'External Manufacturing', icon: '🏭', transactions: [{id: 'contract-mfg', name: 'Contract Manufacturing / Tolling / Packaging', codes: 'CD4001–CD4008', template: 'Contract Manufacturing Agreement / API Purchase Agreement', l3Criteria: ['Toujours L3 par défaut'], exceptions: ['Term extension (simple)', 'Price update', 'Add/remove product'], defaultLevel: 'L3'}, {id: 'dev-services', name: 'Development Services / Licensing', codes: 'CD4009–CD4011', template: 'Development Services Agreement', l3Criteria: ['Toujours L3 par défaut'], exceptions: ['Extension ≤ 5 ans'], defaultLevel: 'L3'}, {id: 'mfg-transfer', name: 'Manufacturing Transfer Assistance', codes: '-', template: 'Assistance Services Agreement', l3Criteria: ['Toujours L3'], exceptions: [], defaultLevel: 'L3'}]},
-  logistics: { name: 'Logistics & Digital', icon: '🚚', transactions: [{id: 'warehousing', name: 'Warehousing', codes: 'CD5002, CD5010', template: 'Warehousing Services Agreement', l3Criteria: ['Turnover > seuil défini'], exceptions: [], defaultLevel: 'L2'}, {id: 'freight', name: 'Freight / Transportation', codes: 'CD5003–CD5012', template: 'Transportation Framework Agreement', l3Criteria: [], exceptions: [], defaultLevel: 'L1/L2'}, {id: 'digital-cyber', name: 'Digital & Cyber', codes: 'CS4003–CS4018', template: 'MSA Framework for Digital Services / SaaS In-Licensing Agreement', l3Criteria: ['>2,5M€', 'IP co-ownership', 'Exclusivité', 'Accès données critiques'], exceptions: [], defaultLevel: 'L2'}]},
-  directs: { name: 'Directs', icon: '📦', transactions: [{id: 'raw-materials', name: 'Raw Materials / APIs', codes: 'CD1001–CD2005', template: 'Framework Purchase Agreement for Raw Materials', l3Criteria: ['Mono-sourcing', 'Exclusivité', '>2,5M€/an'], exceptions: [], defaultLevel: 'L2'}, {id: 'primary-packaging', name: 'Primary Packaging', codes: 'CD3006–CD3027', template: 'Framework Agreement for Primary Packaging Materials', l3Criteria: ['Exclusivité', '>6M€/an', '>15M€ total'], exceptions: [], defaultLevel: 'L2'}, {id: 'secondary-packaging', name: 'Secondary Packaging', codes: 'CD3001–CD3029', template: 'Framework Secondary Packaging Materials Purchase Agreement', l3Criteria: ['Exclusivité', 'Mono-sourcing', '>3M€/an'], exceptions: [], defaultLevel: 'L2'}, {id: 'capex', name: 'Capex / MRO / EWR', codes: 'MC1001–MC1034', template: 'Framework Equipment Purchase Agreement', l3Criteria: ['>2M€ équipement unique', 'Global framework'], exceptions: [], defaultLevel: 'L2'}, {id: 'maintenance', name: 'Maintenance / Waste / Energy', codes: 'MC2002–MC3011', template: 'Framework Equipment Maintenance Services Agreement', l3Criteria: ['Global', 'Multi-site', '>500k€/site/an'], exceptions: [], defaultLevel: 'L2'}]},
-  professional: { name: 'Professional Services', icon: '💼', transactions: [{id: 'people-culture', name: 'People & Culture', codes: 'CS2012–CS2018', template: 'Framework Agreement for Agency Services / Independent Consultancy', l3Criteria: ['>1M€/an', 'Top 10 vendor'], exceptions: [], defaultLevel: 'L2'}, {id: 'consulting', name: 'Consulting', codes: 'CS6001–CS6006', template: 'Framework Agreement for Consultancy Services', l3Criteria: ['Lobbying', 'Outsourcing', 'Fiscal consulting'], exceptions: [], defaultLevel: 'L2'}, {id: 'medical-science', name: 'Medical & Scientific', codes: 'RD1001–RD2022', template: 'Clinical Services Agreement / Regulatory Services Agreement', l3Criteria: ['Spend >500k€', 'Spend >1M€'], exceptions: [], defaultLevel: 'L2'}]},
-  facility: { name: 'Facility Management', icon: '🏢', transactions: [{id: 'fm-services', name: 'Cleaning, Security, Maintenance', codes: 'CS5006–CS5031', template: 'Framework Facility Services Agreement', l3Criteria: ['Global provider'], exceptions: [], defaultLevel: 'L2'}, {id: 'real-estate', name: 'Real Estate', codes: '-', template: 'Lease Agreement / Real Estate Services Agreement', l3Criteria: ['Toujours L3'], exceptions: [], defaultLevel: 'L3'}]},
-  travel: { name: 'Travel & Fleet', icon: '✈️', transactions: [{id: 'travel', name: 'Business Travel', codes: '-', template: 'Travel Management Services Agreement', l3Criteria: ['Global contract'], exceptions: [], defaultLevel: 'L2'}, {id: 'fleet', name: 'Fleet Management', codes: '-', template: 'Fleet Leasing Agreement', l3Criteria: ['Global contract', '>500 vehicles'], exceptions: [], defaultLevel: 'L2'}]}
-};
-
-let currentPath = [];
-let config = {};
-const defaultConfig = {
-  main_title: 'Arbre de Décision Opella',
-  subtitle: 'Contracting Standard - Processus de contractualisation'
-};
-
-if (window.elementSdk) {
-  window.elementSdk.init({
-    defaultConfig,
-    onConfigChange: async (newConfig) => {
-      config = { ...defaultConfig, ...newConfig };
-      document.getElementById('main-title').textContent = config.main_title || defaultConfig.main_title;
-      document.getElementById('subtitle').textContent = config.subtitle || defaultConfig.subtitle;
-    },
-    mapToCapabilities: (cfg) => ({recolorables: [], borderables: [], fontEditable: undefined, fontSizeable: undefined}),
-    mapToEditPanelValues: (cfg) => new Map([['main_title', cfg.main_title || defaultConfig.main_title], ['subtitle', cfg.subtitle || defaultConfig.subtitle]])
-  });
-  config = window.elementSdk.config || defaultConfig;
-} else {
-  config = { ...defaultConfig };
-}
-
-function updateBreadcrumb() {
-  const breadcrumb = document.getElementById('breadcrumb');
-  let html = '<span class="breadcrumb-item font-medium cursor-pointer hover:underline" style="color: #004C97;" onclick="resetToStart()">🌐 Accueil</span>';
-  currentPath.forEach((item) => {html += `<span class="breadcrumb-item text-slate-600">${item.name}</span>`;});
-  breadcrumb.innerHTML = html;
-}
-
-function hideAllSections() {
-  document.getElementById('level-1').classList.add('hidden');
-  document.getElementById('procurement-domains').classList.add('hidden');
-  document.getElementById('domain-details').classList.add('hidden');
-  document.getElementById('transaction-details').classList.add('hidden');
-}
-
-function showSection(id) {
-  hideAllSections();
-  const section = document.getElementById(id);
-  section.classList.remove('hidden');
-  section.classList.add('fade-in');
-}
-
-function resetToStart() {
-  currentPath = [];
-  updateBreadcrumb();
-  showSection('level-1');
-}
-
-document.getElementById('reset-btn').addEventListener('click', resetToStart);
-
-function selectTransactionType(type) {
-  if (type === 'P') {
-    currentPath = [{ name: 'Type P - Procurement', type: 'type', value: 'P' }];
-    updateBreadcrumb();
-    showProcurementDomains();
-  } else if (type === 'IE') {
-    currentPath = [{ name: 'Type IE - Internal Expert', type: 'type', value: 'IE' }];
-    updateBreadcrumb();
-    showIEInfo();
-  }
-}
-
-function showProcurementDomains() {
-  const details = document.getElementById('procurement-domains');
-  let domainsHtml = Object.keys(domainData).map(key => {
-    const domain = domainData[key];
-    return `<button onclick="selectDomain('${key}')" class="card-hover card-shadow bg-white rounded-xl p-5 text-left border-2 border-transparent hover:border-blue-200"><div class="text-2xl mb-3">${domain.icon}</div><h3 class="font-semibold text-slate-800 mb-1">${domain.name}</h3><p class="text-xs text-slate-500">${domain.transactions.length} type(s) de transaction</p></button>`;
-  }).join('');
-  
-details.innerHTML = `
-    <div class="text-center mb-8 fade-in">
-      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-4" style="background: rgba(0, 76, 151, 0.1); color: #004C97;"><span class="w-2 h-2 rounded-full pulse-dot" style="background: #004C97;"></span> TYPE P - PROCUREMENT</div>
-      <h2 class="text-2xl font-bold text-slate-800 mb-2">Sélection du Domaine</h2>
-      <p class="text-slate-500">Identifiez le domaine Procurement concerné</p>
-    </div>
-    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">${domainsHtml}</div>
-  `;
-  showSection('procurement-domains');
-}
-
-function selectDomain(domainId) {
-  const domain = domainData[domainId];
-  if (!domain) return;
-  currentPath.push({ name: domain.name, type: 'domain', value: domainId });
-  updateBreadcrumb();
-  
-  const details = document.getElementById('domain-details');
-  let transactionsHtml = domain.transactions.map(t => {
-    const drafterRole = t.defaultLevel === 'L3' ? 'Legal' : 'S2V Specialist';
-    return `<button onclick="selectTransaction('${domainId}', '${t.id}')" class="card-hover card-shadow bg-white rounded-xl p-5 text-left border-2 border-transparent hover:border-blue-200 w-full"><div class="flex items-start justify-between mb-3"><div class="flex-1"><h4 class="font-semibold text-slate-800">${t.name}</h4><p class="text-xs text-slate-500 mt-1">Drafter: ${drafterRole}</p></div><span class="level-badge ${t.defaultLevel === 'L3' ? 'l3-badge' : t.defaultLevel === 'L1/L2' ? 'l1-badge' : 'l2-badge'}">${t.defaultLevel}</span></div><p class="text-xs text-slate-500 mb-2">Codes: ${t.codes}</p>${t.l3Criteria.length > 0 ? `<div class="flex items-center gap-1 text-xs" style="color: #F28C28;"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg><span>${t.l3Criteria.length} critère(s) L3</span></div>` : ''}</button>`;
-  }).join('');
-  
-  details.innerHTML = `<div class="text-center mb-8 fade-in"><div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-4" style="background: rgba(0, 76, 151, 0.1); color: #004C97;"><span class="text-2xl mr-1">${domain.icon}</span>${domain.name}</div><h2 class="text-2xl font-bold text-slate-800 mb-2">Types de Transactions</h2><p class="text-slate-500">Sélectionnez le type de transaction applicable</p></div><div class="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto">${transactionsHtml}</div><div class="text-center mt-6"><button onclick="goBack()" class="text-sm text-slate-500 hover:text-slate-700 flex items-center gap-1 mx-auto"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>Retour aux domaines</button></div>`;
-  showSection('domain-details');
-}
-
-function selectTransaction(domainId, transactionId) {
-  const domain = domainData[domainId];
-  const transaction = domain.transactions.find(t => t.id === transactionId);
-  if (!transaction) return;
-  currentPath.push({ name: transaction.name, type: 'transaction', value: transactionId });
-  updateBreadcrumb();
-  
-  const details = document.getElementById('transaction-details');
-  const l3Html = transaction.l3Criteria.length > 0 ? `<div class="card-shadow bg-white rounded-xl p-5 border-l-4" style="border-color: #F28C28;"><h4 class="font-semibold text-slate-800 mb-3 flex items-center gap-2"><svg class="w-5 h-5" style="color: #F28C28;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>Critères L3 (Legal Review)</h4><ul class="space-y-2">${transaction.l3Criteria.map(c => `<li class="flex items-center gap-2 text-sm text-slate-600"><span class="w-2 h-2 rounded-full" style="background: #F28C28;"></span>${c}</li>`).join('')}</ul></div>` : '';
-  const exceptionsHtml = transaction.exceptions.length > 0 ? `<div class="card-shadow bg-white rounded-xl p-5 border-l-4 border-green-400"><h4 class="font-semibold text-slate-800 mb-3 flex items-center gap-2"><svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Exceptions (restent L2)</h4><ul class="space-y-2">${transaction.exceptions.map(e => `<li class="flex items-center gap-2 text-sm text-slate-600"><span class="w-2 h-2 rounded-full bg-green-400"></span>${e}</li>`).join('')}</ul></div>` : '';
-  
-details.innerHTML = `<div class="fade-in"><div class="text-center mb-8"><div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-4" style="background: rgba(0, 76, 151, 0.1); color: #004C97;"><span class="level-badge ${transaction.defaultLevel === 'L3' ? 'l3-badge' : 'l2-badge'}">${transaction.defaultLevel}</span>${transaction.codes}</div><h2 class="text-2xl font-bold text-slate-800 mb-2">${transaction.name}</h2><p class="text-slate-500">${domain.name}</p></div><div class="max-w-4xl mx-auto space-y-4"><div class="card-shadow bg-white rounded-xl p-5 border-l-4" style="border-color: #004C97;"><h4 class="font-semibold text-slate-800 mb-3 flex items-center gap-2"><svg class="w-5 h-5" style="color: #004C97;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Template Contractuel</h4><p class="text-sm text-slate-600 bg-slate-50 rounded-lg p-3 font-mono">${transaction.template}</p></div><div class="card-shadow bg-white rounded-xl p-5"><h4 class="font-semibold text-slate-800 mb-3 flex items-center gap-2"><svg class="w-5 h-5" style="color: #004C97;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>Processus</h4><div class="grid grid-cols-3 gap-4 text-center"><div class="p-3 rounded-lg bg-blue-50"><div class="text-xs text-slate-500 mb-1">S2V Support</div><div class="font-semibold" style="color: #004C97;">OUI</div></div><div class="p-3 rounded-lg bg-blue-50"><div class="text-xs text-slate-500 mb-1">CLM System</div><div class="font-semibold" style="color: #004C97;">LEO Coupa</div></div><div class="p-3 rounded-lg bg-blue-50"><div class="text-xs text-slate-500 mb-1">Drafter</div><div class="font-semibold" style="color: #004C97;">${transaction.defaultLevel === 'L3' ? 'Legal' : 'S2V Specialist'}</div></div></div></div>${l3Html}${exceptionsHtml}</div><div class="text-center mt-6"><button onclick="goBack()" class="text-sm text-slate-500 hover:text-slate-700 flex items-center gap-1 mx-auto"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>Retour aux transactions</button></div></div>`;
-  showSection('transaction-details');
-}
-
-function showIEInfo() {
-  const details = document.getElementById('domain-details');
-  details.innerHTML = `<div class="text-center mb-8 fade-in"><div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-4" style="background: rgba(100, 116, 139, 0.1); color: #64748b;"><span class="w-2 h-2 rounded-full pulse-dot" style="background: #64748b;"></span>TYPE IE</div><h2 class="text-2xl font-bold text-slate-800 mb-2">Internal Expert</h2><p class="text-slate-500 max-w-2xl mx-auto">Consultations avec les experts internes Opella pour guidance et support.</p></div><div class="max-w-2xl mx-auto"><div class="card-shadow bg-white rounded-2xl p-6 border-l-4 border-slate-400"><h3 class="font-semibold text-slate-800 mb-4 flex items-center gap-2"><svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>Processus Internal Expert</h3><ul class="space-y-3 text-sm text-slate-600"><li class="flex items-start gap-2"><span class="text-slate-400 mt-1">•</span><span>Pas de transaction contractuelle externe</span></li><li class="flex items-start gap-2"><span class="text-slate-400 mt-1">•</span><span>Support et conseil des équipes internes</span></li><li class="flex items-start gap-2"><span class="text-slate-400 mt-1">•</span><span>Contactez votre expert métier désigné</span></li></ul></div></div>`;
-  showSection('domain-details');
-}
-
-function goBack() {
-  if (currentPath.length > 0) {
-    currentPath.pop();
-    updateBreadcrumb();
-    if (currentPath.length === 0) {
-      showSection('level-1');
-    } else {
-      const lastItem = currentPath[currentPath.length - 1];
-      if (lastItem.type === 'domain') selectDomain(lastItem.value);
-      else if (lastItem.type === 'type') showProcurementDomains();
-    }
-  }
-}
-
-document.getElementById('main-title').textContent = config.main_title || defaultConfig.main_title;
-document.getElementById('subtitle').textContent = config.subtitle || defaultConfig.subtitle;
-  </script>
- </body>
+</body>
 </html>
