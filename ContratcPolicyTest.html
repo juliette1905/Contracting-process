@@ -685,12 +685,227 @@
         min-width: 22px;
       }
     }
+
+    /* Corporate Approval Modal Styles */
+    #corporateApprovalModal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .corporate-modal-box {
+      background: white;
+      width: 90%;
+      max-width: 720px;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      padding: 2rem;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .corporate-modal-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #042B0B;
+      margin-bottom: 0.5rem;
+    }
+
+    .corporate-modal-subtitle {
+      font-size: 0.95rem;
+      color: #555;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    .corporate-checkboxes {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .corporate-checkbox-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      border: 1px solid #E7EAE7;
+      border-radius: 8px;
+      background: #FAFAF8;
+    }
+
+    .corporate-checkbox-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      cursor: pointer;
+      accent-color: #042B0B;
+      margin-top: 0.15rem;
+    }
+
+    .corporate-checkbox-item label {
+      font-size: 0.9rem;
+      color: #333;
+      line-height: 1.5;
+      cursor: pointer;
+    }
+
+    .corporate-radio-group {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .corporate-radio-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+
+    .corporate-radio-item input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: #042B0B;
+    }
+
+    .corporate-radio-item label {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #042B0B;
+      cursor: pointer;
+    }
+
+    .corporate-message {
+      padding: 0.875rem 1rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+    }
+
+    .corporate-message.success {
+      background: #E8F5E9;
+      border-left: 4px solid #2E7D32;
+      color: #1B5E20;
+    }
+
+    .corporate-message.error {
+      background: linear-gradient(135deg, #FFE5F0 0%, #FFD0E8 100%);
+      border-left: 4px solid #FF78D2;
+      color: #C71585;
+    }
+
+    .corporate-next-btn {
+      background: #042B0B;
+      color: #F7EFE6;
+      border: none;
+      padding: 0.75rem 1.75rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: background 0.2s ease;
+    }
+
+    .corporate-next-btn:hover {
+      background: #263F26;
+    }
+
+    .corporate-divider {
+      border: none;
+      border-top: 1px solid #E7EAE7;
+      margin: 1.5rem 0;
+    }
   </style>
   <style>body { box-sizing: border-box; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
   <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
  </head>
  <body>
+  <!-- Corporate Approval Modal (auto-opens on load, non-dismissible) -->
+  <div id="corporateApprovalModal">
+   <div class="corporate-modal-box">
+    <!-- Stage 1 -->
+    <div id="corporateStage1">
+     <div class="corporate-modal-title">⚠️ Corporate Approval Check</div>
+     <div class="corporate-modal-subtitle">Is your transaction related to any of the following?</div>
+     <div class="corporate-checkboxes">
+      <div class="corporate-checkbox-item">
+       <input type="checkbox" id="corp-cb-1">
+       <label for="corp-cb-1">Disposal and acquisition: any transactions involving direct or indirect disposal or acquisition of assets, whether relating to the full ownership of any such asset or a portion thereof, assessed to be material for the Opella group</label>
+      </div>
+      <div class="corporate-checkbox-item">
+       <input type="checkbox" id="corp-cb-2">
+       <label for="corp-cb-2">Material contract: execution, termination or amendment of any contract above 10 million EUR of yearly value (including on an amortized basis)</label>
+      </div>
+      <div class="corporate-checkbox-item">
+       <input type="checkbox" id="corp-cb-3">
+       <label for="corp-cb-3">Capital expenditure: CAPEX transaction above 5 million EUR, individually or in the aggregate in any financial year</label>
+      </div>
+      <div class="corporate-checkbox-item">
+       <input type="checkbox" id="corp-cb-4">
+       <label for="corp-cb-4">Related Party Transaction: any transaction, arrangement or agreement (or material amendment thereto) between (i) any member of the Opella group and (ii) either Sanofi or CD&amp;R or their representatives</label>
+      </div>
+      <div class="corporate-checkbox-item">
+       <input type="checkbox" id="corp-cb-5">
+       <label for="corp-cb-5">Joint Venture: the entry into any material joint venture</label>
+      </div>
+      <div class="corporate-checkbox-item">
+       <input type="checkbox" id="corp-cb-6">
+       <label for="corp-cb-6">Business restrictions: any agreement which includes restrictions on any Opella Group Company's freedom to operate and develop its existing business</label>
+      </div>
+      <div class="corporate-checkbox-item">
+       <input type="checkbox" id="corp-cb-7">
+       <label for="corp-cb-7">Litigation settlement agreement: settlement agreement for any dispute and/or litigation with an amount at stake in excess of 5 million EUR</label>
+      </div>
+     </div>
+     <hr class="corporate-divider">
+     <div class="corporate-radio-group">
+      <div class="corporate-radio-item">
+       <input type="radio" name="corpStage1" id="corp-s1-no" value="no" onchange="handleStage1Change('no')">
+       <label for="corp-s1-no">NO</label>
+      </div>
+      <div class="corporate-radio-item">
+       <input type="radio" name="corpStage1" id="corp-s1-yes" value="yes" onchange="handleStage1Change('yes')">
+       <label for="corp-s1-yes">YES</label>
+      </div>
+     </div>
+     <div id="corp-s1-message" style="display:none;"></div>
+     <div id="corp-s1-next" style="display:none;">
+      <button class="corporate-next-btn" onclick="closeCorporateApprovalModal()">NEXT →</button>
+     </div>
+    </div>
+    <!-- Stage 2 -->
+    <div id="corporateStage2" style="display:none;">
+     <div class="corporate-modal-title">📋 Board Approval Required</div>
+     <div class="corporate-modal-subtitle">Your transaction needs Opella Board Approval, do you have it?</div>
+     <div class="corporate-radio-group">
+      <div class="corporate-radio-item">
+       <input type="radio" name="corpStage2" id="corp-s2-yes" value="yes" onchange="handleStage2Change('yes')">
+       <label for="corp-s2-yes">YES</label>
+      </div>
+      <div class="corporate-radio-item">
+       <input type="radio" name="corpStage2" id="corp-s2-no" value="no" onchange="handleStage2Change('no')">
+       <label for="corp-s2-no">NO</label>
+      </div>
+     </div>
+     <div id="corp-s2-message" style="display:none;"></div>
+     <div id="corp-s2-next" style="display:none;">
+      <button class="corporate-next-btn" onclick="closeCorporateApprovalModal()">NEXT →</button>
+     </div>
+    </div>
+   </div>
+  </div>
   <div class="app-wrapper">
    <div class="header">
     <h1>🏢 Opella Contract Decision Assistant</h1>
@@ -2114,6 +2329,7 @@
     // Initialize progress bar on page load
     document.addEventListener('DOMContentLoaded', function() {
       updateProgress(1);
+      openCorporateApprovalModal();
     });
 
     // Close modals when clicking outside of them
@@ -2135,6 +2351,74 @@
         });
       }
     });
+
+    // =============================================
+    // CORPORATE APPROVAL MODAL FUNCTIONS
+    // =============================================
+
+    function clearRadioGroup(name) {
+      document.querySelectorAll('input[name="' + name + '"]').forEach(function(r) { r.checked = false; });
+    }
+
+    function openCorporateApprovalModal() {
+      var modal = document.getElementById('corporateApprovalModal');
+      if (modal) {
+        modal.style.display = 'flex';
+        // Reset to Stage 1
+        document.getElementById('corporateStage1').style.display = 'block';
+        document.getElementById('corporateStage2').style.display = 'none';
+        // Clear radio buttons
+        clearRadioGroup('corpStage1');
+        clearRadioGroup('corpStage2');
+        // Hide messages and next button
+        document.getElementById('corp-s1-message').style.display = 'none';
+        document.getElementById('corp-s1-next').style.display = 'none';
+      }
+    }
+
+    function closeCorporateApprovalModal() {
+      var modal = document.getElementById('corporateApprovalModal');
+      if (modal) {
+        modal.style.display = 'none';
+      }
+    }
+
+    function handleStage1Change(value) {
+      var msgEl = document.getElementById('corp-s1-message');
+      var nextEl = document.getElementById('corp-s1-next');
+      if (value === 'no') {
+        msgEl.className = 'corporate-message success';
+        msgEl.textContent = '✅ You can proceed!';
+        msgEl.style.display = 'block';
+        nextEl.style.display = 'block';
+      } else {
+        // Hide Stage 1, show Stage 2
+        msgEl.style.display = 'none';
+        nextEl.style.display = 'none';
+        document.getElementById('corporateStage1').style.display = 'none';
+        document.getElementById('corporateStage2').style.display = 'block';
+        // Reset Stage 2
+        clearRadioGroup('corpStage2');
+        document.getElementById('corp-s2-message').style.display = 'none';
+        document.getElementById('corp-s2-next').style.display = 'none';
+      }
+    }
+
+    function handleStage2Change(value) {
+      var msgEl = document.getElementById('corp-s2-message');
+      var nextEl = document.getElementById('corp-s2-next');
+      if (value === 'yes') {
+        msgEl.className = 'corporate-message success';
+        msgEl.textContent = '✅ You can proceed!';
+        msgEl.style.display = 'block';
+        nextEl.style.display = 'block';
+      } else {
+        msgEl.className = 'corporate-message error';
+        msgEl.textContent = '🚫 Go get the board approval before continuing!';
+        msgEl.style.display = 'block';
+        nextEl.style.display = 'none';
+      }
+    }
 
     // =============================================
     // PROGRESS BAR & UX FUNCTIONS
