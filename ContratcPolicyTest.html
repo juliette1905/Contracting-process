@@ -493,6 +493,52 @@
         max-height: 60%;
       }
     }
+
+    /* Checklist Modal Styles */
+    .checklist-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      transition: all 0.3s ease;
+      border: 1px solid #E7EAE7;
+    }
+
+    .checklist-step.completed {
+      background: #F7EFE6;
+      opacity: 0.7;
+    }
+
+    .checklist-step.completed .step-text {
+      text-decoration: line-through;
+      color: #999;
+    }
+
+    .checklist-checkbox {
+      width: 1.25rem;
+      height: 1.25rem;
+      min-width: 1.25rem;
+      cursor: pointer;
+      accent-color: #042B0B;
+      margin-top: 0.1rem;
+    }
+
+    .checklist-progress-bar {
+      background: #E7EAE7;
+      height: 8px;
+      border-radius: 4px;
+      margin: 0.5rem 0;
+      overflow: hidden;
+    }
+
+    .checklist-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #042B0B 0%, #263F26 100%);
+      border-radius: 4px;
+      transition: width 0.4s ease;
+    }
   </style>
   <style>body { box-sizing: border-box; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
@@ -1358,6 +1404,16 @@
             </div>
           </details>
 
+          <!-- Next Steps Button -->
+          <div style="text-align: center; padding: 0.5rem 0 1rem;">
+            <button onclick="openChecklistModal()"
+                    style="background: #FF78D2; color: white; border: none; padding: 0.75rem 2rem; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 1rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(255, 120, 210, 0.3); letter-spacing: 0.5px;"
+                    onmouseover="this.style.background='#E65BBE'; this.style.boxShadow='0 6px 16px rgba(255, 120, 210, 0.4)'"
+                    onmouseout="this.style.background='#FF78D2'; this.style.boxShadow='0 4px 12px rgba(255, 120, 210, 0.3)'">
+              ✅ Next Steps
+            </button>
+          </div>
+
         </div>
       `;
 
@@ -1453,18 +1509,163 @@
       modal.classList.add('hidden');
     }
 
+    // =============================================
+    // CHECKLIST MODAL FUNCTIONS
+    // =============================================
+
+    function getChecklistSteps(riskLevel) {
+      if (riskLevel === 'L1') {
+        return [
+          'Contract Requestor submit a PO on LEO',
+          'No contract is required'
+        ];
+      } else if (typeof riskLevel === 'string' && (riskLevel === 'L2' || riskLevel.includes('L2'))) {
+        return [
+          'Contract Requestor submits the initial contract request on CLM Tool (LEO)',
+          'S2V Contract Specialist will clear the contract prerequisite',
+          'Contract requestors align internally with all Opella stakeholders',
+          'S2V Contract Specialist draft the contract based on Opella template',
+          'Contract Requestor organizes the necessary rounds of internal reviews, secures Opella functions inputs and external negotiations with Third-party Contractor',
+          'When contract drafted is agreed on by all the Parties: S2V Contract specialist runs the signature process',
+          'S2V Contract specialist archives the contract on the CLM tool (LEO)'
+        ];
+      } else {
+        return [
+          'Contract Requestor reach out to Legal (if not done yet) to present the planned transaction',
+          'Contract Requestor submits the initial contract request on CLM Tool (LEO)',
+          'S2V Contract Specialist will clear the contract prerequisite',
+          'Contract requestors align internally with all Opella stakeholders',
+          'Legal draft the contract(s)',
+          'Contract Requestor organizes the necessary rounds of internal reviews, secures Opella functions inputs and external negotiations with Third-party Contractor',
+          'When contract drafted is agreed on by all the Parties: S2V Contract specialist runs the signature process',
+          'S2V Contract specialist archives the contract on the CLM tool (LEO)'
+        ];
+      }
+    }
+
+    function getChecklistLabel(riskLevel) {
+      if (riskLevel === 'L1') return 'L1 Contract';
+      if (typeof riskLevel === 'string' && (riskLevel === 'L2' || riskLevel.includes('L2'))) return 'L2 Contract (Supported by S2V)';
+      return 'L3 Contract (Supported by S2V)';
+    }
+
+    function openChecklistModal() {
+      const trans = selectedTransaction;
+      if (!trans) return;
+
+      const steps = getChecklistSteps(trans.riskLevel);
+      const storageKey = 'checklist_' + trans.id;
+      const saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
+
+      const completedCount = saved.filter(Boolean).length;
+      const totalCount = steps.length;
+      const percentage = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+
+      const stepsHtml = steps.map(function(step, i) {
+        const isChecked = saved[i] === true;
+        return '<div class="checklist-step' + (isChecked ? ' completed' : '') + '" id="checklist-step-' + i + '">' +
+          '<input type="checkbox" class="checklist-checkbox" id="check-' + i + '" ' +
+          (isChecked ? 'checked' : '') +
+          ' onchange="toggleChecklistItem(' + i + ', \'' + trans.id + '\')">' +
+          '<label for="check-' + i + '" class="step-text" style="font-size: 0.9rem; color: #555; line-height: 1.5; cursor: pointer; flex: 1;">' + step + '</label>' +
+          '</div>';
+      }).join('');
+
+      const riskClass = getRiskClass(trans.riskLevel);
+
+      document.getElementById('checklistContent').innerHTML =
+        '<div style="margin-bottom: 1.5rem;">' +
+          '<div style="font-size: 1rem; color: #555; margin-bottom: 0.5rem;">' +
+            '<strong style="color: #042B0B;">' + trans.name + '</strong>' +
+          '</div>' +
+          '<div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">' +
+            '<span class="risk-badge ' + riskClass + '">' + trans.riskLevel + '</span>' +
+            '<span style="font-size: 0.9rem; color: #555;">' + getChecklistLabel(trans.riskLevel) + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<div style="background: #F7EFE6; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">' +
+          '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">' +
+            '<span style="font-size: 0.875rem; font-weight: 700; color: #042B0B;">Progress</span>' +
+            '<span id="checklistPercentage" style="font-size: 0.875rem; font-weight: 700; color: #263F26;">' + percentage + '% complete</span>' +
+          '</div>' +
+          '<div class="checklist-progress-bar">' +
+            '<div class="checklist-progress-fill" id="checklistProgressFill" style="width: ' + percentage + '%;"></div>' +
+          '</div>' +
+          '<div id="checklistStepCount" style="font-size: 0.8rem; color: #555; margin-top: 0.5rem;">' + completedCount + ' of ' + totalCount + ' steps completed</div>' +
+        '</div>' +
+        '<div id="checklistSteps">' + stepsHtml + '</div>' +
+        '<div style="margin-top: 1.5rem; border-top: 1px solid #E7EAE7; padding-top: 1.5rem;">' +
+          '<button onclick="closeChecklistModal()" ' +
+            'style="background: #042B0B; color: #F7EFE6; border: none; padding: 0.625rem 1.25rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.3s ease;" ' +
+            'onmouseover="this.style.background=\'#263F26\'" ' +
+            'onmouseout="this.style.background=\'#042B0B\'">← Back</button>' +
+        '</div>';
+
+      const modal = document.getElementById('checklistModal');
+      modal.classList.remove('hidden');
+      modal.style.display = 'flex';
+    }
+
+    function closeChecklistModal() {
+      const modal = document.getElementById('checklistModal');
+      modal.style.display = 'none';
+      modal.classList.add('hidden');
+    }
+
+    function toggleChecklistItem(index, transId) {
+      const trans = selectedTransaction;
+      if (!trans) return;
+
+      const storageKey = 'checklist_' + transId;
+      const steps = getChecklistSteps(trans.riskLevel);
+      const saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
+
+      while (saved.length < steps.length) saved.push(false);
+      saved[index] = !saved[index];
+      localStorage.setItem(storageKey, JSON.stringify(saved));
+
+      const stepEl = document.getElementById('checklist-step-' + index);
+      if (stepEl) {
+        if (saved[index]) {
+          stepEl.classList.add('completed');
+        } else {
+          stepEl.classList.remove('completed');
+        }
+      }
+
+      const completedCount = saved.filter(Boolean).length;
+      const totalCount = steps.length;
+      const percentage = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+
+      const pctEl = document.getElementById('checklistPercentage');
+      const fillEl = document.getElementById('checklistProgressFill');
+      const countEl = document.getElementById('checklistStepCount');
+
+      if (pctEl) pctEl.textContent = percentage + '% complete';
+      if (fillEl) fillEl.style.width = percentage + '%';
+      if (countEl) countEl.textContent = completedCount + ' of ' + totalCount + ' steps completed';
+    }
+
     // Initialize progress bar on page load
     document.addEventListener('DOMContentLoaded', function() {
       updateProgress(1);
     });
 
-    // Close modal when clicking outside of it
+    // Close modals when clicking outside of them
     document.addEventListener('DOMContentLoaded', function() {
-      const modal = document.getElementById('rolesModal');
-      if (modal) {
-        modal.addEventListener('click', function(event) {
-          if (event.target === modal) {
+      const rolesModal = document.getElementById('rolesModal');
+      if (rolesModal) {
+        rolesModal.addEventListener('click', function(event) {
+          if (event.target === rolesModal) {
             closeRolesModal();
+          }
+        });
+      }
+      const checklistModal = document.getElementById('checklistModal');
+      if (checklistModal) {
+        checklistModal.addEventListener('click', function(event) {
+          if (event.target === checklistModal) {
+            closeChecklistModal();
           }
         });
       }
@@ -1532,6 +1733,14 @@
      </ul>
      <p style="font-size: 0.85rem; color: #999; font-style: italic;"><strong>Note:</strong> in the current CLM Tool, this function is denominated "Contract Owner".</p>
     </div>
+   </div>
+  </div>
+  <!-- Checklist Modal -->
+  <div id="checklistModal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.4); display: none; align-items: center; justify-content: center; z-index: 50;">
+   <div style="background: white; width: 90%; max-width: 650px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); padding: 2rem; position: relative; max-height: 85vh; overflow-y: auto;">
+    <button onclick="closeChecklistModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer; padding: 0; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.color='#042B0B'" onmouseout="this.style.color='#999'"> × </button>
+    <h2 style="font-size: 1.25rem; font-weight: 700; color: #042B0B; margin-bottom: 1.5rem; padding-right: 2rem;">✅ Contract Execution Checklist</h2>
+    <div id="checklistContent"></div>
    </div>
   </div>
  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d68f30195802c31',t:'MTc3MjU0NDEzOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
