@@ -626,6 +626,31 @@
       animation: fadeIn 0.3s ease-out;
     }
 
+    .reclassification-conditions-container.downgrade-conditions {
+      background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+      border-left: 4px solid #42A5F5;
+    }
+
+    .reclassification-conditions-container.downgrade-conditions .reclassification-conditions-title {
+      color: #1565C0;
+    }
+
+    .reclassification-conditions-container.downgrade-conditions .reclassification-item input[type="checkbox"] {
+      accent-color: #42A5F5;
+    }
+
+    .risk-updated-message.downgraded {
+      background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+      border-left: 3px solid #42A5F5;
+      color: #1565C0;
+    }
+
+    .risk-badge.downgraded {
+      background: #42A5F5;
+      color: white;
+      animation: pulse 0.5s ease-out;
+    }
+
     .risk-badge.escalated {
       background: #FF78D2;
       color: white;
@@ -1436,6 +1461,7 @@
       var conditions = parsed.conditions;
       var targetLevel = parsed.targetLevel;
       var isEscalation = trans.riskLevel === 'L2' && targetLevel === 'L3';
+      var isDowngrade = selectedType === 'P' && trans.riskLevel === 'L3' && targetLevel === 'L2';
 
       if (isEscalation) {
         var descId = 'recl-desc-' + trans.id;
@@ -1453,6 +1479,24 @@
           '<div class="reclassification-checklist" aria-describedby="' + descId + '">' + checkboxesHtml + '</div>' +
           '<div id="risk-reclassification-msg-' + trans.id + '" class="risk-updated-message" style="display:none;">' +
             '⚠️ Risk escalated from L2 → L3 based on checked conditions' +
+          '</div>' +
+          '</div>';
+      } else if (isDowngrade) {
+        var downDescId = 'recl-down-desc-' + trans.id;
+        var downCheckboxesHtml = conditions.map(function(cond, i) {
+          return '<div class="reclassification-item">' +
+            '<input type="checkbox" id="downgrade-' + trans.id + '-' + i + '" ' +
+            'onchange="toggleDowngradeException(\'' + trans.id + '\', ' + i + ')">' +
+            '<label for="downgrade-' + trans.id + '-' + i + '">' + cond + '</label>' +
+            '</div>';
+        }).join('');
+
+        return '<div class="reclassification-conditions-container downgrade-conditions">' +
+          '<h3 class="reclassification-conditions-title">📋 RECLASSIFICATION CONDITIONS (EXCEPTION → L2 POSSIBLE)</h3>' +
+          '<p id="' + downDescId + '" class="reclassification-conditions-description">This transaction can be downgraded to L2 if it includes:</p>' +
+          '<div class="reclassification-checklist" aria-describedby="' + downDescId + '">' + downCheckboxesHtml + '</div>' +
+          '<div id="risk-downgrade-msg-' + trans.id + '" class="risk-updated-message downgraded" style="display:none;">' +
+            '📋 Risk downgraded from L3 → L2 based on checked conditions' +
           '</div>' +
           '</div>';
       } else {
@@ -1520,6 +1564,9 @@
         var state = loadExceptionState(trans.id);
         var anyChecked = state && state.some(function(v) { return v; });
         if (anyChecked) return 'L3';
+      }
+      if (selectedType === 'P' && trans.riskLevel === 'L3' && parsed.targetLevel === 'L2') {
+        if (isAnyDowngradeExceptionChecked(trans.id)) return 'L2';
       }
       return trans.riskLevel;
     }
@@ -1604,22 +1651,101 @@
       updateChecklistStepsIfOpen();
     }
 
-    function initializeExceptionsChecklist(transactionId, riskLevel, exceptionsText) {
-      var state = loadExceptionState(transactionId);
-      if (!state || state.length === 0) return;
+    function loadDowngradeExceptionState(transactionId) {
+      return JSON.parse(localStorage.getItem('downgrade_exception_states_' + transactionId) || '[]');
+    }
 
-      var parsed = parseExceptionItems(exceptionsText || '');
-      state.forEach(function(checked, i) {
-        if (checked && i < parsed.conditions.length) {
-          var cb = document.getElementById('recl-' + transactionId + '-' + i);
-          if (cb) { cb.checked = true; }
+    function saveDowngradeExceptionState(transactionId, states) {
+      localStorage.setItem('downgrade_exception_states_' + transactionId, JSON.stringify(states));
+    }
+
+    function isAnyDowngradeExceptionChecked(transactionId) {
+      var state = loadDowngradeExceptionState(transactionId);
+      return state && state.some(function(v) { return v; });
+    }
+
+    function toggleDowngradeException(transactionId, exceptionIndex) {
+      var trans = selectedTransaction;
+      if (!trans) return;
+
+      var parsed = parseExceptionItems(trans.exceptions);
+      var state = loadDowngradeExceptionState(transactionId);
+      while (state.length < parsed.conditions.length) { state.push(false); }
+      state[exceptionIndex] = !state[exceptionIndex];
+      saveDowngradeExceptionState(transactionId, state);
+
+      var anyChecked = state.some(function(v) { return v; });
+      var currentRiskLevel = anyChecked ? 'L2' : 'L3';
+
+      var summaryBadge = document.getElementById('risk-badge-summary-' + transactionId);
+      var msgEl = document.getElementById('risk-downgrade-msg-' + transactionId);
+
+      if (anyChecked) {
+        if (summaryBadge) {
+          summaryBadge.textContent = 'L2';
+          summaryBadge.className = 'risk-badge risk-l2 downgraded';
         }
-      });
+        if (msgEl) { msgEl.style.display = 'block'; }
+      } else {
+        if (summaryBadge) {
+          summaryBadge.textContent = 'L3';
+          summaryBadge.className = 'risk-badge risk-l3';
+        }
+        if (msgEl) { msgEl.style.display = 'none'; }
+      }
 
-      updateRiskBadgeBasedOnExceptions(transactionId, riskLevel, state);
-      var anyChecked = state && state.some(function(v) { return v; });
-      var effectiveLevel = (riskLevel === 'L2' && anyChecked) ? 'L3' : riskLevel;
-      updateDrafterBasedOnRiskLevel(transactionId, effectiveLevel);
+      var contractNeededEl = document.getElementById('contract-needed-value');
+      if (contractNeededEl) {
+        var contractNeeded = (currentRiskLevel === 'L1') ? 'NO' : 'YES';
+        contractNeededEl.textContent = contractNeeded;
+        contractNeededEl.className = 'contract-needed-field' + (currentRiskLevel === 'L1' ? ' no' : '');
+      }
+
+      updateDrafterBasedOnRiskLevel(transactionId, currentRiskLevel);
+      updateChecklistStepsIfOpen();
+    }
+
+    function initializeExceptionsChecklist(transactionId, riskLevel, exceptionsText) {
+      var parsed = parseExceptionItems(exceptionsText || '');
+
+      // Restore L2 → L3 escalation state
+      var state = loadExceptionState(transactionId);
+      if (state && state.length > 0) {
+        var anyChecked = state.some(function(v) { return v; });
+        state.forEach(function(checked, i) {
+          if (checked && i < parsed.conditions.length) {
+            var cb = document.getElementById('recl-' + transactionId + '-' + i);
+            if (cb) { cb.checked = true; }
+          }
+        });
+        updateRiskBadgeBasedOnExceptions(transactionId, riskLevel, state);
+        var effectiveLevel = (riskLevel === 'L2' && anyChecked) ? 'L3' : riskLevel;
+        updateDrafterBasedOnRiskLevel(transactionId, effectiveLevel);
+      }
+
+      // Restore L3 → L2 downgrade state (P type only)
+      if (selectedType === 'P' && riskLevel === 'L3' && parsed.targetLevel === 'L2') {
+        var downgradeState = loadDowngradeExceptionState(transactionId);
+        if (downgradeState && downgradeState.length > 0) {
+          downgradeState.forEach(function(checked, i) {
+            if (checked && i < parsed.conditions.length) {
+              var cb = document.getElementById('downgrade-' + transactionId + '-' + i);
+              if (cb) { cb.checked = true; }
+            }
+          });
+          var anyDowngradeChecked = downgradeState.some(function(v) { return v; });
+          if (anyDowngradeChecked) {
+            var summaryBadge = document.getElementById('risk-badge-summary-' + transactionId);
+            var msgEl = document.getElementById('risk-downgrade-msg-' + transactionId);
+            if (summaryBadge) {
+              summaryBadge.textContent = 'L2';
+              summaryBadge.className = 'risk-badge risk-l2 downgraded';
+            }
+            if (msgEl) { msgEl.style.display = 'block'; }
+            updateDrafterBasedOnRiskLevel(transactionId, 'L2');
+          }
+        }
+      }
     }
 
     function renderAnalysis() {
