@@ -1419,14 +1419,14 @@
         }).join('');
 
         return '<details class="result-card" open>' +
-          '<summary class="result-title">🚨 Exceptions (Risk Reclassification)</summary>' +
+          '<summary class="result-title">⚠️ Reclassification Conditions</summary>' +
           '<div class="accordion-content">' +
             '<div class="exceptions-alert">' +
-              '<div class="exceptions-alert-title">🚨 RECLASSIFICATION POSSIBLE</div>' +
-              '<div class="exceptions-alert-subtitle">Cette transaction peut être reclassée en L3 si elle inclut:</div>' +
+              '<div class="exceptions-alert-title">⚠️ RECLASSIFICATION CONDITIONS</div>' +
+              '<div class="exceptions-alert-subtitle">This transaction can be escalated to L3 if it includes:</div>' +
               '<div class="exceptions-checklist">' + checkboxesHtml + '</div>' +
               '<div id="risk-reclassification-msg-' + trans.id + '" class="risk-updated-message" style="display:none;">' +
-                '⚠️ Votre risque passe de L2 → L3 — Reclassifié selon les exceptions cochées' +
+                '⚠️ Risk escalated from L2 → L3 based on checked conditions' +
               '</div>' +
             '</div>' +
           '</div>' +
@@ -1435,7 +1435,7 @@
         var directionLabel = targetLevel ? 'Exception → ' + targetLevel + ' possible' : 'Reclassification';
         var listHtml = conditions.map(function(c) { return '<li>' + c + '</li>'; }).join('');
         return '<details class="result-card" open>' +
-          '<summary class="result-title">🔄 Exceptions (' + directionLabel + ')</summary>' +
+          '<summary class="result-title">🔄 Reclassification Conditions (' + directionLabel + ')</summary>' +
           '<div class="accordion-content">' +
             '<ul class="criteria-list">' + listHtml + '</ul>' +
           '</div>' +
@@ -1480,6 +1480,65 @@
       }
     }
 
+    function getCurrentRiskLevel(trans) {
+      var parsed = parseExceptionItems(trans.exceptions);
+      if (trans.riskLevel === 'L2' && parsed.targetLevel === 'L3') {
+        var state = loadExceptionState(trans.id);
+        var anyChecked = state && state.some(function(v) { return v; });
+        if (anyChecked) return 'L3';
+      }
+      return trans.riskLevel;
+    }
+
+    function updateRiskLevelCard(transactionId, currentRiskLevel) {
+      var criteriaEl = document.getElementById('risk-criteria-' + transactionId);
+      if (criteriaEl) {
+        var fakeTrans = { riskLevel: currentRiskLevel };
+        criteriaEl.innerHTML = renderRiskCriteria(fakeTrans);
+        criteriaEl.style.transition = 'opacity 0.3s ease';
+        criteriaEl.style.opacity = '0.5';
+        setTimeout(function() { criteriaEl.style.opacity = '1'; }, 300);
+      }
+    }
+
+    function updateChecklistStepsIfOpen() {
+      var modal = document.getElementById('checklistModal');
+      if (!modal || modal.style.display === 'none' || modal.classList.contains('hidden')) return;
+      var trans = selectedTransaction;
+      if (!trans) return;
+      var currentRiskLevel = getCurrentRiskLevel(trans);
+      var steps = getChecklistSteps(currentRiskLevel);
+      var storageKey = 'checklist_' + trans.id;
+      var saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      var completedCount = saved.filter(Boolean).length;
+      var totalCount = steps.length;
+      var percentage = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+      var stepsHtml = steps.map(function(step, i) {
+        var isChecked = saved[i] === true;
+        return '<div class="checklist-step' + (isChecked ? ' completed' : '') + '" id="checklist-step-' + i + '">' +
+          '<input type="checkbox" class="checklist-checkbox" id="check-' + i + '" ' +
+          (isChecked ? 'checked' : '') +
+          ' onchange="toggleChecklistItem(' + i + ', \'' + trans.id + '\')">' +
+          '<label for="check-' + i + '" class="step-text" style="font-size: 0.9rem; color: #555; line-height: 1.5; cursor: pointer; flex: 1;">' + step + '</label>' +
+          '</div>';
+      }).join('');
+      var stepsEl = document.getElementById('checklistSteps');
+      if (stepsEl) stepsEl.innerHTML = stepsHtml;
+      var riskBadgeEl = document.querySelector('#checklistContent .risk-badge');
+      if (riskBadgeEl) {
+        riskBadgeEl.textContent = currentRiskLevel;
+        riskBadgeEl.className = 'risk-badge ' + getRiskClass(currentRiskLevel);
+      }
+      var labelEl = document.getElementById('checklistRiskLabel');
+      if (labelEl) labelEl.textContent = getChecklistLabel(currentRiskLevel);
+      var pctEl = document.getElementById('checklistPercentage');
+      var fillEl = document.getElementById('checklistProgressFill');
+      var countEl = document.getElementById('checklistStepCount');
+      if (pctEl) pctEl.textContent = percentage + '% complete';
+      if (fillEl) fillEl.style.width = percentage + '%';
+      if (countEl) countEl.textContent = completedCount + ' of ' + totalCount + ' steps completed';
+    }
+
     function toggleException(transactionId, exceptionIndex) {
       var trans = selectedTransaction;
       if (!trans) return;
@@ -1491,6 +1550,10 @@
       saveExceptionState(transactionId, state);
 
       updateRiskBadgeBasedOnExceptions(transactionId, trans.riskLevel, state);
+
+      var currentRiskLevel = getCurrentRiskLevel(trans);
+      updateRiskLevelCard(transactionId, currentRiskLevel);
+      updateChecklistStepsIfOpen();
     }
 
     function initializeExceptionsChecklist(transactionId, riskLevel, exceptionsText) {
@@ -1547,6 +1610,9 @@
             </div>
           </div>
 
+          <!-- Reclassification Conditions (Accordion - Open) -->
+          ${trans.exceptions ? renderExceptionsSection(trans) : ''}
+
           <!-- Risk Level (Accordion - Open) -->
           <details class="result-card" open>
             <summary class="result-title">⚠️ Risk Level</summary>
@@ -1554,7 +1620,7 @@
               <div style="margin-bottom: 0.75rem;">
                 <span id="risk-badge-risk-level-${trans.id}" class="risk-badge ${getRiskClass(trans.riskLevel)}">${trans.riskLevel}</span>
               </div>
-              ${renderRiskCriteria(trans)}
+              <div id="risk-criteria-${trans.id}">${renderRiskCriteria(trans)}</div>
             </div>
           </details>
 
@@ -1599,9 +1665,6 @@
               </ul>
             </div>
           </details>
-
-          <!-- Exceptions & Special Cases (Accordion - Open) -->
-          ${trans.exceptions ? renderExceptionsSection(trans) : ''}
 
           <!-- Corporate Approvals (Accordion - Closed) -->
           <details class="result-card">
@@ -1762,7 +1825,8 @@
       const trans = selectedTransaction;
       if (!trans) return;
 
-      const steps = getChecklistSteps(trans.riskLevel);
+      const currentRiskLevel = getCurrentRiskLevel(trans);
+      const steps = getChecklistSteps(currentRiskLevel);
       const storageKey = 'checklist_' + trans.id;
       const saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
 
@@ -1780,7 +1844,7 @@
           '</div>';
       }).join('');
 
-      const riskClass = getRiskClass(trans.riskLevel);
+      const riskClass = getRiskClass(currentRiskLevel);
 
       document.getElementById('checklistContent').innerHTML =
         '<div style="margin-bottom: 1.5rem;">' +
@@ -1788,8 +1852,8 @@
             '<strong style="color: #042B0B;">' + trans.name + '</strong>' +
           '</div>' +
           '<div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">' +
-            '<span class="risk-badge ' + riskClass + '">' + trans.riskLevel + '</span>' +
-            '<span style="font-size: 0.9rem; color: #555;">' + getChecklistLabel(trans.riskLevel) + '</span>' +
+            '<span class="risk-badge ' + riskClass + '">' + currentRiskLevel + '</span>' +
+            '<span id="checklistRiskLabel" style="font-size: 0.9rem; color: #555;">' + getChecklistLabel(currentRiskLevel) + '</span>' +
           '</div>' +
         '</div>' +
         '<div style="background: #F7EFE6; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">' +
@@ -1826,7 +1890,8 @@
       if (!trans) return;
 
       const storageKey = 'checklist_' + transId;
-      const steps = getChecklistSteps(trans.riskLevel);
+      const currentRiskLevel = getCurrentRiskLevel(trans);
+      const steps = getChecklistSteps(currentRiskLevel);
       const saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
 
       while (saved.length < steps.length) saved.push(false);
