@@ -1516,6 +1516,19 @@
       }
     }
 
+    function updateDrafterBasedOnRiskLevel(transactionId, riskLevel) {
+      var drafterText = getDrafterInfo(riskLevel);
+      var summaryEl = document.getElementById('drafter-summary-' + transactionId);
+      var rolesEl = document.getElementById('drafter-roles-' + transactionId);
+      [summaryEl, rolesEl].forEach(function(el) {
+        if (!el) return;
+        el.textContent = drafterText;
+        el.style.transition = 'opacity 0.3s ease';
+        el.style.opacity = '0.5';
+        setTimeout(function() { el.style.opacity = '1'; }, 300);
+      });
+    }
+
     function updateChecklistStepsIfOpen() {
       var modal = document.getElementById('checklistModal');
       if (!modal || modal.style.display === 'none' || modal.classList.contains('hidden')) return;
@@ -1568,6 +1581,7 @@
 
       var currentRiskLevel = getCurrentRiskLevel(trans);
       updateRiskLevelCard(transactionId, currentRiskLevel);
+      updateDrafterBasedOnRiskLevel(transactionId, currentRiskLevel);
       updateChecklistStepsIfOpen();
     }
 
@@ -1584,6 +1598,9 @@
       });
 
       updateRiskBadgeBasedOnExceptions(transactionId, riskLevel, state);
+      var anyChecked = state && state.some(function(v) { return v; });
+      var effectiveLevel = (riskLevel === 'L2' && anyChecked) ? 'L3' : riskLevel;
+      updateDrafterBasedOnRiskLevel(transactionId, effectiveLevel);
     }
 
     function renderAnalysis() {
@@ -1591,6 +1608,7 @@
       const typeLabel = selectedType === 'NP' 
         ? annexData.NP.departments[selectedDepartment].label 
         : annexData[selectedType].label;
+      const effectiveRiskLevel = getCurrentRiskLevel(trans);
 
       let html = `
         <div>
@@ -1612,7 +1630,7 @@
               </div>
               <div class="summary-item">
                 <strong>Drafter:</strong>
-                ${getDrafterInfo(trans.riskLevel)}
+                <span id="drafter-summary-${trans.id}">${getDrafterInfo(effectiveRiskLevel)}</span>
               </div>
               <div class="summary-item">
                 <strong>LEO Archiving:</strong>
@@ -1645,7 +1663,7 @@
             <div class="accordion-content">
               <ul class="criteria-list">
                 <li><strong>Requestor:</strong> ${selectedType === 'P' ? 'Procurement' : 'Transaction Owner'}</li>
-                <li><strong>Drafter:</strong> ${getDrafterInfo(trans.riskLevel)}</li>
+                <li><strong>Drafter:</strong> <span id="drafter-roles-${trans.id}">${getDrafterInfo(effectiveRiskLevel)}</span></li>
                 <li><strong>S2V Support:</strong> ${getS2VInfo(trans, selectedType)}</li>
                 <li><strong>Legal:</strong> ${getLegalInfo(trans.riskLevel)}</li>
               </ul>
