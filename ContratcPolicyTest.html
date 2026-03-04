@@ -685,6 +685,133 @@
         min-width: 22px;
       }
     }
+    /* Corporate Approval Modal Styles */
+    .corporate-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .corporate-modal-content {
+      background: white;
+      width: 90%;
+      max-width: 680px;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+      padding: 2rem;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .corporate-modal-content h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #042B0B;
+      margin-bottom: 1.25rem;
+    }
+
+    .corporate-checklist-items {
+      margin-bottom: 1.25rem;
+    }
+
+    .corporate-checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #E7EAE7;
+      cursor: default;
+    }
+
+    .corporate-checklist-item:last-child {
+      border-bottom: none;
+    }
+
+    .corporate-checklist-item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      min-width: 16px;
+      margin-top: 3px;
+      accent-color: #042B0B;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .corporate-checklist-item span {
+      font-size: 0.88rem;
+      color: #444;
+      line-height: 1.5;
+    }
+
+    .corporate-approval-buttons {
+      display: flex;
+      gap: 1.5rem;
+      margin: 1rem 0;
+    }
+
+    .corporate-radio-option {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #042B0B;
+      cursor: pointer;
+    }
+
+    .corporate-radio-option input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: #042B0B;
+    }
+
+    .corporate-stage-divider {
+      border: none;
+      border-top: 1px solid #E7EAE7;
+      margin: 1.25rem 0;
+    }
+
+    .corporate-message-area {
+      margin-top: 1rem;
+    }
+
+    .corporate-message-success {
+      color: #1a7a2e;
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .corporate-message-error {
+      color: #c0392b;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .corporate-next-btn {
+      background: linear-gradient(135deg, #FF78D2 0%, #e060b8 100%);
+      color: white;
+      border: none;
+      padding: 0.7rem 2rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+      letter-spacing: 0.5px;
+    }
+
+    .corporate-next-btn:hover {
+      opacity: 0.88;
+    }
   </style>
   <style>body { box-sizing: border-box; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
@@ -2164,6 +2291,73 @@
       stepIndicator.textContent = customLabel || stepLabels[step] || 'Start';
     }
 
+    // =============================================
+    // CORPORATE APPROVAL MODAL FUNCTIONS
+    // =============================================
+
+    function initCorporateApprovalModal() {
+      const modal = document.getElementById('corporateApprovalModal');
+      if (modal) {
+        modal.style.display = 'flex';
+      }
+    }
+
+    function handleStage1Selection(value) {
+      const stage2 = document.getElementById('stage2Container');
+      const messageArea = document.getElementById('corporateMessageArea');
+
+      if (value === 'no') {
+        if (stage2) stage2.style.display = 'none';
+        // Reset stage2 radio buttons
+        const stage2Radios = document.querySelectorAll('input[name="stage2"]');
+        stage2Radios.forEach(function(r) { r.checked = false; });
+        showCorporateMessage('\u2705 You can proceed!', true);
+      } else if (value === 'yes') {
+        if (messageArea) messageArea.style.display = 'none';
+        if (stage2) stage2.style.display = 'block';
+        // Reset stage2 radio buttons
+        const stage2Radios = document.querySelectorAll('input[name="stage2"]');
+        stage2Radios.forEach(function(r) { r.checked = false; });
+      }
+    }
+
+    function handleStage2Selection(value) {
+      if (value === 'yes') {
+        showCorporateMessage('\u2705 You can proceed!', true);
+      } else {
+        showCorporateMessage('\u274C Go get the board approval before continuing!', false);
+      }
+    }
+
+    function showCorporateMessage(text, showButton) {
+      const messageArea = document.getElementById('corporateMessageArea');
+      const messageText = document.getElementById('corporateMessageText');
+      const nextButton = document.getElementById('corporateNextButton');
+
+      if (!messageArea || !messageText || !nextButton) return;
+
+      messageText.textContent = text;
+      if (text.indexOf('\u2705') === 0) {
+        messageText.className = 'corporate-message-success';
+      } else {
+        messageText.className = 'corporate-message-error';
+      }
+      nextButton.style.display = showButton ? 'inline-block' : 'none';
+      messageArea.style.display = 'block';
+    }
+
+    function proceedToApplication() {
+      const modal = document.getElementById('corporateApprovalModal');
+      if (modal) {
+        modal.style.display = 'none';
+      }
+      updateProgress(1);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      initCorporateApprovalModal();
+    });
+
   </script><!-- Roles Definition Modal -->
   <div id="rolesModal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.4); display: none; align-items: center; justify-content: center; z-index: 50;">
    <div style="background: white; width: 90%; max-width: 700px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); padding: 2rem; position: relative; max-height: 85vh; overflow-y: auto;">
@@ -2206,6 +2400,69 @@
     <button onclick="closeChecklistModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer; padding: 0; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.color='#042B0B'" onmouseout="this.style.color='#999'"> × </button>
     <h2 style="font-size: 1.25rem; font-weight: 700; color: #042B0B; margin-bottom: 1.5rem; padding-right: 2rem;">✅ Contract Execution Checklist</h2>
     <div id="checklistContent"></div>
+   </div>
+  </div>
+  <!-- Corporate Approval Modal -->
+  <div id="corporateApprovalModal" class="corporate-modal-overlay">
+   <div class="corporate-modal-content">
+    <h2>Is your transaction related to any of the following?</h2>
+    <div class="corporate-checklist-items">
+     <label class="corporate-checklist-item">
+      <input type="checkbox" checked disabled>
+      <span>Disposal and acquisition: any transactions involving direct or indirect disposal or acquisition of assets, whether relating to the full ownership of any such asset or a portion thereof, assessed to be material for the Opella group</span>
+     </label>
+     <label class="corporate-checklist-item">
+      <input type="checkbox" disabled>
+      <span>Material contract: execution, termination or amendment of any contract above 10 million EUR of yearly value (including on an amortized basis)</span>
+     </label>
+     <label class="corporate-checklist-item">
+      <input type="checkbox" disabled>
+      <span>Capital expenditure: CAPEX transaction above 5 million EUR, individually or in the aggregate in any financial year</span>
+     </label>
+     <label class="corporate-checklist-item">
+      <input type="checkbox" disabled>
+      <span>Related Party Transaction: any transaction, arrangement or agreement (or material amendment thereto) between (i) any member of the Opella group (on the one hand) and (ii) either (a) Sanofi (or any of its affiliates) or any employee, director, board member, agent or representative thereof, or (b) CD&amp;R (or any of its portfolio companies) or any employee, director, board member, agent or representative thereof (on the other hand), with certain exceptions</span>
+     </label>
+     <label class="corporate-checklist-item">
+      <input type="checkbox" disabled>
+      <span>Joint Venture: the entry into any material joint venture</span>
+     </label>
+     <label class="corporate-checklist-item">
+      <input type="checkbox" disabled>
+      <span>Business restrictions: any agreement which includes restrictions on any Opella Group Company's freedom to operate and develop its existing business</span>
+     </label>
+     <label class="corporate-checklist-item">
+      <input type="checkbox" disabled>
+      <span>Litigation settlement agreement: settlement agreement for any dispute and/or litigation with an amount at stake in excess of 5 million EUR</span>
+     </label>
+    </div>
+    <div class="corporate-approval-buttons">
+     <label class="corporate-radio-option">
+      <input type="radio" name="stage1" value="no" onchange="handleStage1Selection('no')"> NO
+     </label>
+     <label class="corporate-radio-option">
+      <input type="radio" name="stage1" value="yes" onchange="handleStage1Selection('yes')"> YES
+     </label>
+    </div>
+
+    <div id="stage2Container" style="display: none;">
+     <hr class="corporate-stage-divider">
+     <h2>Your transaction needs Opella Board Approval, do you have it?</h2>
+     <div class="corporate-approval-buttons">
+      <label class="corporate-radio-option">
+       <input type="radio" name="stage2" value="yes" onchange="handleStage2Selection('yes')"> YES
+      </label>
+      <label class="corporate-radio-option">
+       <input type="radio" name="stage2" value="no" onchange="handleStage2Selection('no')"> NO
+      </label>
+     </div>
+    </div>
+
+    <div id="corporateMessageArea" class="corporate-message-area" style="display: none;">
+     <hr class="corporate-stage-divider">
+     <p id="corporateMessageText"></p>
+     <button id="corporateNextButton" class="corporate-next-btn" onclick="proceedToApplication()" style="display: none;">NEXT</button>
+    </div>
    </div>
   </div>
  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d68f30195802c31',t:'MTc3MjU0NDEzOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
