@@ -1369,15 +1369,6 @@
       'Anti-Bribery & Corruption Check'
     ];
 
-    const corporateApprovals = [
-      'Contracts >€10M/year',
-      'CAPEX Investments >€5M',
-      'Asset Disposal/Acquisition',
-      'Joint Ventures',
-      'Related Party Transactions',
-      'Litigation Settlements >€5M'
-    ];
-
     // =============================================
     // TIMELINE / PROCESS STEPS
     // =============================================
@@ -2065,16 +2056,6 @@
                   <strong>Non-Modifiable:</strong>
                   ${ (trans.templates && trans.templates.length > 0) ? "Per User Guidelines" : "N/A" }
                 </li>
-              </ul>
-            </div>
-          </details>
-
-          <!-- Corporate Approvals (Accordion - Closed) -->
-          <details class="result-card">
-            <summary class="result-title">🏆 Corporate Approvals Required</summary>
-            <div class="accordion-content">
-              <ul class="criteria-list">
-                ${corporateApprovals.map(a => `<li>${a}</li>`).join('')}
               </ul>
             </div>
           </details>
