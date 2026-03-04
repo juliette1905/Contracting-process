@@ -1779,17 +1779,29 @@
                 ${trans.id}
               </div>`}
               <div class="summary-item">
-                <strong>Drafter:</strong>
+                <strong>Contract Drafter:</strong>
                 <span id="drafter-summary-${trans.id}">${getDrafterInfo(effectiveRiskLevel)}</span>
+              </div>
+              <div class="summary-item">
+                <strong>Contract Requestor:</strong>
+                ${selectedType === 'P' ? 'Procurement' : 'Transaction Owner'}
               </div>
               <div class="summary-item">
                 <strong>LEO Archiving:</strong>
                 ${selectedType === 'P' ? '✓ Yes' : (trans.leo ? '✓ Yes' : '✗ No')}
               </div>
               <div class="summary-item">
-                <strong>Templates:</strong>
-                ${trans.templates && trans.templates.length > 0 ? trans.templates.length + ' available' : 'None'}
+                <strong>S2V Support:</strong>
+                ${getS2VInfo(trans, selectedType)}
               </div>
+            </div>
+            <div style="margin-top: 1rem;">
+              <button onclick="openRolesModal()" 
+                      style="background: #FF78D2; color: white; border: none; padding: 0.5rem 0.75rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: all 0.3s ease;"
+                      onmouseover="this.style.background='#E65BBE'"
+                      onmouseout="this.style.background='#FF78D2'">
+                📘 Learn More About Roles
+              </button>
             </div>
           </div>
 
@@ -1808,25 +1820,6 @@
             </div>
           </details>
           ` : ''}
-
-          <!-- Contract Roles (Accordion - Open) -->
-          <details class="result-card" open>
-            <summary class="result-title">👥 Contract Roles</summary>
-            <div class="accordion-content">
-              <ul class="criteria-list">
-                <li><strong>Requestor:</strong> ${selectedType === 'P' ? 'Procurement' : 'Transaction Owner'}</li>
-                <li><strong>Drafter:</strong> <span id="drafter-roles-${trans.id}">${getDrafterInfo(effectiveRiskLevel)}</span></li>
-                <li><strong>S2V Support:</strong> ${getS2VInfo(trans, selectedType)}</li>
-                <li><strong>Legal:</strong> ${getLegalInfo(trans.riskLevel)}</li>
-              </ul>
-              <button onclick="openRolesModal()" 
-                      style="margin-top: 1rem; background: #FF78D2; color: white; border: none; padding: 0.5rem 0.75rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: all 0.3s ease;"
-                      onmouseover="this.style.background='#E65BBE'"
-                      onmouseout="this.style.background='#FF78D2'">
-                📘 Learn More About Roles
-              </button>
-            </div>
-          </details>
 
           <!-- Templates & Clauses (Accordion - Closed) -->
           <details class="result-card">
