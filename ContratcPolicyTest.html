@@ -632,6 +632,15 @@
       animation: pulse 0.5s ease-out;
     }
 
+    .contract-needed-field {
+      font-weight: 600;
+      color: #042B0B;
+    }
+
+    .contract-needed-field.no {
+      color: #999;
+    }
+
     @keyframes pulse {
       0% { transform: scale(1); }
       50% { transform: scale(1.15); }
@@ -1493,6 +1502,16 @@
         }
         if (msgEl) { msgEl.style.display = 'none'; }
       }
+
+      if (selectedType === 'P') {
+        var currentRiskLevel = (riskLevel === 'L2' && anyChecked) ? 'L3' : riskLevel;
+        var contractNeededEl = document.getElementById('contract-needed-value');
+        if (contractNeededEl) {
+          var contractNeeded = (currentRiskLevel === 'L1') ? 'NO' : 'YES';
+          contractNeededEl.textContent = contractNeeded;
+          contractNeededEl.className = 'contract-needed-field' + (currentRiskLevel === 'L1' ? ' no' : '');
+        }
+      }
     }
 
     function getCurrentRiskLevel(trans) {
@@ -1624,10 +1643,15 @@
                 <strong>Risk Level:</strong>
                 <span id="risk-badge-summary-${trans.id}" class="risk-badge ${getRiskClass(trans.riskLevel)}">${trans.riskLevel}</span>
               </div>
+              ${selectedType === 'P' ? `
+              <div class="summary-item">
+                <strong>Contract Needed:</strong>
+                <span id="contract-needed-value" class="contract-needed-field${effectiveRiskLevel === 'L1' ? ' no' : ''}">${effectiveRiskLevel === 'L1' ? 'NO' : 'YES'}</span>
+              </div>` : `
               <div class="summary-item">
                 <strong>Transaction ID:</strong>
                 ${trans.id}
-              </div>
+              </div>`}
               <div class="summary-item">
                 <strong>Drafter:</strong>
                 <span id="drafter-summary-${trans.id}">${getDrafterInfo(effectiveRiskLevel)}</span>
@@ -1647,6 +1671,7 @@
           ${trans.exceptions ? renderExceptionsSection(trans) : ''}
 
           <!-- Risk Level (Accordion - Open) -->
+          ${selectedType !== 'P' ? `
           <details class="result-card" open>
             <summary class="result-title">⚠️ Risk Level</summary>
             <div class="accordion-content">
@@ -1656,6 +1681,7 @@
               <div id="risk-criteria-${trans.id}">${renderRiskCriteria(trans)}</div>
             </div>
           </details>
+          ` : ''}
 
           <!-- Contract Roles (Accordion - Open) -->
           <details class="result-card" open>
