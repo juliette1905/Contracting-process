@@ -153,6 +153,10 @@
       border-left-color: #FF78D2;
     }
 
+    .result-card.green-left {
+      border-left-color: #042B0B;
+    }
+
     .result-title {
       font-size: 1.1rem;
       font-weight: 700;
@@ -576,6 +580,9 @@
       border-radius: 8px;
       padding: 1.5rem;
       margin-bottom: 2rem;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .reclassification-conditions-title {
@@ -633,22 +640,22 @@
     }
 
     .reclassification-conditions-container.downgrade-conditions {
-      background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
-      border-left: 4px solid #42A5F5;
+      background: linear-gradient(135deg, #FFE5F0 0%, #FFD0E8 100%);
+      border-left: 4px solid #FF78D2;
     }
 
     .reclassification-conditions-container.downgrade-conditions .reclassification-conditions-title {
-      color: #1565C0;
+      color: #C71585;
     }
 
     .reclassification-conditions-container.downgrade-conditions .reclassification-item input[type="checkbox"] {
-      accent-color: #42A5F5;
+      accent-color: #FF78D2;
     }
 
     .risk-updated-message.downgraded {
-      background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
-      border-left: 3px solid #42A5F5;
-      color: #1565C0;
+      background: linear-gradient(135deg, #FFE5F0 0%, #FFC0D9 100%);
+      border-left: 3px solid #FF78D2;
+      color: #C71585;
     }
 
     .risk-badge.downgraded {
@@ -1970,7 +1977,7 @@
       let html = `
         <div>
           <!-- Transaction Summary Card (always visible) -->
-          <div class="result-card pink-left">
+          <div class="result-card green-left">
             <div class="result-title">🧾 Transaction Summary</div>
             <div class="summary-grid">
               <!-- Left Column: Type, Contract Needed, Contract Requestor -->
@@ -2012,9 +2019,9 @@
               </div>
               <div class="summary-item" style="display: flex; align-items: flex-end;">
                 <button onclick="openRolesModal()" 
-                        style="background: #FF78D2; color: white; border: none; padding: 0.5rem 0.75rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: all 0.3s ease;"
-                        onmouseover="this.style.background='#E65BBE'"
-                        onmouseout="this.style.background='#FF78D2'">
+                        style="background: #042B0B; color: white; border: none; padding: 0.5rem 0.75rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: all 0.3s ease;"
+                        onmouseover="this.style.background='#263F26'"
+                        onmouseout="this.style.background='#042B0B'">
                   📘 Learn More About Roles
                 </button>
               </div>
