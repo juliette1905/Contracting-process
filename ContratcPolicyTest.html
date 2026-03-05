@@ -1577,10 +1577,10 @@
           'Manufacturing & Supply': {
             label: 'Manufacturing & Supply',
             transactions: [
-              { id: 'MS001', name: 'R&D / IP Development Partnerships (API)', description: 'Research, development services or IP development partnerships related to Manufacturing & Supply (e.g., API)', riskLevel: 'L3', templates: [], s2v: false, leo: true },
+              { id: 'MS001', name: 'R&D / IP Development Partnerships (API)', description: 'Research, development services or IP development partnerships related to Manufacturing & Supply (e.g., API)', riskLevel: 'L3', templates: [], s2v: true, leo: true },
               { id: 'MS002', name: 'Sale of API or Raw Materials', description: 'Sale of Active Pharmaceutical Ingredients or Raw Materials', riskLevel: 'L2', templates: ['Raw Material Sale Agreement', 'Active Ingredient Sale Agreement'], s2v: false, leo: true },
-              { id: 'MS003', name: 'I3PS - Industrial Third-Party Sales', description: 'Contract manufacturing and supply of finished products by Opella for third-party customers', riskLevel: 'L3', templates: ['Simple Amendment (for extensions/updates)'], exceptions: 'Simple term extension OR Price update OR Add/remove products without renegotiation = L2', s2v: false, leo: true },
-              { id: 'MS004', name: 'Quality & PV (M&S Related)', description: 'Quality and Pharmacovigilance agreements related to Manufacturing & Supply', riskLevel: 'L3', templates: [], s2v: false, leo: true },
+              { id: 'MS003', name: 'I3PS - Industrial Third-Party Sales', description: 'Contract manufacturing and supply of finished products by Opella for third-party customers', riskLevel: 'L3', templates: ['Simple Amendment (for extensions/updates)'], exceptions: 'Simple term extension OR Price update OR Add/remove products without renegotiation = L2', s2v: true, leo: true },
+              { id: 'MS004', name: 'Quality & PV (M&S Related)', description: 'Quality and Pharmacovigilance agreements related to Manufacturing & Supply', riskLevel: 'L3', templates: [], s2v: true, leo: true },
               { id: 'MS005', name: 'Technology & IP Out-Licensing (M&S)', description: 'Technology and IP out-licensing related to Manufacturing & Supply', riskLevel: 'L3', templates: [], exceptions: 'Term extension not beyond 5 years from initial licensing date = L2', s2v: false, leo: true },
               { id: 'MS006', name: 'Dispute Settlements (M&S)', description: 'Dispute settlements in relation to Manufacturing & Supply matters', riskLevel: 'L3', templates: [], s2v: false, leo: true },
               { id: 'MS007', name: 'NDA - Manufacturing & Supply', description: 'NDAs in Manufacturing & Supply context', riskLevel: 'L2/L3', templates: [], s2v: false, leo: true }
@@ -2593,6 +2593,17 @@
         makeStep('6️⃣', '👤', 'actor-user', 'Archive Contract in CLM Tool (LEO)', 'Contract Requestor creates contract request(s) in CLM Tool with the signed contract for archiving', '1 business day');
     }
 
+    function getMSL3S2VContent() {
+      return makeStep('1️⃣', '👤', 'actor-user', 'Contract Requestor Reaches Out to Legal', 'Present the planned transaction', '1-2 business days') +
+        makeStep('2️⃣', '👤', 'actor-user', 'Submit Initial Contract Request on CLM Tool (LEO)', 'Contract Requestor submits', 'Now') +
+        makeStep('3️⃣', '🔧', 'actor-specialist', 'S2V Contract Specialist Clears Contract Prerequisite', 'S2V Contract Specialist action', '2-3 business days') +
+        makeStep('4️⃣', '👤', 'actor-user', 'Align with Opella Stakeholders', 'Contract Requestor aligns internally with all Opella stakeholders', '3-5 business days') +
+        makeStep('5️⃣', '⚖️', 'actor-legal', 'Legal Drafts Contract(s)', 'Legal drafts based on Opella template', '5-7 business days') +
+        makeStep('6️⃣', '👤', 'actor-user', 'Organize Reviews & Negotiations', 'Contract Requestor organizes rounds of internal reviews<br>Secures Opella functions inputs<br>External negotiations with Third-party Contractor', '7-14 business days') +
+        makeStep('7️⃣', '🔧', 'actor-specialist', 'S2V Contract Specialist Runs Signature Process', 'Once all parties agree', '2-3 business days') +
+        makeStep('8️⃣', '🔧', 'actor-specialist', 'S2V Contract Specialist Archives Contract on CLM Tool (LEO)', 'Final archiving', '1 business day');
+    }
+
     function getNextStepsContent(riskLevel) {
       if (riskLevel === 'L1') {
         return makeStep('1️⃣', '👤', 'actor-user', 'Submit Purchase Order on LEO', 'Contract Requestor action', 'Now') +
@@ -2625,9 +2636,15 @@
       // Medical L2 NOT S2V (HCP/HCO Agreements archived on LEO) — show 6-step procedure
       const isMedL2NotS2V = selectedType === 'NP' && trans.id === 'MED001' && currentRiskLevel === 'L2' && !trans.s2v && trans.leo;
 
+      // M&S L3 S2V contracts (MS001, MS003, MS004) — show 8-step M&S L3 procedure
+      const MS_L3_S2V_IDS = ['MS001', 'MS003', 'MS004'];
+      const isMSL3S2V = selectedType === 'NP' && MS_L3_S2V_IDS.includes(trans.id) && trans.s2v && trans.leo &&
+        (currentRiskLevel === 'L3' || (typeof currentRiskLevel === 'string' && currentRiskLevel.includes('L3')));
+
       // NP L2 logic: the 9 specific NP contracts eligible for the L2 procedure
+      // Note: MS003 appears here to handle its reclassified-to-L2 case (isMSL3S2V covers L3 case)
       const NP_L2_CONTRACT_IDS = ['RD_NDA', 'RD_DEV', 'MS002', 'MS003', 'MS005', 'DP001', 'ALL001', 'ALL002', 'ALL003', 'ALL004'];
-      if (selectedType === 'NP' && !isMedL2NotS2V) {
+      if (selectedType === 'NP' && !isMedL2NotS2V && !isMSL3S2V) {
         const isInNpL2List = NP_L2_CONTRACT_IDS.includes(trans.id);
         // For NDA: only show NP L2 modal when department is Global R&D
         const isNdaOutsideGlobalRD = trans.id === 'RD_NDA' && selectedDepartment !== 'Global R&D';
@@ -2641,7 +2658,7 @@
         '<div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">' +
           '<span class="risk-badge ' + riskClass + '">' + currentRiskLevel + '</span>' +
         '</div>' +
-        (isMedL2NotS2V ? getMedL2NotS2VContent() : getNextStepsContent(currentRiskLevel)) +
+        (isMedL2NotS2V ? getMedL2NotS2VContent() : (isMSL3S2V ? getMSL3S2VContent() : getNextStepsContent(currentRiskLevel))) +
         '<div style="margin-top: 1.5rem; border-top: 1px solid #E7EAE7; padding-top: 1.5rem;">' +
           '<button onclick="closeNextStepsModal()" ' +
             'style="background: #042B0B; color: #F7EFE6; border: none; padding: 0.625rem 1.25rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.3s ease;" ' +
