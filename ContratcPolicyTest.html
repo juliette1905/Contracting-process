@@ -1963,17 +1963,16 @@
     function renderExceptionsSection(trans) {
       var isRCLegalTemplate = selectedType === 'NP' && RC_LEGAL_TEMPLATE_IDS.indexOf(trans.id) !== -1;
       if (isRCLegalTemplate) {
+        var rcDescId = 'rc-desc-' + trans.id;
         return '<div class="reclassification-conditions-container downgrade-conditions">' +
           '<h3 class="reclassification-conditions-title">📋 RECLASSIFICATION CONDITIONS</h3>' +
-          '<p class="reclassification-conditions-description">Did your local legal share templates for these types of transaction?</p>' +
-          '<div class="reclassification-checklist">' +
+          '<p id="' + rcDescId + '" class="reclassification-conditions-description">Did your local legal share templates for these types of transaction?</p>' +
+          '<div class="reclassification-checklist" aria-describedby="' + rcDescId + '">' +
             '<div class="reclassification-item">' +
               '<input type="checkbox" id="rc-yes-' + trans.id + '" onchange="toggleRCLegalTemplate(\'' + trans.id + '\', \'yes\')">' +
-              '<label for="rc-yes-' + trans.id + '">YES → Automatic reclassification L3 → L2</label>' +
-            '</div>' +
-            '<div class="reclassification-item">' +
+              '<label for="rc-yes-' + trans.id + '">YES</label>' +
               '<input type="checkbox" id="rc-no-' + trans.id + '" onchange="toggleRCLegalTemplate(\'' + trans.id + '\', \'no\')">' +
-              '<label for="rc-no-' + trans.id + '">NO → Remains L3</label>' +
+              '<label for="rc-no-' + trans.id + '">NO</label>' +
             '</div>' +
           '</div>' +
           '<div id="risk-rc-msg-' + trans.id + '" class="risk-updated-message" style="display:none;">' +
