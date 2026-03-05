@@ -833,6 +833,95 @@
       border-top: 1px solid #E7EAE7;
       margin: 1.5rem 0;
     }
+
+    /* =============================================
+       TOAST NOTIFICATIONS
+       ============================================= */
+    #toast-container {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: #042B0B;
+      color: #F7EFE6;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(4, 43, 11, 0.25);
+      opacity: 0;
+      transform: translateY(8px);
+      animation: toastFadeIn 0.3s ease forwards;
+      pointer-events: auto;
+      max-width: 300px;
+      line-height: 1.5;
+      white-space: pre-line;
+    }
+
+    .toast.toast-hide {
+      animation: toastFadeOut 0.3s ease forwards;
+    }
+
+    @keyframes toastFadeIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes toastFadeOut {
+      to { opacity: 0; transform: translateY(8px); }
+    }
+
+    /* =============================================
+       CHECKBOX POP ANIMATION
+       ============================================= */
+    @keyframes checkboxPop {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .checkbox-popping {
+      animation: checkboxPop 0.3s ease-in-out;
+    }
+
+    /* =============================================
+       ACCORDION ANIMATIONS
+       ============================================= */
+    @keyframes accordionOpen {
+      from { opacity: 0; transform: translateY(-4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes accordionClose {
+      from { opacity: 1; transform: translateY(0); }
+      to   { opacity: 0; transform: translateY(-4px); }
+    }
+
+    details[open] > .accordion-content {
+      animation: accordionOpen 0.4s ease-in-out;
+    }
+
+    .accordion-closing {
+      animation: accordionClose 0.4s ease-in-out forwards !important;
+    }
+
+    /* =============================================
+       CARD / CONTENT TRANSITION ANIMATION
+       ============================================= */
+    @keyframes cardFadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .content-transition {
+      animation: cardFadeIn 0.3s ease forwards;
+    }
   </style>
   <style>body { box-sizing: border-box; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
@@ -1450,6 +1539,7 @@
       }
 
       renderContent();
+      showToast('✓ Step 1 Complete!\nProceeding to Step 2...');
     }
 
     function updateSectionLabel(label) {
@@ -1518,6 +1608,7 @@
       populateTransactions();
       updateProgress(3);
       renderContent();
+      showToast('✓ Selection saved');
     }
 
     function updateTransactionLabel(label) {
@@ -1585,6 +1676,9 @@
       selectedTransaction = allTransactions.find(t => t.id === transId);
       updateProgress(4);
       renderContent();
+      var prevStep = selectedType === 'IE' ? 2 : 3;
+      var nextStep = 4;
+      showToast('✓ Step ' + prevStep + ' Complete!\nProceeding to Step ' + nextStep + '...');
     }
 
     function renderContent() {
@@ -1592,7 +1686,7 @@
 
       if (!selectedType) {
         contentArea.innerHTML = `
-          <div class="empty-state">
+          <div class="empty-state content-transition">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"></path>
             </svg>
@@ -1604,7 +1698,7 @@
 
       if (selectedType === 'NP' && !selectedDepartment) {
         contentArea.innerHTML = `
-          <div class="empty-state">
+          <div class="empty-state content-transition">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M12 5v14M5 12h14"></path>
             </svg>
@@ -1616,7 +1710,7 @@
 
       if (!selectedTransaction) {
         contentArea.innerHTML = `
-          <div class="empty-state">
+          <div class="empty-state content-transition">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M12 5v14M5 12h14"></path>
             </svg>
@@ -1862,6 +1956,9 @@
       state[exceptionIndex] = !state[exceptionIndex];
       saveExceptionState(transactionId, state);
 
+      animateCheckbox('recl-' + transactionId + '-' + exceptionIndex);
+      showToast(state[exceptionIndex] ? '✓ Condition added' : '✓ Condition removed');
+
       updateRiskBadgeBasedOnExceptions(transactionId, trans.riskLevel, state);
 
       var currentRiskLevel = getCurrentRiskLevel(trans);
@@ -1892,6 +1989,9 @@
       while (state.length < parsed.conditions.length) { state.push(false); }
       state[exceptionIndex] = !state[exceptionIndex];
       saveDowngradeExceptionState(transactionId, state);
+
+      animateCheckbox('downgrade-' + transactionId + '-' + exceptionIndex);
+      showToast(state[exceptionIndex] ? '✓ Condition added' : '✓ Condition removed');
 
       var anyChecked = state.some(function(v) { return v; });
       var currentRiskLevel = anyChecked ? 'L2' : 'L3';
@@ -1975,7 +2075,7 @@
       const effectiveRiskLevel = getCurrentRiskLevel(trans);
 
       let html = `
-        <div>
+        <div class="content-transition">
           <!-- Transaction Summary Card (always visible) -->
           <div class="result-card green-left">
             <div class="result-title">🧾 Transaction Summary</div>
@@ -2292,6 +2392,9 @@
       saved[index] = !saved[index];
       localStorage.setItem(storageKey, JSON.stringify(saved));
 
+      animateCheckbox('check-' + index);
+      showToast(saved[index] ? '✓ Condition added' : '✓ Condition removed');
+
       const stepEl = document.getElementById('checklist-step-' + index);
       if (stepEl) {
         if (saved[index]) {
@@ -2368,6 +2471,7 @@
       var modal = document.getElementById('corporateApprovalModal');
       if (modal) {
         modal.style.display = 'none';
+        showToast('✓ Corporate approval confirmed\nProceeding to transaction selection...');
       }
     }
 
@@ -2436,6 +2540,60 @@
       stepIndicator.textContent = customLabel || stepLabels[step] || 'Start';
     }
 
+    // =============================================
+    // TOAST NOTIFICATIONS
+    // =============================================
+
+    function showToast(message) {
+      var container = document.getElementById('toast-container');
+      var toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(function() {
+        toast.classList.add('toast-hide');
+        setTimeout(function() {
+          if (toast.parentNode) toast.parentNode.removeChild(toast);
+        }, 300);
+      }, 3000);
+    }
+
+    // =============================================
+    // CHECKBOX POP ANIMATION HELPER
+    // =============================================
+
+    function animateCheckbox(checkboxId) {
+      var cb = document.getElementById(checkboxId);
+      if (!cb) return;
+      cb.classList.remove('checkbox-popping');
+      void cb.offsetWidth; // force reflow to restart animation
+      cb.classList.add('checkbox-popping');
+      setTimeout(function() {
+        cb.classList.remove('checkbox-popping');
+      }, 350);
+    }
+
+    // =============================================
+    // ACCORDION CLOSE ANIMATION
+    // =============================================
+
+    // Matches the accordionClose CSS animation duration (0.4s)
+    var ACCORDION_CLOSE_DURATION_MS = 380;
+
+    document.addEventListener('click', function(e) {
+      var summary = e.target.closest('details > summary');
+      if (!summary) return;
+      var details = summary.parentElement;
+      var content = details.querySelector('.accordion-content');
+      if (!content || !details.open) return;
+      e.preventDefault();
+      content.classList.add('accordion-closing');
+      setTimeout(function() {
+        content.classList.remove('accordion-closing');
+        details.open = false;
+      }, ACCORDION_CLOSE_DURATION_MS);
+    });
+
   </script><!-- Roles Definition Modal -->
   <div id="rolesModal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.4); display: none; align-items: center; justify-content: center; z-index: 50;">
    <div style="background: white; width: 90%; max-width: 700px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); padding: 2rem; position: relative; max-height: 85vh; overflow-y: auto;">
@@ -2480,5 +2638,7 @@
     <div id="checklistContent"></div>
    </div>
   </div>
+  <!-- Toast notification container -->
+  <div id="toast-container"></div>
  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d68f30195802c31',t:'MTc3MjU0NDEzOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
