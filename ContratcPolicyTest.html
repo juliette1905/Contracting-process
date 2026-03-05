@@ -1581,7 +1581,7 @@
               { id: 'MS002', name: 'Sale of API or Raw Materials', description: 'Sale of Active Pharmaceutical Ingredients or Raw Materials', riskLevel: 'L2', templates: ['Raw Material Sale Agreement', 'Active Ingredient Sale Agreement'], s2v: false, leo: true },
               { id: 'MS003', name: 'I3PS - Industrial Third-Party Sales', description: 'Contract manufacturing and supply of finished products by Opella for third-party customers', riskLevel: 'L3', templates: ['Simple Amendment (for extensions/updates)'], exceptions: 'Simple term extension OR Price update OR Add/remove products without renegotiation = L2', s2v: false, leo: true },
               { id: 'MS004', name: 'Quality & PV (M&S Related)', description: 'Quality and Pharmacovigilance agreements related to Manufacturing & Supply', riskLevel: 'L3', templates: [], s2v: false, leo: true },
-              { id: 'MS005', name: 'Technology & IP Out-Licensing (M&S)', description: 'Technology and IP out-licensing related to Manufacturing & Supply', riskLevel: 'L3', templates: [], exceptions: 'L2 for term extension not beyond 5 years from initial licensing date', s2v: false, leo: true },
+              { id: 'MS005', name: 'Technology & IP Out-Licensing (M&S)', description: 'Technology and IP out-licensing related to Manufacturing & Supply', riskLevel: 'L3', templates: [], exceptions: 'Term extension not beyond 5 years from initial licensing date = L2', s2v: false, leo: true },
               { id: 'MS006', name: 'Dispute Settlements (M&S)', description: 'Dispute settlements in relation to Manufacturing & Supply matters', riskLevel: 'L3', templates: [], s2v: false, leo: true },
               { id: 'MS007', name: 'NDA - Manufacturing & Supply', description: 'NDAs in Manufacturing & Supply context', riskLevel: 'L2/L3', templates: [], s2v: false, leo: true }
             ]
@@ -2209,6 +2209,8 @@
 
       updateDrafterBasedOnRiskLevel(transactionId, currentRiskLevel);
       updateChecklistStepsIfOpen();
+
+      if (anyChecked) { openNextStepsModal(); }
     }
 
     function initializeExceptionsChecklist(transactionId, riskLevel, exceptionsText) {
@@ -2613,7 +2615,7 @@
       const currentRiskLevel = getCurrentRiskLevel(trans);
 
       // NP L2 logic: the 9 specific NP contracts eligible for the L2 procedure
-      const NP_L2_CONTRACT_IDS = ['RD_NDA', 'RD_DEV', 'MS002', 'MS003', 'DP001', 'ALL001', 'ALL002', 'ALL003', 'ALL004'];
+      const NP_L2_CONTRACT_IDS = ['RD_NDA', 'RD_DEV', 'MS002', 'MS003', 'MS005', 'DP001', 'ALL001', 'ALL002', 'ALL003', 'ALL004'];
       if (selectedType === 'NP') {
         const isInNpL2List = NP_L2_CONTRACT_IDS.includes(trans.id);
         // For NDA: only show NP L2 modal when department is Global R&D
