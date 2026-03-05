@@ -1975,8 +1975,11 @@
               '<label for="rc-no-' + trans.id + '">NO</label>' +
             '</div>' +
           '</div>' +
-          '<div id="risk-rc-msg-' + trans.id + '" class="risk-updated-message" style="display:none;">' +
-            '⚠️ Risk escalated: L3 → L2' +
+          '<div id="risk-rc-yes-msg-' + trans.id + '" class="risk-updated-message" style="display:none;">' +
+            '⚠️ Risk decreased: L3 → L2' +
+          '</div>' +
+          '<div id="risk-rc-no-msg-' + trans.id + '" class="risk-updated-message" style="display:none;">' +
+            '⚠️ Risk stays L3' +
           '</div>' +
         '</div>';
       }
@@ -2218,20 +2221,30 @@
       if (noBox) noBox.checked = (newAnswer === 'no');
 
       var summaryBadge = document.getElementById('risk-badge-summary-' + transactionId);
-      var msgEl = document.getElementById('risk-rc-msg-' + transactionId);
+      var yesMsgEl = document.getElementById('risk-rc-yes-msg-' + transactionId);
+      var noMsgEl = document.getElementById('risk-rc-no-msg-' + transactionId);
 
       if (newAnswer === 'yes') {
         if (summaryBadge) {
           summaryBadge.textContent = 'L2';
           summaryBadge.className = 'risk-badge risk-l2 downgraded';
         }
-        if (msgEl) { msgEl.style.display = 'block'; }
+        if (yesMsgEl) { yesMsgEl.style.display = 'block'; }
+        if (noMsgEl) { noMsgEl.style.display = 'none'; }
+      } else if (newAnswer === 'no') {
+        if (summaryBadge) {
+          summaryBadge.textContent = 'L3';
+          summaryBadge.className = 'risk-badge risk-l3';
+        }
+        if (yesMsgEl) { yesMsgEl.style.display = 'none'; }
+        if (noMsgEl) { noMsgEl.style.display = 'block'; }
       } else {
         if (summaryBadge) {
           summaryBadge.textContent = 'L3';
           summaryBadge.className = 'risk-badge risk-l3';
         }
-        if (msgEl) { msgEl.style.display = 'none'; }
+        if (yesMsgEl) { yesMsgEl.style.display = 'none'; }
+        if (noMsgEl) { noMsgEl.style.display = 'none'; }
       }
 
       var currentRiskLevel = (newAnswer === 'yes') ? 'L2' : 'L3';
