@@ -575,21 +575,20 @@
     }
 
     .reclassification-conditions-container {
-      background: linear-gradient(135deg, #FFE5F0 0%, #FFD0E8 100%);
-      border-left: 4px solid #FF78D2;
-      border-radius: 8px;
+      background: white;
+      border-left: 4px solid #042B0B;
+      border-radius: 6px;
       padding: 1.5rem;
-      margin-bottom: 2rem;
+      margin: 2rem auto;
       max-width: 700px;
-      margin-left: auto;
-      margin-right: auto;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
 
     .reclassification-conditions-title {
-      color: #C71585;
+      color: #042B0B;
       font-weight: 700;
-      font-size: 1rem;
-      margin-bottom: 0.75rem;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
@@ -598,19 +597,20 @@
     .reclassification-conditions-description {
       color: #555;
       font-size: 0.95rem;
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
     }
 
     .reclassification-checklist {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      margin: 1.5rem 0;
     }
 
     .reclassification-item {
       display: flex;
       align-items: center;
       gap: 0.75rem;
+      padding: 0.5rem 0;
     }
 
     .reclassification-item input[type="checkbox"] {
@@ -618,44 +618,45 @@
       height: 18px;
       min-width: 18px;
       cursor: pointer;
-      accent-color: #FF78D2;
+      accent-color: #042B0B;
     }
 
     .reclassification-item label {
       cursor: pointer;
-      color: #555;
+      color: #333;
       font-size: 0.95rem;
       margin: 0;
     }
 
     .risk-updated-message {
-      background: linear-gradient(135deg, #FFE5F0 0%, #FFC0D9 100%);
-      border-left: 3px solid #FF78D2;
+      background: rgba(255, 152, 0, 0.08);
+      border-left: 4px solid #FF9800;
       padding: 0.75rem 1rem;
       border-radius: 4px;
-      color: #C71585;
+      color: #E65100;
       font-weight: 600;
-      margin-top: 1rem;
+      font-size: 0.95rem;
+      margin-top: 1.5rem;
       animation: fadeIn 0.3s ease-out;
     }
 
     .reclassification-conditions-container.downgrade-conditions {
-      background: linear-gradient(135deg, #FFE5F0 0%, #FFD0E8 100%);
-      border-left: 4px solid #FF78D2;
+      background: white;
+      border-left: 4px solid #042B0B;
     }
 
     .reclassification-conditions-container.downgrade-conditions .reclassification-conditions-title {
-      color: #C71585;
+      color: #042B0B;
     }
 
     .reclassification-conditions-container.downgrade-conditions .reclassification-item input[type="checkbox"] {
-      accent-color: #FF78D2;
+      accent-color: #042B0B;
     }
 
     .risk-updated-message.downgraded {
-      background: linear-gradient(135deg, #FFE5F0 0%, #FFC0D9 100%);
-      border-left: 3px solid #FF78D2;
-      color: #C71585;
+      background: rgba(66, 165, 245, 0.08);
+      border-left: 4px solid #42A5F5;
+      color: #1565C0;
     }
 
     .risk-badge.downgraded {
@@ -679,25 +680,37 @@
       color: #999;
     }
 
+    .next-steps-container {
+      display: flex;
+      justify-content: center;
+      margin: 2rem 0;
+    }
+
     .next-steps-card {
+      display: inline-block;
       border: 1px solid #E7EAE7;
       border-radius: 6px;
-      padding: 1rem 1.5rem;
-      margin: 2rem 0;
+      padding: 1rem 2rem;
       cursor: pointer;
       transition: all 0.3s ease;
       background: white;
       color: #042B0B;
       font-weight: 700;
       font-size: 1rem;
-      width: 100%;
-      text-align: left;
+      width: auto;
+      max-width: 300px;
+      text-align: center;
     }
 
     .next-steps-card:hover {
       border-color: #042B0B;
       background: #FAFAF8;
       transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .next-steps-card:active {
+      transform: translateY(0);
     }
 
     .next-steps-card::after {
@@ -1967,7 +1980,7 @@
           '<p id="' + descId + '" class="reclassification-conditions-description">This transaction can be escalated to L3 if it includes:</p>' +
           '<div class="reclassification-checklist" aria-describedby="' + descId + '">' + checkboxesHtml + '</div>' +
           '<div id="risk-reclassification-msg-' + trans.id + '" class="risk-updated-message" style="display:none;">' +
-            '⚠️ Risk escalated from L2 → L3 based on checked conditions' +
+            '⚠️ Risk escalated: L2 → L3' +
           '</div>' +
           '</div>';
       } else if (isDowngrade) {
@@ -1985,7 +1998,7 @@
           '<p id="' + downDescId + '" class="reclassification-conditions-description">This transaction can be downgraded to L2 if it includes:</p>' +
           '<div class="reclassification-checklist" aria-describedby="' + downDescId + '">' + downCheckboxesHtml + '</div>' +
           '<div id="risk-downgrade-msg-' + trans.id + '" class="risk-updated-message downgraded" style="display:none;">' +
-            '📋 Risk downgraded from L3 → L2 based on checked conditions' +
+            '📋 Risk downgraded: L3 → L2' +
           '</div>' +
           '</div>';
       } else {
@@ -2272,7 +2285,9 @@
           ${trans.exceptions ? renderExceptionsSection(trans) : ''}
 
           <!-- Next Steps (card, opens modal) -->
-          <button class="next-steps-card" onclick="openNextStepsModal()">Next Steps</button>
+          <div class="next-steps-container">
+            <button class="next-steps-card" onclick="openNextStepsModal()">Next Steps</button>
+          </div>
 
           <!-- Detailed Analysis Accordion (collapsed by default) -->
           <details class="result-card">
