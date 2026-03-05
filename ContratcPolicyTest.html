@@ -2711,6 +2711,16 @@
         makeStep('8️⃣', '🔧', 'actor-specialist', 'S2V Contract Specialist Archives Contract on CLM Tool (LEO)', 'Final archiving', '1 business day');
     }
 
+    function getRCL3NotS2VContent() {
+      return makeStep('1️⃣', '👤', 'actor-user', 'Contract Requestor Reaches Out to Legal', 'Present the planned transaction', '1-2 business days') +
+        makeStep('2️⃣', '👤', 'actor-user', 'Contract Requestor Clears Contract Prerequisites', '', '2-3 business days') +
+        makeStep('3️⃣', '⚖️', 'actor-legal', '⚖️ Legal Selects Template &amp; 👤 Contract Requestor Aligns Internally', 'Contract Requestor 👤 aligns internally<br>Contract Drafter ⚖️ selects adequate Opella Template or accepts to negotiate on Third-party draft', '3-5 business days') +
+        makeStep('4️⃣', '👤', 'actor-user', 'Internal Opella Phase - Prepare First Draft', 'Led by Contract Requestor<br>Preparation of first Draft or review of Third-party draft<br>Cross-functions interactions if needed', '5-7 business days') +
+        makeStep('5️⃣', '👤', 'actor-user', 'Contract Requestor Organizes Reviews &amp; Negotiations', 'Contract Requestor organizes rounds of internal reviews<br>Secures Opella functions inputs<br>External negotiations with Third-party Contractor', '7-14 business days') +
+        makeStep('6️⃣', '👤', 'actor-user', 'Contract Requestor Runs Signature Process', 'Once contract agreed by all parties', '2-3 business days') +
+        makeStep('7️⃣', '👤', 'actor-user', 'Contract Requestor Creates Contract Request in CLM Tool (LEO)', 'Contract Requestor creates request(s) with signed contract for archiving', '1 business day');
+    }
+
     function getNextStepsContent(riskLevel) {
       if (riskLevel === 'L1') {
         return makeStep('1️⃣', '👤', 'actor-user', 'Submit Purchase Order on LEO', 'Contract Requestor action', 'Now') +
@@ -2748,10 +2758,15 @@
       const isMSL3S2V = selectedType === 'NP' && MS_L3_S2V_IDS.includes(trans.id) && trans.s2v && trans.leo &&
         (currentRiskLevel === 'L3' || (typeof currentRiskLevel === 'string' && currentRiskLevel.includes('L3')));
 
+      // L3 Regional Commercial NOT S2V contracts archived on LEO — show 7-step procedure
+      const RC_L3_NOT_S2V_IDS = ['DIST001', 'MK001', 'PHARM001', 'DIST002', 'RD_LIC', 'RD_COLL', 'MS006', 'ALL005'];
+      const isRCL3NotS2V = RC_L3_NOT_S2V_IDS.includes(trans.id) && !trans.s2v && trans.leo &&
+        (currentRiskLevel === 'L3' || (typeof currentRiskLevel === 'string' && currentRiskLevel.includes('L3')));
+
       // NP L2 logic: the 9 specific NP contracts eligible for the L2 procedure
       // Note: MS003 appears here to handle its reclassified-to-L2 case (isMSL3S2V covers L3 case)
       const NP_L2_CONTRACT_IDS = ['RD_NDA', 'RD_DEV', 'MS002', 'MS003', 'MS005', 'DP001', 'ALL001', 'ALL002', 'ALL003', 'ALL004'];
-      if (selectedType === 'NP' && !isMedL2NotS2V && !isMSL3S2V) {
+      if (selectedType === 'NP' && !isMedL2NotS2V && !isMSL3S2V && !isRCL3NotS2V) {
         const isInNpL2List = NP_L2_CONTRACT_IDS.includes(trans.id);
         // For NDA: only show NP L2 modal when department is Global R&D
         const isNdaOutsideGlobalRD = trans.id === 'RD_NDA' && selectedDepartment !== 'Global R&D';
@@ -2760,12 +2775,40 @@
         }
       }
 
+      // Update legend based on modal type
+      const legendEl = document.getElementById('nextStepsLegend');
+      if (legendEl) {
+        if (isRCL3NotS2V) {
+          legendEl.innerHTML =
+            '<span class="legend-item">👤 Contract Requestor</span>' +
+            '<span class="legend-separator">|</span>' +
+            '<span class="legend-item">⚖️ Legal</span>';
+        } else {
+          legendEl.innerHTML =
+            '<span class="legend-item">👤 Contract Requestor</span>' +
+            '<span class="legend-separator">|</span>' +
+            '<span class="legend-item">🔧 S2V Specialist</span>' +
+            '<span class="legend-separator">|</span>' +
+            '<span class="legend-item">⚖️ Legal</span>';
+        }
+      }
+
       const riskClass = getRiskClass(currentRiskLevel);
+      let stepsContent;
+      if (isMedL2NotS2V) {
+        stepsContent = getMedL2NotS2VContent();
+      } else if (isMSL3S2V) {
+        stepsContent = getMSL3S2VContent();
+      } else if (isRCL3NotS2V) {
+        stepsContent = getRCL3NotS2VContent();
+      } else {
+        stepsContent = getNextStepsContent(currentRiskLevel);
+      }
       document.getElementById('nextStepsContent').innerHTML =
         '<div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">' +
           '<span class="risk-badge ' + riskClass + '">' + currentRiskLevel + '</span>' +
         '</div>' +
-        (isMedL2NotS2V ? getMedL2NotS2VContent() : (isMSL3S2V ? getMSL3S2VContent() : getNextStepsContent(currentRiskLevel))) +
+        stepsContent +
         '<div style="margin-top: 1.5rem; border-top: 1px solid #E7EAE7; padding-top: 1.5rem;">' +
           '<button onclick="closeNextStepsModal()" ' +
             'style="background: #042B0B; color: #F7EFE6; border: none; padding: 0.625rem 1.25rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.3s ease;" ' +
@@ -3054,7 +3097,7 @@
    <div style="background: white; width: 90%; max-width: 700px; border-radius: 8px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15); padding: 2rem; position: relative; max-height: 80vh; overflow-y: auto;">
     <button onclick="closeNextStepsModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: #888; cursor: pointer; padding: 0; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; transition: color 0.3s ease;" onmouseover="this.style.color='#042B0B'" onmouseout="this.style.color='#888'"> × </button>
     <h2 style="color: #042B0B; font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; border-bottom: 3px solid #042B0B; padding-bottom: 1rem; padding-right: 2rem;">📋 NEXT STEPS</h2>
-    <div class="next-steps-legend">
+    <div id="nextStepsLegend" class="next-steps-legend">
       <span class="legend-item">👤 Contract Requestor</span>
       <span class="legend-separator">|</span>
       <span class="legend-item">🔧 S2V Specialist</span>
