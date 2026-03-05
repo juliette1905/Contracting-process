@@ -1912,7 +1912,7 @@
       try {
         contentArea.innerHTML = renderAnalysis();
         const trans = selectedTransaction;
-        if (trans && trans.exceptions) {
+        if (trans && (trans.exceptions || (selectedType === 'NP' && RC_LEGAL_TEMPLATE_IDS.indexOf(trans.id) !== -1))) {
           initializeExceptionsChecklist(trans.id, trans.riskLevel, trans.exceptions);
         }
       } catch (e) {
@@ -1958,7 +1958,30 @@
       return { conditions: conditions, targetLevel: targetLevel };
     }
 
+    var RC_LEGAL_TEMPLATE_IDS = ['DIST001', 'MK001', 'PHARM001', 'DIST002'];
+
     function renderExceptionsSection(trans) {
+      var isRCLegalTemplate = selectedType === 'NP' && RC_LEGAL_TEMPLATE_IDS.indexOf(trans.id) !== -1;
+      if (isRCLegalTemplate) {
+        return '<div class="reclassification-conditions-container downgrade-conditions">' +
+          '<h3 class="reclassification-conditions-title">📋 RECLASSIFICATION CONDITIONS</h3>' +
+          '<p class="reclassification-conditions-description">Did your local legal share templates for these types of transaction?</p>' +
+          '<div class="reclassification-checklist">' +
+            '<div class="reclassification-item">' +
+              '<input type="checkbox" id="rc-yes-' + trans.id + '" onchange="toggleRCLegalTemplate(\'' + trans.id + '\', \'yes\')">' +
+              '<label for="rc-yes-' + trans.id + '">YES → Automatic reclassification L3 → L2</label>' +
+            '</div>' +
+            '<div class="reclassification-item">' +
+              '<input type="checkbox" id="rc-no-' + trans.id + '" onchange="toggleRCLegalTemplate(\'' + trans.id + '\', \'no\')">' +
+              '<label for="rc-no-' + trans.id + '">NO → Remains L3</label>' +
+            '</div>' +
+          '</div>' +
+          '<div id="risk-rc-msg-' + trans.id + '" class="risk-updated-message" style="display:none;">' +
+            '⚠️ Risk escalated: L3 → L2' +
+          '</div>' +
+        '</div>';
+      }
+
       var parsed = parseExceptionItems(trans.exceptions);
       var conditions = parsed.conditions;
       var targetLevel = parsed.targetLevel;
@@ -2061,6 +2084,11 @@
     }
 
     function getCurrentRiskLevel(trans) {
+      if (selectedType === 'NP' && RC_LEGAL_TEMPLATE_IDS.indexOf(trans.id) !== -1) {
+        var rcState = loadRCLegalTemplateState(trans.id);
+        if (rcState === 'yes') return 'L2';
+        return 'L3';
+      }
       var parsed = parseExceptionItems(trans.exceptions);
       if (trans.riskLevel === 'L2' && parsed.targetLevel === 'L3') {
         var state = loadExceptionState(trans.id);
@@ -2168,6 +2196,51 @@
       return state && state.some(function(v) { return v; });
     }
 
+    function loadRCLegalTemplateState(transactionId) {
+      return localStorage.getItem('rc_legal_template_' + transactionId) || null;
+    }
+
+    function saveRCLegalTemplateState(transactionId, answer) {
+      if (answer === null) {
+        localStorage.removeItem('rc_legal_template_' + transactionId);
+      } else {
+        localStorage.setItem('rc_legal_template_' + transactionId, answer);
+      }
+    }
+
+    function toggleRCLegalTemplate(transactionId, answer) {
+      var currentState = loadRCLegalTemplateState(transactionId);
+      var newAnswer = (currentState === answer) ? null : answer;
+      saveRCLegalTemplateState(transactionId, newAnswer);
+
+      var yesBox = document.getElementById('rc-yes-' + transactionId);
+      var noBox = document.getElementById('rc-no-' + transactionId);
+      if (yesBox) yesBox.checked = (newAnswer === 'yes');
+      if (noBox) noBox.checked = (newAnswer === 'no');
+
+      var summaryBadge = document.getElementById('risk-badge-summary-' + transactionId);
+      var msgEl = document.getElementById('risk-rc-msg-' + transactionId);
+
+      if (newAnswer === 'yes') {
+        if (summaryBadge) {
+          summaryBadge.textContent = 'L2';
+          summaryBadge.className = 'risk-badge risk-l2 downgraded';
+        }
+        if (msgEl) { msgEl.style.display = 'block'; }
+      } else {
+        if (summaryBadge) {
+          summaryBadge.textContent = 'L3';
+          summaryBadge.className = 'risk-badge risk-l3';
+        }
+        if (msgEl) { msgEl.style.display = 'none'; }
+      }
+
+      var currentRiskLevel = (newAnswer === 'yes') ? 'L2' : 'L3';
+      updateRiskLevelCard(transactionId, currentRiskLevel);
+      updateDrafterBasedOnRiskLevel(transactionId, currentRiskLevel);
+      updateChecklistStepsIfOpen();
+    }
+
     function toggleDowngradeException(transactionId, exceptionIndex) {
       var trans = selectedTransaction;
       if (!trans) return;
@@ -2214,6 +2287,28 @@
 
     function initializeExceptionsChecklist(transactionId, riskLevel, exceptionsText) {
       var parsed = parseExceptionItems(exceptionsText || '');
+
+      // Restore RC Legal Template YES/NO state (4 Regional Commercial contracts)
+      if (selectedType === 'NP' && RC_LEGAL_TEMPLATE_IDS.indexOf(transactionId) !== -1) {
+        var rcState = loadRCLegalTemplateState(transactionId);
+        if (rcState) {
+          var yesBox = document.getElementById('rc-yes-' + transactionId);
+          var noBox = document.getElementById('rc-no-' + transactionId);
+          if (yesBox) yesBox.checked = (rcState === 'yes');
+          if (noBox) noBox.checked = (rcState === 'no');
+          if (rcState === 'yes') {
+            var summaryBadge = document.getElementById('risk-badge-summary-' + transactionId);
+            var msgEl = document.getElementById('risk-rc-msg-' + transactionId);
+            if (summaryBadge) {
+              summaryBadge.textContent = 'L2';
+              summaryBadge.className = 'risk-badge risk-l2 downgraded';
+            }
+            if (msgEl) { msgEl.style.display = 'block'; }
+            updateDrafterBasedOnRiskLevel(transactionId, 'L2');
+          }
+        }
+        return;
+      }
 
       // Restore L2 → L3 escalation state
       var state = loadExceptionState(transactionId);
@@ -2281,7 +2376,7 @@
           </div>
 
           <!-- Reclassification Conditions (if applicable) -->
-          ${trans.exceptions ? renderExceptionsSection(trans) : ''}
+          ${(trans.exceptions || (selectedType === 'NP' && RC_LEGAL_TEMPLATE_IDS.indexOf(trans.id) !== -1)) ? renderExceptionsSection(trans) : ''}
 
           <!-- Next Steps (card, opens modal) -->
           <div class="next-steps-container">
