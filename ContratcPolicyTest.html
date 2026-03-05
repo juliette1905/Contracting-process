@@ -1563,7 +1563,7 @@
             label: 'Global R&D (External Innovation, Scientific Platforms, Global Packaging, Development Centers)',
             transactions: [
               { id: 'RD_NDA', name: 'NDA - External Innovation', description: 'Confidentiality agreements for R&D and external innovation', riskLevel: 'L2', templates: ['NDA Template'], s2v: true, leo: true },
-              { id: 'RD_DEV', name: 'Research / Development Services', description: 'Research or development services from external providers', riskLevel: 'L3', templates: ['Legal Template (if provided)'], exceptions: 'L2 if Legal template provided & no changes beyond User Guidelines', s2v: true, leo: true },
+              { id: 'RD_DEV', name: 'Research / Development Services', description: 'Research or development services from external providers', riskLevel: 'L3', templates: ['Legal Template (if provided)'], exceptions: 'Legal template provided & no changes beyond User Guidelines = L2', s2v: true, leo: true },
               { id: 'RD_LIC', name: 'Licensing In / Out (IP)', description: 'Granting or acquisition of Intellectual Property Rights licenses (patent, know-how, design, product dossiers, technology)', riskLevel: 'L3', templates: [], s2v: false, leo: true },
               { id: 'RD_COLL', name: 'R&D Collaboration / Consortium', description: 'R&D Collaboration consortium or transactions involving acquisition, transfer, license, exchange of IP Rights or co-financing', riskLevel: 'L3', templates: [], s2v: false, leo: true }
             ]
@@ -1579,7 +1579,7 @@
             transactions: [
               { id: 'MS001', name: 'R&D / IP Development Partnerships (API)', description: 'Research, development services or IP development partnerships related to Manufacturing & Supply (e.g., API)', riskLevel: 'L3', templates: [], s2v: false, leo: true },
               { id: 'MS002', name: 'Sale of API or Raw Materials', description: 'Sale of Active Pharmaceutical Ingredients or Raw Materials', riskLevel: 'L2', templates: ['Raw Material Sale Agreement', 'Active Ingredient Sale Agreement'], s2v: false, leo: true },
-              { id: 'MS003', name: 'I3PS - Industrial Third-Party Sales', description: 'Contract manufacturing and supply of finished products by Opella for third-party customers', riskLevel: 'L3', templates: ['Simple Amendment (for extensions/updates)'], exceptions: 'L2 for simple term extension, price update, add/remove products without renegotiation', s2v: false, leo: true },
+              { id: 'MS003', name: 'I3PS - Industrial Third-Party Sales', description: 'Contract manufacturing and supply of finished products by Opella for third-party customers', riskLevel: 'L3', templates: ['Simple Amendment (for extensions/updates)'], exceptions: 'Simple term extension OR Price update OR Add/remove products without renegotiation = L2', s2v: false, leo: true },
               { id: 'MS004', name: 'Quality & PV (M&S Related)', description: 'Quality and Pharmacovigilance agreements related to Manufacturing & Supply', riskLevel: 'L3', templates: [], s2v: false, leo: true },
               { id: 'MS005', name: 'Technology & IP Out-Licensing (M&S)', description: 'Technology and IP out-licensing related to Manufacturing & Supply', riskLevel: 'L3', templates: [], exceptions: 'L2 for term extension not beyond 5 years from initial licensing date', s2v: false, leo: true },
               { id: 'MS006', name: 'Dispute Settlements (M&S)', description: 'Dispute settlements in relation to Manufacturing & Supply matters', riskLevel: 'L3', templates: [], s2v: false, leo: true },
@@ -1963,7 +1963,7 @@
       var conditions = parsed.conditions;
       var targetLevel = parsed.targetLevel;
       var isEscalation = trans.riskLevel === 'L2' && targetLevel === 'L3';
-      var isDowngrade = selectedType === 'P' && trans.riskLevel === 'L3' && targetLevel === 'L2';
+      var isDowngrade = (selectedType === 'P' || selectedType === 'NP') && trans.riskLevel === 'L3' && targetLevel === 'L2';
 
       if (isEscalation) {
         var descId = 'recl-desc-' + trans.id;
@@ -2067,7 +2067,7 @@
         var anyChecked = state && state.some(function(v) { return v; });
         if (anyChecked) return 'L3';
       }
-      if (selectedType === 'P' && trans.riskLevel === 'L3' && parsed.targetLevel === 'L2') {
+      if ((selectedType === 'P' || selectedType === 'NP') && trans.riskLevel === 'L3' && parsed.targetLevel === 'L2') {
         if (isAnyDowngradeExceptionChecked(trans.id)) return 'L2';
       }
       return trans.riskLevel;
@@ -2229,8 +2229,8 @@
         updateDrafterBasedOnRiskLevel(transactionId, effectiveLevel);
       }
 
-      // Restore L3 → L2 downgrade state (P type only)
-      if (selectedType === 'P' && riskLevel === 'L3' && parsed.targetLevel === 'L2') {
+      // Restore L3 → L2 downgrade state (P and NP types)
+      if ((selectedType === 'P' || selectedType === 'NP') && riskLevel === 'L3' && parsed.targetLevel === 'L2') {
         var downgradeState = loadDowngradeExceptionState(transactionId);
         if (downgradeState && downgradeState.length > 0) {
           downgradeState.forEach(function(checked, i) {
@@ -2611,6 +2611,18 @@
       const trans = selectedTransaction;
       if (!trans) return;
       const currentRiskLevel = getCurrentRiskLevel(trans);
+
+      // NP L2 logic: the 9 specific NP contracts eligible for the L2 procedure
+      const NP_L2_CONTRACT_IDS = ['RD_NDA', 'RD_DEV', 'MS002', 'MS003', 'DP001', 'ALL001', 'ALL002', 'ALL003', 'ALL004'];
+      if (selectedType === 'NP') {
+        const isInNpL2List = NP_L2_CONTRACT_IDS.includes(trans.id);
+        // For NDA: only show NP L2 modal when department is Global R&D
+        const isNdaOutsideGlobalRD = trans.id === 'RD_NDA' && selectedDepartment !== 'Global R&D';
+        if (!isInNpL2List || isNdaOutsideGlobalRD || currentRiskLevel !== 'L2') {
+          return;
+        }
+      }
+
       const riskClass = getRiskClass(currentRiskLevel);
       document.getElementById('nextStepsContent').innerHTML =
         '<div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">' +
