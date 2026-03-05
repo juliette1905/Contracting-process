@@ -679,6 +679,31 @@
       color: #999;
     }
 
+    .next-steps-card {
+      border: 1px solid #E7EAE7;
+      border-radius: 6px;
+      padding: 1rem 1.5rem;
+      margin: 2rem 0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: white;
+      color: #042B0B;
+      font-weight: 700;
+      font-size: 1rem;
+      width: 100%;
+      text-align: left;
+    }
+
+    .next-steps-card:hover {
+      border-color: #042B0B;
+      background: #FAFAF8;
+      transform: translateY(-2px);
+    }
+
+    .next-steps-card::after {
+      content: ' →';
+    }
+
     @keyframes pulse {
       0% { transform: scale(1); }
       50% { transform: scale(1.15); }
@@ -2139,15 +2164,11 @@
             </div>
           </div>
 
-          <!-- Next Steps (always visible) -->
-          <div style="text-align: center; padding: 0.5rem 0 1rem;">
-            <button onclick="openChecklistModal()"
-                    style="background: #FF78D2; color: white; border: none; padding: 0.75rem 2rem; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 1rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(255, 120, 210, 0.3); letter-spacing: 0.5px;"
-                    onmouseover="this.style.background='#E65BBE'; this.style.boxShadow='0 6px 16px rgba(255, 120, 210, 0.4)'"
-                    onmouseout="this.style.background='#FF78D2'; this.style.boxShadow='0 4px 12px rgba(255, 120, 210, 0.3)'">
-              ✅ Next Steps
-            </button>
-          </div>
+          <!-- Reclassification Conditions (if applicable) -->
+          ${trans.exceptions ? renderExceptionsSection(trans) : ''}
+
+          <!-- Next Steps (card, opens modal) -->
+          <button class="next-steps-card" onclick="openNextStepsModal()">Next Steps</button>
 
           <!-- Detailed Analysis Accordion (collapsed by default) -->
           <details class="result-card">
@@ -2203,9 +2224,6 @@
                   <div class="result-value">${getS2VInfo(trans, selectedType)}</div>
                 </div>
               </div>
-
-              <!-- 5. Reclassification Conditions (if applicable) -->
-              ${trans.exceptions ? '<div class="detail-section">' + renderExceptionsSection(trans) + '</div>' : ''}
 
               <!-- Templates & Clauses -->
               <div class="detail-section">
@@ -2433,6 +2451,62 @@
       modal.classList.add('hidden');
     }
 
+    // =============================================
+    // NEXT STEPS MODAL FUNCTIONS
+    // =============================================
+
+    function getNextStepsContent(riskLevel) {
+      if (riskLevel === 'L1') {
+        return '<ul style="list-style: disc; padding-left: 1.5rem; color: #333; line-height: 1.8;">' +
+          '<li>Submit Purchase Order directly</li>' +
+          '<li>No contract or legal involvement needed</li>' +
+          '<li>Expected timeline: 2 business days</li>' +
+          '</ul>';
+      } else if (typeof riskLevel === 'string' && (riskLevel === 'L2' || riskLevel.includes('L2'))) {
+        return '<ul style="list-style: disc; padding-left: 1.5rem; color: #333; line-height: 1.8;">' +
+          '<li>Contract required</li>' +
+          '<li>Drafted and managed by Contract Specialist</li>' +
+          '<li>No legal involvement needed</li>' +
+          '<li>Use the validated Opella Template</li>' +
+          '<li>Expected timeline: 10-15 business days</li>' +
+          '</ul>';
+      } else {
+        return '<ul style="list-style: disc; padding-left: 1.5rem; color: #333; line-height: 1.8;">' +
+          '<li>Contract fully handled by Legal</li>' +
+          '<li>Legal drafts, negotiates, and validates</li>' +
+          '<li>Legal selects and approves the template</li>' +
+          '<li>Expected timeline: 15-20 business days</li>' +
+          '</ul>';
+      }
+    }
+
+    function openNextStepsModal() {
+      const trans = selectedTransaction;
+      if (!trans) return;
+      const currentRiskLevel = getCurrentRiskLevel(trans);
+      const riskClass = getRiskClass(currentRiskLevel);
+      document.getElementById('nextStepsContent').innerHTML =
+        '<div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">' +
+          '<span class="risk-badge ' + riskClass + '">' + currentRiskLevel + '</span>' +
+        '</div>' +
+        getNextStepsContent(currentRiskLevel) +
+        '<div style="margin-top: 1.5rem; border-top: 1px solid #E7EAE7; padding-top: 1.5rem;">' +
+          '<button onclick="closeNextStepsModal()" ' +
+            'style="background: #042B0B; color: #F7EFE6; border: none; padding: 0.625rem 1.25rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.3s ease;" ' +
+            'onmouseover="this.style.background=\'#263F26\'" ' +
+            'onmouseout="this.style.background=\'#042B0B\'">Close</button>' +
+        '</div>';
+      const modal = document.getElementById('nextStepsModal');
+      modal.classList.remove('hidden');
+      modal.style.display = 'flex';
+    }
+
+    function closeNextStepsModal() {
+      const modal = document.getElementById('nextStepsModal');
+      modal.style.display = 'none';
+      modal.classList.add('hidden');
+    }
+
     function toggleChecklistItem(index, transId) {
       const trans = selectedTransaction;
       if (!trans) return;
@@ -2492,6 +2566,14 @@
         checklistModal.addEventListener('click', function(event) {
           if (event.target === checklistModal) {
             closeChecklistModal();
+          }
+        });
+      }
+      const nextStepsModal = document.getElementById('nextStepsModal');
+      if (nextStepsModal) {
+        nextStepsModal.addEventListener('click', function(event) {
+          if (event.target === nextStepsModal) {
+            closeNextStepsModal();
           }
         });
       }
@@ -2690,6 +2772,14 @@
     <button onclick="closeChecklistModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer; padding: 0; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.color='#042B0B'" onmouseout="this.style.color='#999'"> × </button>
     <h2 style="font-size: 1.25rem; font-weight: 700; color: #042B0B; margin-bottom: 1.5rem; padding-right: 2rem;">✅ Contract Execution Checklist</h2>
     <div id="checklistContent"></div>
+   </div>
+  </div>
+  <!-- Next Steps Modal -->
+  <div id="nextStepsModal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.4); display: none; align-items: center; justify-content: center; z-index: 50;">
+   <div style="background: white; width: 90%; max-width: 500px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); padding: 2rem; position: relative; max-height: 85vh; overflow-y: auto;">
+    <button onclick="closeNextStepsModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer; padding: 0; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.color='#042B0B'" onmouseout="this.style.color='#999'"> × </button>
+    <h2 style="font-size: 1.25rem; font-weight: 700; color: #042B0B; margin-bottom: 1.5rem; padding-right: 2rem; text-transform: uppercase; letter-spacing: 0.05em;">Next Steps</h2>
+    <div id="nextStepsContent"></div>
    </div>
   </div>
   <!-- Toast notification container -->
