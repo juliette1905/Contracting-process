@@ -2146,7 +2146,6 @@
       saveExceptionState(transactionId, state);
 
       animateCheckbox('recl-' + transactionId + '-' + exceptionIndex);
-      showToast(state[exceptionIndex] ? '✓ Condition added' : '✓ Condition removed');
 
       updateRiskBadgeBasedOnExceptions(transactionId, trans.riskLevel, state);
 
@@ -2180,9 +2179,8 @@
       saveDowngradeExceptionState(transactionId, state);
 
       animateCheckbox('downgrade-' + transactionId + '-' + exceptionIndex);
-      showToast(state[exceptionIndex] ? '✓ Condition added' : '✓ Condition removed');
 
-      var anyChecked = state.some(function(v) { return v; });
+      var anyChecked= state.some(function(v) { return v; });
       var currentRiskLevel = anyChecked ? 'L2' : 'L3';
 
       var summaryBadge = document.getElementById('risk-badge-summary-' + transactionId);
@@ -2650,9 +2648,8 @@
       localStorage.setItem(storageKey, JSON.stringify(saved));
 
       animateCheckbox('check-' + index);
-      showToast(saved[index] ? '✓ Condition added' : '✓ Condition removed');
 
-      const stepEl = document.getElementById('checklist-step-' + index);
+      const stepEl= document.getElementById('checklist-step-' + index);
       if (stepEl) {
         if (saved[index]) {
           stepEl.classList.add('completed');
