@@ -851,14 +851,14 @@
     .toast {
       background: #042B0B;
       color: #F7EFE6;
-      padding: 0.75rem 1.25rem;
-      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      border-radius: 6px;
       font-size: 0.9rem;
       font-weight: 600;
-      box-shadow: 0 4px 15px rgba(4, 43, 11, 0.25);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       opacity: 0;
-      transform: translateY(8px);
-      animation: toastFadeIn 0.3s ease forwards;
+      transform: translateX(400px);
+      animation: slideIn 0.3s ease-in-out forwards;
       pointer-events: auto;
       max-width: 300px;
       line-height: 1.5;
@@ -866,15 +866,40 @@
     }
 
     .toast.toast-hide {
-      animation: toastFadeOut 0.3s ease forwards;
+      animation: slideOut 0.3s ease-in-out forwards;
     }
 
-    @keyframes toastFadeIn {
-      to { opacity: 1; transform: translateY(0); }
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
     }
 
-    @keyframes toastFadeOut {
-      to { opacity: 0; transform: translateY(8px); }
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+    }
+
+    /* =============================================
+       CHECKBOX TRANSITION
+       ============================================= */
+    input[type="checkbox"] {
+      transition: transform 0.3s ease-in-out, accent-color 0.3s ease-in-out;
+    }
+
+    input[type="checkbox"]:checked {
+      accent-color: #042B0B;
     }
 
     /* =============================================
