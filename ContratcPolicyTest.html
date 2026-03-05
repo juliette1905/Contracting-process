@@ -891,6 +891,28 @@
     }
 
     /* =============================================
+       DETAIL SECTIONS INSIDE ACCORDION
+       ============================================= */
+    .detail-section {
+      padding: 1rem 0;
+      border-bottom: 1px solid #E7EAE7;
+    }
+
+    .detail-section:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .detail-section-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #042B0B;
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* =============================================
        ACCORDION ANIMATIONS
        ============================================= */
     @keyframes accordionOpen {
@@ -2069,105 +2091,30 @@
 
     function renderAnalysis() {
       const trans = selectedTransaction;
-      const typeLabel = selectedType === 'NP' 
-        ? annexData.NP.departments[selectedDepartment].label 
-        : annexData[selectedType].label;
       const effectiveRiskLevel = getCurrentRiskLevel(trans);
 
       let html = `
         <div class="content-transition">
-          <!-- Transaction Summary Card (always visible) -->
+          <!-- Transaction Summary Card (simplified, always visible) -->
           <div class="result-card green-left">
             <div class="result-title">🧾 Transaction Summary</div>
             <div class="summary-grid">
-              <!-- Left Column: Type, Contract Needed, Contract Requestor -->
-              <div class="summary-item">
-                <strong>Type:</strong>
-                ${selectedType} – ${typeLabel}
-              </div>
-              <!-- Middle Column: Risk Level, Contract Drafter, LEO Archiving -->
               <div class="summary-item">
                 <strong>Risk Level:</strong>
                 <span id="risk-badge-summary-${trans.id}" class="risk-badge ${getRiskClass(trans.riskLevel)}">${trans.riskLevel}</span>
               </div>
-              <!-- Right Column: S2V Support, (empty), Learn More About Roles -->
-              <div class="summary-item">
-                <strong>S2V Support:</strong>
-                ${getS2VInfo(trans, selectedType)}
-              </div>
-              ${selectedType === 'P' ? `
               <div class="summary-item">
                 <strong>Contract Needed:</strong>
                 <span id="contract-needed-value" class="contract-needed-field${effectiveRiskLevel === 'L1' ? ' no' : ''}">${effectiveRiskLevel === 'L1' ? '✗ No' : '✓ Yes'}</span>
-              </div>` : `
+              </div>
               <div class="summary-item">
-                <strong>Transaction ID:</strong>
-                ${trans.id}
-              </div>`}
-              <div class="summary-item">
-                <strong>Contract Drafter:</strong>
+                <strong>Who Drafts:</strong>
                 <span id="drafter-summary-${trans.id}">${getDrafterInfo(effectiveRiskLevel)}</span>
-              </div>
-              <div class="summary-item"><!-- Spacer for 3-column grid layout --></div>
-              <div class="summary-item">
-                <strong>Contract Requestor:</strong>
-                ${selectedType === 'P' ? 'Procurement' : 'Transaction Owner'}
-              </div>
-              <div class="summary-item">
-                <strong>LEO Archiving:</strong>
-                ${selectedType === 'P' ? '✓ Yes' : (trans.leo ? '✓ Yes' : '✗ No')}
-              </div>
-              <div class="summary-item" style="display: flex; align-items: flex-end;">
-                <button onclick="openRolesModal()" 
-                        style="background: #042B0B; color: white; border: none; padding: 0.5rem 0.75rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: all 0.3s ease;"
-                        onmouseover="this.style.background='#263F26'"
-                        onmouseout="this.style.background='#042B0B'">
-                  📘 Learn More About Roles
-                </button>
               </div>
             </div>
           </div>
 
-          <!-- Reclassification Conditions (Accordion - Open) -->
-          ${trans.exceptions ? renderExceptionsSection(trans) : ''}
-
-          <!-- Risk Level (Accordion - Open) -->
-          ${selectedType !== 'P' ? `
-          <details class="result-card" open>
-            <summary class="result-title">⚠️ Risk Level</summary>
-            <div class="accordion-content">
-              <div style="margin-bottom: 0.75rem;">
-                <span id="risk-badge-risk-level-${trans.id}" class="risk-badge ${getRiskClass(trans.riskLevel)}">${trans.riskLevel}</span>
-              </div>
-              <div id="risk-criteria-${trans.id}">${renderRiskCriteria(trans)}</div>
-            </div>
-          </details>
-          ` : ''}
-
-          <!-- Templates & Clauses (Accordion - Closed) -->
-          <details class="result-card">
-            <summary class="result-title">📄 Templates & Clauses</summary>
-            <div class="accordion-content">
-              <ul class="criteria-list">
-                <li>
-                  <strong>Available:</strong>
-                  ${
-                    (trans.templates && trans.templates.length > 0)
-                      ? "<ol style='margin: 0.5rem 0 0 1.5rem;'>" +
-                        trans.templates.map(t => "<li>" + t + "</li>").join("") +
-                        "</ol>"
-                      : "Legal to define structure"
-                  }
-                </li>
-                <li>
-                  <strong>Non-Modifiable:</strong>
-                  ${ (trans.templates && trans.templates.length > 0) ? "Per User Guidelines" : "N/A" }
-                </li>
-              </ul>
-            </div>
-          </details>
-
-          <!-- Next Steps Button -->
+          <!-- Next Steps (always visible) -->
           <div style="text-align: center; padding: 0.5rem 0 1rem;">
             <button onclick="openChecklistModal()"
                     style="background: #FF78D2; color: white; border: none; padding: 0.75rem 2rem; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 1rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(255, 120, 210, 0.3); letter-spacing: 0.5px;"
@@ -2176,6 +2123,88 @@
               ✅ Next Steps
             </button>
           </div>
+
+          <!-- Detailed Analysis Accordion (collapsed by default) -->
+          <details class="result-card">
+            <summary class="result-title">🔍 Detailed Analysis</summary>
+            <div class="accordion-content">
+
+              <!-- 1. Contract Drafter Details -->
+              <div class="detail-section">
+                <h4 class="detail-section-title">📝 Contract Drafter Details</h4>
+                <div class="result-item">
+                  <div class="result-label">Who Drafts</div>
+                  <div class="result-value" id="drafter-roles-${trans.id}">${getDrafterInfo(effectiveRiskLevel)}</div>
+                </div>
+                ${selectedType !== 'P' ? `
+                <div class="result-item">
+                  <div class="result-label">Risk Level</div>
+                  <div class="result-value">
+                    <span id="risk-badge-risk-level-${trans.id}" class="risk-badge ${getRiskClass(trans.riskLevel)}">${trans.riskLevel}</span>
+                  </div>
+                </div>
+                <div id="risk-criteria-${trans.id}">${renderRiskCriteria(trans)}</div>
+                ` : ''}
+              </div>
+
+              <!-- 2. Contract Requestor Details -->
+              <div class="detail-section">
+                <h4 class="detail-section-title">👤 Contract Requestor Details</h4>
+                <div class="result-item">
+                  <div class="result-label">Who Requests</div>
+                  <div class="result-value">${selectedType === 'P' ? 'Procurement' : 'Transaction Owner'}</div>
+                </div>
+                <button onclick="openRolesModal()"
+                        style="background: #042B0B; color: white; border: none; padding: 0.5rem 0.75rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: all 0.3s ease;"
+                        onmouseover="this.style.background='#263F26'"
+                        onmouseout="this.style.background='#042B0B'">
+                  📘 Learn More About Roles
+                </button>
+              </div>
+
+              <!-- 3. LEO Archiving Status -->
+              <div class="detail-section">
+                <h4 class="detail-section-title">🗂️ LEO Archiving Status</h4>
+                <div class="result-item">
+                  <div class="result-label">Required</div>
+                  <div class="result-value">${selectedType === 'P' ? '✓ Yes' : (trans.leo ? '✓ Yes' : '✗ No')}</div>
+                </div>
+              </div>
+
+              <!-- 4. S2V Support -->
+              <div class="detail-section">
+                <h4 class="detail-section-title">🤝 S2V Support</h4>
+                <div class="result-item">
+                  <div class="result-value">${getS2VInfo(trans, selectedType)}</div>
+                </div>
+              </div>
+
+              <!-- 5. Reclassification Conditions (if applicable) -->
+              ${trans.exceptions ? '<div class="detail-section">' + renderExceptionsSection(trans) + '</div>' : ''}
+
+              <!-- Templates & Clauses -->
+              <div class="detail-section">
+                <h4 class="detail-section-title">📄 Templates & Clauses</h4>
+                <ul class="criteria-list">
+                  <li>
+                    <strong>Available:</strong>
+                    ${
+                      (trans.templates && trans.templates.length > 0)
+                        ? "<ol style='margin: 0.5rem 0 0 1.5rem;'>" +
+                          trans.templates.map(t => "<li>" + t + "</li>").join("") +
+                          "</ol>"
+                        : "Legal to define structure"
+                    }
+                  </li>
+                  <li>
+                    <strong>Non-Modifiable:</strong>
+                    ${ (trans.templates && trans.templates.length > 0) ? "Per User Guidelines" : "N/A" }
+                  </li>
+                </ul>
+              </div>
+
+            </div>
+          </details>
 
         </div>
       `;
