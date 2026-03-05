@@ -718,6 +718,75 @@
       }
     }
 
+    /* Next Steps Step-by-Step Styles */
+    .next-steps-step {
+      display: flex;
+      gap: 1rem;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      border-left: 4px solid #E7EAE7;
+      background: #FAFAF8;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .next-steps-step:hover {
+      background: #F5F5F3;
+      border-left-color: #042B0B;
+    }
+
+    .step-number {
+      font-size: 1.5rem;
+      font-weight: bold;
+      min-width: 2rem;
+    }
+
+    .step-content {
+      flex: 1;
+    }
+
+    .step-title {
+      font-weight: 700;
+      color: #042B0B;
+      margin-bottom: 0.5rem;
+      font-size: 1.05rem;
+    }
+
+    .step-description {
+      color: #555;
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
+
+    .step-timeline {
+      color: #888;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .step-actor {
+      display: inline-block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #666;
+      margin-top: 0.5rem;
+    }
+
+    .actor-user {
+      color: #0066CC;
+    }
+
+    .actor-specialist {
+      color: #042B0B;
+    }
+
+    .actor-legal {
+      color: #FF9800;
+    }
+
     /* Corporate Approval Modal Styles */
     #corporateApprovalModal {
       position: fixed;
@@ -2455,28 +2524,38 @@
     // NEXT STEPS MODAL FUNCTIONS
     // =============================================
 
+    function makeStep(number, icon, actorClass, title, description, timeline) {
+      return '<div class="next-steps-step">' +
+        '<div class="step-number">' + number + '</div>' +
+        '<div class="step-content">' +
+          '<div class="step-title"><span class="step-actor ' + actorClass + '">' + icon + '</span> ' + title + '</div>' +
+          '<div class="step-description">' + description + '</div>' +
+          '<div class="step-timeline">⏱️ Timeline: ' + timeline + '</div>' +
+        '</div>' +
+      '</div>';
+    }
+
     function getNextStepsContent(riskLevel) {
       if (riskLevel === 'L1') {
-        return '<ul style="list-style: disc; padding-left: 1.5rem; color: #333; line-height: 1.8;">' +
-          '<li>Submit Purchase Order directly</li>' +
-          '<li>No contract or legal involvement needed</li>' +
-          '<li>Expected timeline: 2 business days</li>' +
-          '</ul>';
+        return makeStep('1️⃣', '👤', 'actor-user', 'Submit Purchase Order on LEO', 'Contract Requestor action', 'Now') +
+          makeStep('2️⃣', '✓', 'actor-specialist', 'No Contract Required', 'No further action needed', 'Complete');
       } else if (typeof riskLevel === 'string' && (riskLevel === 'L2' || riskLevel.includes('L2'))) {
-        return '<ul style="list-style: disc; padding-left: 1.5rem; color: #333; line-height: 1.8;">' +
-          '<li>Contract required</li>' +
-          '<li>Drafted and managed by Contract Specialist</li>' +
-          '<li>No legal involvement needed</li>' +
-          '<li>Use the validated Opella Template</li>' +
-          '<li>Expected timeline: 10-15 business days</li>' +
-          '</ul>';
+        return makeStep('1️⃣', '👤', 'actor-user', 'Submit Initial Contract Request', 'Submit on CLM Tool (LEO)', 'Now') +
+          makeStep('2️⃣', '🔧', 'actor-specialist', 'S2V Clears Contract Prerequisite', 'S2V Contract Specialist action', '2-3 business days') +
+          makeStep('3️⃣', '👤', 'actor-user', 'Align with Opella Stakeholders', 'Secure internal alignment with all Opella functions', '3-5 business days') +
+          makeStep('4️⃣', '🔧', 'actor-specialist', 'S2V Drafts Contract', 'Based on validated Opella template', '5-7 business days') +
+          makeStep('5️⃣', '👤', 'actor-user', 'Organize Reviews & Negotiations', 'Internal reviews + external negotiations with Third-party Contractor', '7-14 business days') +
+          makeStep('6️⃣', '🔧', 'actor-specialist', 'S2V Runs Signature Process', 'Once all parties agree', '2-3 business days') +
+          makeStep('7️⃣', '🔧', 'actor-specialist', 'S2V Archives Contract on LEO', 'Final archiving on CLM Tool', '1 business day');
       } else {
-        return '<ul style="list-style: disc; padding-left: 1.5rem; color: #333; line-height: 1.8;">' +
-          '<li>Contract fully handled by Legal</li>' +
-          '<li>Legal drafts, negotiates, and validates</li>' +
-          '<li>Legal selects and approves the template</li>' +
-          '<li>Expected timeline: 15-20 business days</li>' +
-          '</ul>';
+        return makeStep('1️⃣', '👤', 'actor-user', 'Reach Out to Legal', 'Present the planned transaction (if not done yet)', 'Now') +
+          makeStep('2️⃣', '👤', 'actor-user', 'Submit Initial Contract Request', 'Submit on CLM Tool (LEO)', '1-2 business days') +
+          makeStep('3️⃣', '🔧', 'actor-specialist', 'S2V Clears Contract Prerequisite', 'S2V Contract Specialist action', '2-3 business days') +
+          makeStep('4️⃣', '👤', 'actor-user', 'Align with Opella Stakeholders', 'Secure internal alignment with all Opella functions', '3-5 business days') +
+          makeStep('5️⃣', '⚖️', 'actor-legal', 'Legal Drafts Contract(s)', 'Legal team drafts all necessary documents', '7-14 business days') +
+          makeStep('6️⃣', '👤', 'actor-user', 'Organize Reviews & Negotiations', 'Internal reviews + external negotiations with Third-party Contractor', '7-14 business days') +
+          makeStep('7️⃣', '🔧', 'actor-specialist', 'S2V Runs Signature Process', 'Once all parties agree', '2-3 business days') +
+          makeStep('8️⃣', '🔧', 'actor-specialist', 'S2V Archives Contract on LEO', 'Final archiving on CLM Tool', '1 business day');
       }
     }
 
@@ -2775,10 +2854,10 @@
    </div>
   </div>
   <!-- Next Steps Modal -->
-  <div id="nextStepsModal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.4); display: none; align-items: center; justify-content: center; z-index: 50;">
-   <div style="background: white; width: 90%; max-width: 500px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); padding: 2rem; position: relative; max-height: 85vh; overflow-y: auto;">
-    <button onclick="closeNextStepsModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer; padding: 0; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.color='#042B0B'" onmouseout="this.style.color='#999'"> × </button>
-    <h2 style="font-size: 1.25rem; font-weight: 700; color: #042B0B; margin-bottom: 1.5rem; padding-right: 2rem; text-transform: uppercase; letter-spacing: 0.05em;">Next Steps</h2>
+  <div id="nextStepsModal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5); display: none; align-items: center; justify-content: center; z-index: 50;">
+   <div style="background: white; width: 90%; max-width: 700px; border-radius: 8px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15); padding: 2rem; position: relative; max-height: 80vh; overflow-y: auto;">
+    <button onclick="closeNextStepsModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: #888; cursor: pointer; padding: 0; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; transition: color 0.3s ease;" onmouseover="this.style.color='#042B0B'" onmouseout="this.style.color='#888'"> × </button>
+    <h2 style="color: #042B0B; font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; border-bottom: 3px solid #042B0B; padding-bottom: 1rem; padding-right: 2rem;">📋 NEXT STEPS</h2>
     <div id="nextStepsContent"></div>
    </div>
   </div>
