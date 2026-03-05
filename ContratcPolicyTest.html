@@ -787,6 +787,41 @@
       color: #FF9800;
     }
 
+    /* Next Steps Legend Styles */
+    .next-steps-legend {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid #E7EAE7;
+      font-size: 0.95rem;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      font-weight: 600;
+      color: #555;
+      white-space: nowrap;
+    }
+
+    .legend-separator {
+      color: #CCC;
+      font-size: 1.2rem;
+    }
+
+    @media (max-width: 600px) {
+      .next-steps-legend {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .legend-separator {
+        display: none;
+      }
+    }
+
     /* Corporate Approval Modal Styles */
     #corporateApprovalModal {
       position: fixed;
@@ -2858,6 +2893,13 @@
    <div style="background: white; width: 90%; max-width: 700px; border-radius: 8px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15); padding: 2rem; position: relative; max-height: 80vh; overflow-y: auto;">
     <button onclick="closeNextStepsModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: #888; cursor: pointer; padding: 0; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; transition: color 0.3s ease;" onmouseover="this.style.color='#042B0B'" onmouseout="this.style.color='#888'"> × </button>
     <h2 style="color: #042B0B; font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; border-bottom: 3px solid #042B0B; padding-bottom: 1rem; padding-right: 2rem;">📋 NEXT STEPS</h2>
+    <div class="next-steps-legend">
+      <span class="legend-item">👤 Contract Requestor</span>
+      <span class="legend-separator">|</span>
+      <span class="legend-item">🔧 S2V Specialist</span>
+      <span class="legend-separator">|</span>
+      <span class="legend-item">⚖️ Legal</span>
+    </div>
     <div id="nextStepsContent"></div>
    </div>
   </div>
