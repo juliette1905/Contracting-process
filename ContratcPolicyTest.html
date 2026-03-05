@@ -1578,10 +1578,10 @@
             label: 'Manufacturing & Supply',
             transactions: [
               { id: 'MS001', name: 'R&D / IP Development Partnerships (API)', description: 'Research, development services or IP development partnerships related to Manufacturing & Supply (e.g., API)', riskLevel: 'L3', templates: [], s2v: true, leo: true },
-              { id: 'MS002', name: 'Sale of API or Raw Materials', description: 'Sale of Active Pharmaceutical Ingredients or Raw Materials', riskLevel: 'L2', templates: ['Raw Material Sale Agreement', 'Active Ingredient Sale Agreement'], s2v: false, leo: true },
+              { id: 'MS002', name: 'Sale of API or Raw Materials', description: 'Sale of Active Pharmaceutical Ingredients or Raw Materials', riskLevel: 'L2', templates: ['Raw Material Sale Agreement', 'Active Ingredient Sale Agreement'], s2v: true, leo: true },
               { id: 'MS003', name: 'I3PS - Industrial Third-Party Sales', description: 'Contract manufacturing and supply of finished products by Opella for third-party customers', riskLevel: 'L3', templates: ['Simple Amendment (for extensions/updates)'], exceptions: 'Simple term extension OR Price update OR Add/remove products without renegotiation = L2', s2v: true, leo: true },
               { id: 'MS004', name: 'Quality & PV (M&S Related)', description: 'Quality and Pharmacovigilance agreements related to Manufacturing & Supply', riskLevel: 'L3', templates: [], s2v: true, leo: true },
-              { id: 'MS005', name: 'Technology & IP Out-Licensing (M&S)', description: 'Technology and IP out-licensing related to Manufacturing & Supply', riskLevel: 'L3', templates: [], exceptions: 'Term extension not beyond 5 years from initial licensing date = L2', s2v: false, leo: true },
+              { id: 'MS005', name: 'Technology & IP Out-Licensing (M&S)', description: 'Technology and IP out-licensing related to Manufacturing & Supply', riskLevel: 'L3', templates: [], exceptions: 'Term extension not beyond 5 years from initial licensing date = L2', s2v: true, leo: true },
               { id: 'MS006', name: 'Dispute Settlements (M&S)', description: 'Dispute settlements in relation to Manufacturing & Supply matters', riskLevel: 'L3', templates: [], s2v: false, leo: true },
               { id: 'MS007', name: 'NDA - Manufacturing & Supply', description: 'NDAs in Manufacturing & Supply context', riskLevel: 'L2/L3', templates: [], s2v: false, leo: true }
             ]
@@ -2753,8 +2753,8 @@
       // Medical L2 NOT S2V (HCP/HCO Agreements archived on LEO) — show 6-step procedure
       const isMedL2NotS2V = selectedType === 'NP' && trans.id === 'MED001' && currentRiskLevel === 'L2' && !trans.s2v && trans.leo;
 
-      // M&S L3 S2V contracts (MS001, MS003, MS004) — show 8-step M&S L3 procedure
-      const MS_L3_S2V_IDS = ['MS001', 'MS003', 'MS004'];
+      // M&S L3 S2V contracts (MS001, MS003, MS004, MS005) — show 8-step M&S L3 procedure
+      const MS_L3_S2V_IDS = ['MS001', 'MS003', 'MS004', 'MS005'];
       const isMSL3S2V = selectedType === 'NP' && MS_L3_S2V_IDS.includes(trans.id) && trans.s2v && trans.leo &&
         (currentRiskLevel === 'L3' || (typeof currentRiskLevel === 'string' && currentRiskLevel.includes('L3')));
 
