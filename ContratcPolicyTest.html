@@ -34,19 +34,22 @@
       background: linear-gradient(135deg, #042B0B 0%, #263F26 100%);
       color: #F7EFE6;
       padding: 1.5rem 2rem;
-      box-shadow: 0 4px 15px rgba(4, 43, 11, 0.15);
+      box-shadow: 0 4px 15px rgba(4, 43, 11, 0.2);
     }
 
     .header h1 {
       font-size: 1.75rem;
       font-weight: 700;
       letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
     }
 
     .header p {
       font-size: 0.875rem;
-      opacity: 0.9;
-      margin-top: 0.25rem;
+      opacity: 0.8;
+      margin-top: 0.35rem;
     }
 
     .main-content {
@@ -97,6 +100,10 @@
       cursor: pointer;
       transition: all 0.2s ease;
       font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-align: left;
     }
 
     .btn-type:hover {
@@ -104,6 +111,11 @@
       background: #E7EAE7;
       transform: scale(1.02);
       box-shadow: 0 8px 20px rgba(4, 43, 11, 0.15);
+    }
+
+    .btn-type:focus-visible {
+      outline: 3px solid #FF78D2;
+      outline-offset: 2px;
     }
 
     .btn-type.active {
@@ -137,7 +149,12 @@
     .transaction-select:focus {
       outline: none;
       border-color: #FF78D2;
-      box-shadow: 0 0 0 3px rgba(255, 120, 210, 0.1);
+      box-shadow: 0 0 0 3px rgba(255, 120, 210, 0.15);
+    }
+
+    .transaction-select:focus-visible {
+      outline: 3px solid #FF78D2;
+      outline-offset: 2px;
     }
 
     .result-card {
@@ -147,6 +164,11 @@
       margin-bottom: 2rem;
       border-left: 4px solid #042B0B;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      transition: box-shadow 0.25s ease, transform 0.25s ease;
+    }
+
+    .result-card:hover {
+      box-shadow: 0 6px 20px rgba(4, 43, 11, 0.1);
     }
 
     .result-card.pink-left {
@@ -184,12 +206,20 @@
     }
 
     .risk-badge {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
       padding: 0.4rem 0.8rem;
       border-radius: 20px;
       font-weight: 700;
       font-size: 0.85rem;
       letter-spacing: 0.5px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .risk-badge:hover {
+      transform: scale(1.04);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
     .risk-l1 {
@@ -197,14 +227,53 @@
       color: #042B0B;
     }
 
+    .risk-l1::before {
+      content: '';
+      display: inline-block;
+      width: 0.7rem;
+      height: 0.7rem;
+      background: #042B0B;
+      border-radius: 50%;
+      opacity: 0.6;
+      flex-shrink: 0;
+    }
+
     .risk-l2 {
       background: #FFE5F0;
       color: #042B0B;
     }
 
+    .risk-l2::before {
+      content: '';
+      display: inline-block;
+      width: 0;
+      height: 0;
+      border-left: 0.38rem solid transparent;
+      border-right: 0.38rem solid transparent;
+      border-bottom: 0.65rem solid #C71585;
+      opacity: 0.7;
+      flex-shrink: 0;
+    }
+
     .risk-l3 {
       background: #FF78D2;
       color: white;
+    }
+
+    .risk-l3::before {
+      content: '!';
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 0.95rem;
+      height: 0.95rem;
+      background: white;
+      color: #FF78D2;
+      border-radius: 50%;
+      font-size: 0.65rem;
+      font-weight: 900;
+      flex-shrink: 0;
+      line-height: 1;
     }
 
     .timeline {
@@ -299,16 +368,66 @@
 
     .empty-state {
       text-align: center;
-      color: #999;
-      padding: 3rem 2rem;
+      color: #888;
+      padding: 4rem 2rem;
       font-size: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
     }
 
-    .empty-state svg {
-      width: 4rem;
-      height: 4rem;
-      margin-bottom: 1rem;
-      opacity: 0.5;
+    .empty-state-illustration {
+      width: 6rem;
+      height: 6rem;
+      background: linear-gradient(135deg, #E7EAE7 0%, #F7EFE6 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.5rem;
+      box-shadow: 0 4px 16px rgba(4, 43, 11, 0.08);
+    }
+
+    .empty-state-illustration svg {
+      width: 2.75rem;
+      height: 2.75rem;
+      color: #263F26;
+      opacity: 0.8;
+    }
+
+    .empty-state-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #263F26;
+      margin: 0;
+    }
+
+    .empty-state-subtitle {
+      font-size: 0.9rem;
+      color: #999;
+      max-width: 280px;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .empty-state-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      color: #FF78D2;
+      font-weight: 600;
+      padding: 0.4rem 0.8rem;
+      background: rgba(255, 120, 210, 0.08);
+      border-radius: 20px;
+      margin-top: 0.25rem;
+    }
+
+    .empty-state-hint svg {
+      width: 0.9rem;
+      height: 0.9rem;
     }
 
     ::-webkit-scrollbar {
@@ -318,15 +437,18 @@
 
     ::-webkit-scrollbar-track {
       background: #E7EAE7;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: #263F26;
       border-radius: 4px;
     }
 
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #042B0B 0%, #263F26 60%, #FF78D2 100%);
+      border-radius: 4px;
+      transition: opacity 0.2s ease;
+    }
+
     ::-webkit-scrollbar-thumb:hover {
-      background: #042B0B;
+      background: linear-gradient(180deg, #042B0B 0%, #042B0B 60%, #FF78D2 100%);
+      opacity: 0.85;
     }
 
     .criteria-list {
@@ -425,14 +547,14 @@
 
     /* Progress Bar Styling */
     .progress-bar {
-      background: linear-gradient(90deg, #042B0B 0%, #263F26 100%);
+      background: linear-gradient(90deg, #042B0B 0%, #263F26 60%, #1a3d1a 100%);
       color: #F7EFE6;
       padding: 1rem 2rem;
       text-align: center;
       font-size: 0.95rem;
       font-weight: 600;
       letter-spacing: 0.5px;
-      box-shadow: 0 2px 8px rgba(4, 43, 11, 0.08);
+      box-shadow: 0 2px 8px rgba(4, 43, 11, 0.12);
     }
 
     .progress-bar-text {
@@ -466,7 +588,7 @@
     @keyframes fadeIn {
       from {
         opacity: 0;
-        transform: translateY(5px);
+        transform: translateY(8px);
       }
       to {
         opacity: 1;
@@ -475,8 +597,19 @@
     }
 
     .animate-fadeIn {
-      animation: fadeIn 0.3s ease-out forwards;
+      animation: fadeIn 0.35s ease-out forwards;
     }
+
+    /* Staggered card animation */
+    .content-transition > * {
+      animation: fadeIn 0.35s ease-out both;
+    }
+
+    /* Staggered fade-in: each child delays by ~50ms to create a cascade effect */
+    .content-transition > *:nth-child(1) { animation-delay: 0.02s; }
+    .content-transition > *:nth-child(2) { animation-delay: 0.07s; }
+    .content-transition > *:nth-child(3) { animation-delay: 0.12s; }
+    .content-transition > *:nth-child(4) { animation-delay: 0.17s; }
 
     .fade-hidden {
       opacity: 0;
@@ -547,7 +680,7 @@
 
     .checklist-progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, #042B0B 0%, #263F26 100%);
+      background: linear-gradient(90deg, #042B0B 0%, #263F26 60%, #FF78D2 100%);
       border-radius: 4px;
       transition: width 0.4s ease;
     }
@@ -1206,8 +1339,68 @@
     .content-transition {
       animation: cardFadeIn 0.3s ease forwards;
     }
+
+    /* =============================================
+       DETAIL SECTION TITLE ICON SUPPORT
+       ============================================= */
+    .detail-section-title {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* =============================================
+       NEXT STEPS CARD ENHANCEMENTS
+       ============================================= */
+    .next-steps-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .next-steps-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(4,43,11,0.05), transparent);
+      transition: left 0.4s ease;
+    }
+
+    .next-steps-card:hover::before {
+      left: 100%;
+    }
+
+    /* =============================================
+       CORPORATE BUTTON ACCESSIBILITY
+       ============================================= */
+    .corporate-next-btn:focus-visible {
+      outline: 3px solid #FF78D2;
+      outline-offset: 2px;
+    }
+
+    /* =============================================
+       SELECTION LABEL ENHANCEMENT
+       ============================================= */
+    .selection-label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* =============================================
+       SUMMARY GRID CARD HOVER
+       ============================================= */
+    .summary-item {
+      padding: 0.6rem;
+      border-radius: 6px;
+      transition: background 0.2s ease;
+    }
+
+    .summary-item:hover {
+      background: rgba(4, 43, 11, 0.03);
+    }
+
   </style>
-  <style>body { box-sizing: border-box; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
   <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
  </head>
@@ -1304,7 +1497,7 @@
       </div>
       <div class="help-text">
        💡 Choose the category that matches your transaction type. This determines which rules apply.
-      </div><button class="btn-type" onclick="selectType('P', this)">📦 P – Procurement</button> <button class="btn-type" onclick="selectType('NP', this)">🤝 NP – Non-Procurement</button> <button class="btn-type" onclick="selectType('IE', this)">🔧 IE – Internal Expert</button>
+      </div><button class="btn-type" onclick="selectType('P', this)" aria-label="Select Procurement transaction type"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg> P – Procurement</button> <button class="btn-type" onclick="selectType('NP', this)" aria-label="Select Non-Procurement transaction type"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path></svg> NP – Non-Procurement</button> <button class="btn-type" onclick="selectType('IE', this)" aria-label="Select Internal Expert transaction type"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> IE – Internal Expert</button>
      </div><!-- Step 2: Department Selection (NP only) -->
      <div class="selection-section fade-hidden" id="departmentSection">
       <div class="selection-label">
@@ -1325,9 +1518,17 @@
     </div><!-- CONTENT AREA: Results Display -->
     <div class="content-area" id="contentArea">
      <div class="empty-state">
-      <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"></path>
-      </svg>
-      <p>Select a transaction type to begin</p>
+      <div class="empty-state-illustration">
+       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2M12 12h.01M12 16h.01"></path>
+       </svg>
+      </div>
+      <p class="empty-state-title">Ready to classify your contract?</p>
+      <p class="empty-state-subtitle">Select a transaction type on the left to receive your personalized contract analysis.</p>
+      <span class="empty-state-hint" aria-hidden="true">
+       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"></path></svg>
+       Start with Step 1
+      </span>
      </div>
     </div>
    </div>
@@ -1971,10 +2172,17 @@
       if (!selectedType) {
         contentArea.innerHTML = `
           <div class="empty-state content-transition">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"></path>
-            </svg>
-            <p>Select a transaction type to begin</p>
+            <div class="empty-state-illustration">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2M12 12h.01M12 16h.01"></path>
+              </svg>
+            </div>
+            <p class="empty-state-title">Ready to classify your contract?</p>
+            <p class="empty-state-subtitle">Select a transaction type on the left to receive your personalized contract analysis.</p>
+            <span class="empty-state-hint" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"></path></svg>
+              Start with Step 1
+            </span>
           </div>
         `;
         return;
@@ -1983,10 +2191,14 @@
       if (selectedType === 'NP' && !selectedDepartment) {
         contentArea.innerHTML = `
           <div class="empty-state content-transition">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 5v14M5 12h14"></path>
-            </svg>
-            <p>Select a department to view available transactions</p>
+            <div class="empty-state-illustration">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 21h18M3 7v1a3 3 0 0 0 6 0V7m0 1a3 3 0 0 0 6 0V7m0 1a3 3 0 0 0 6 0V7H3l2-4h14l2 4M5 21V11.5"></path>
+                <path d="M19 21V11.5M9 21v-4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"></path>
+              </svg>
+            </div>
+            <p class="empty-state-title">Choose a department</p>
+            <p class="empty-state-subtitle">Select the department related to your transaction to see available options.</p>
           </div>
         `;
         return;
@@ -1995,10 +2207,14 @@
       if (!selectedTransaction) {
         contentArea.innerHTML = `
           <div class="empty-state content-transition">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 5v14M5 12h14"></path>
-            </svg>
-            <p>Select a specific transaction to view details</p>
+            <div class="empty-state-illustration">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35M11 8v6M8 11h6"></path>
+              </svg>
+            </div>
+            <p class="empty-state-title">Select a transaction</p>
+            <p class="empty-state-subtitle">Choose a specific transaction from the dropdown to view its risk analysis and contract requirements.</p>
           </div>
         `;
         return;
