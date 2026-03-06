@@ -835,6 +835,101 @@
       }
     }
 
+    /* NP L3 Not S2V Modal – Role Badges */
+    .np-l3-roles-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: #F8F9FA;
+      border-radius: 8px;
+      border: 1px solid #E7EAE7;
+    }
+
+    .np-l3-role-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.85rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border: 2px solid transparent;
+    }
+
+    .np-l3-role-badge.badge-requestor {
+      background: #E8F0FD;
+      color: #0066CC;
+      border-color: #0066CC;
+    }
+
+    .np-l3-role-badge.badge-legal {
+      background: #FFF3E0;
+      color: #E65100;
+      border-color: #FF9800;
+    }
+
+    .np-l3-role-badge.badge-stakeholder {
+      background: #E8F5E9;
+      color: #042B0B;
+      border-color: #042B0B;
+    }
+
+    /* NP L3 Not S2V Modal – Contracts Concerned */
+    .np-l3-contracts-section {
+      margin-top: 2rem;
+      padding: 1.25rem;
+      background: #F8F9FA;
+      border-radius: 8px;
+      border-left: 4px solid #042B0B;
+    }
+
+    .np-l3-contracts-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #042B0B;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .np-l3-contracts-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .np-l3-contracts-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      padding: 0.5rem 0;
+      font-size: 0.9rem;
+      color: #333;
+      border-bottom: 1px solid #E7EAE7;
+      line-height: 1.4;
+    }
+
+    .np-l3-contracts-list li:last-child {
+      border-bottom: none;
+    }
+
+    .np-l3-contracts-list li .contract-num {
+      font-weight: 700;
+      color: #042B0B;
+      min-width: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 600px) {
+      .np-l3-roles-section {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+
     /* Corporate Approval Modal Styles */
     #corporateApprovalModal {
       position: fixed;
@@ -2711,6 +2806,41 @@
         makeStep('8️⃣', '🔧', 'actor-specialist', 'S2V Contract Specialist Archives Contract on CLM Tool (LEO)', 'Final archiving', '1 business day');
     }
 
+    function getNPL3NotS2VContent() {
+      var rolesSection =
+        '<div class="np-l3-roles-section">' +
+          '<span class="np-l3-role-badge badge-requestor">👤 Contract Requestor</span>' +
+          '<span class="np-l3-role-badge badge-legal">⚖️ Legal (Contract Drafter)</span>' +
+          '<span class="np-l3-role-badge badge-stakeholder">🤝 Opella Stakeholders</span>' +
+        '</div>';
+
+      var steps =
+        makeStep('1️⃣', '👤', 'actor-user', 'Contract Requestor Reaches Out to Legal', 'Present the planned transaction to Legal', '1-2 business days') +
+        makeStep('2️⃣', '👤', 'actor-user', 'Contract Requestor Clears the Contract Prerequisites', 'Preparation phase – fulfill all required contract prerequisites', '2-3 business days') +
+        makeStep('3️⃣', '👤', 'actor-user', 'Internal Alignment & Template Selection', 'Contract Requestor aligns internally with all Opella Stakeholders<br><span class="step-actor actor-legal">⚖️</span> Contract Drafter (Legal) selects the adequate Opella Template or Third-party Contractor draft', '3-5 business days') +
+        makeStep('4️⃣', '👤', 'actor-user', 'Internal Opella Phase – First Draft Preparation', 'Led by Contract Requestor<br>Preparation of the first Draft Contract by the Contract Drafter (or first review of Third-party Contractor draft)<br>Cross-functions interactions if needed', '5-10 business days') +
+        makeStep('5️⃣', '👤', 'actor-user', 'Organize Rounds of Internal Reviews & Negotiations', 'Contract Requestor secures Opella functions inputs<br>External negotiations with Third-party Contractor', '7-14 business days') +
+        makeStep('6️⃣', '👤', 'actor-user', 'Run the Signature Process', 'When contract draft is agreed by all parties – Contract Requestor runs the signature process', '2-3 business days') +
+        makeStep('7️⃣', '👤', 'actor-user', 'Create Contract Request(s) in CLM Tool (LEO)', 'Contract Requestor creates contract request(s) in CLM Tool with the signed contract for archiving', '1 business day');
+
+      var contractsSection =
+        '<div class="np-l3-contracts-section">' +
+          '<div class="np-l3-contracts-title">📑 Contracts Concerned</div>' +
+          '<ul class="np-l3-contracts-list">' +
+            '<li><span class="contract-num">1.</span><span>Distribution / sales (downstream – Opella as Principal with distributors, wholesalers, retailers)</span></li>' +
+            '<li><span class="contract-num">2.</span><span>Marketing services (wholesalers, pharmacies, bonus, sales incentives, data exchange)</span></li>' +
+            '<li><span class="contract-num">3.</span><span>Transactions with pharmacies (rebates pass down)</span></li>' +
+            '<li><span class="contract-num">4.</span><span>Product Distribution / Appointment of distributors for Partner Markets model</span></li>' +
+            '<li><span class="contract-num">5.</span><span>Licensing In/Out – Granting or acquisition of IP Rights (patent, know-how, design, product dossiers, technology)</span></li>' +
+            '<li><span class="contract-num">6.</span><span>R&D Collaboration consortium – acquisition, transfer, license, exchange of IP Rights or co-financing</span></li>' +
+            '<li><span class="contract-num">7.</span><span>Dispute settlements in M&S matters</span></li>' +
+            '<li><span class="contract-num">8.</span><span>Pre-litigation and settlements (other than IE Transactions)</span></li>' +
+          '</ul>' +
+        '</div>';
+
+      return rolesSection + steps + contractsSection;
+    }
+
     function getNextStepsContent(riskLevel) {
       if (riskLevel === 'L1') {
         return makeStep('1️⃣', '👤', 'actor-user', 'Submit Purchase Order on LEO', 'Contract Requestor action', 'Now') +
@@ -2748,10 +2878,15 @@
       const isMSL3S2V = selectedType === 'NP' && MS_L3_S2V_IDS.includes(trans.id) && trans.s2v && trans.leo &&
         (currentRiskLevel === 'L3' || (typeof currentRiskLevel === 'string' && currentRiskLevel.includes('L3')));
 
+      // NP L3 NOT S2V contracts archived on LEO — show 7-step procedure with role badges and contracts concerned
+      const NP_L3_NOT_S2V_IDS = ['DIST001', 'MK001', 'PHARM001', 'DIST002', 'RD_LIC', 'RD_COLL', 'MS006', 'ALL005'];
+      const isNPL3NotS2V = selectedType === 'NP' && NP_L3_NOT_S2V_IDS.includes(trans.id) && !trans.s2v && trans.leo &&
+        (currentRiskLevel === 'L3' || (typeof currentRiskLevel === 'string' && currentRiskLevel.includes('L3')));
+
       // NP L2 logic: the 9 specific NP contracts eligible for the L2 procedure
       // Note: MS003 appears here to handle its reclassified-to-L2 case (isMSL3S2V covers L3 case)
       const NP_L2_CONTRACT_IDS = ['RD_NDA', 'RD_DEV', 'MS002', 'MS003', 'MS005', 'DP001', 'ALL001', 'ALL002', 'ALL003', 'ALL004'];
-      if (selectedType === 'NP' && !isMedL2NotS2V && !isMSL3S2V) {
+      if (selectedType === 'NP' && !isMedL2NotS2V && !isMSL3S2V && !isNPL3NotS2V) {
         const isInNpL2List = NP_L2_CONTRACT_IDS.includes(trans.id);
         // For NDA: only show NP L2 modal when department is Global R&D
         const isNdaOutsideGlobalRD = trans.id === 'RD_NDA' && selectedDepartment !== 'Global R&D';
@@ -2761,11 +2896,21 @@
       }
 
       const riskClass = getRiskClass(currentRiskLevel);
+      let content;
+      if (isMedL2NotS2V) {
+        content = getMedL2NotS2VContent();
+      } else if (isMSL3S2V) {
+        content = getMSL3S2VContent();
+      } else if (isNPL3NotS2V) {
+        content = getNPL3NotS2VContent();
+      } else {
+        content = getNextStepsContent(currentRiskLevel);
+      }
       document.getElementById('nextStepsContent').innerHTML =
         '<div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">' +
           '<span class="risk-badge ' + riskClass + '">' + currentRiskLevel + '</span>' +
         '</div>' +
-        (isMedL2NotS2V ? getMedL2NotS2VContent() : (isMSL3S2V ? getMSL3S2VContent() : getNextStepsContent(currentRiskLevel))) +
+        content +
         '<div style="margin-top: 1.5rem; border-top: 1px solid #E7EAE7; padding-top: 1.5rem;">' +
           '<button onclick="closeNextStepsModal()" ' +
             'style="background: #042B0B; color: #F7EFE6; border: none; padding: 0.625rem 1.25rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.3s ease;" ' +
