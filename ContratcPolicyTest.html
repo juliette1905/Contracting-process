@@ -2808,6 +2808,16 @@
         makeStep('8️⃣', '🔧', 'actor-specialist', 'S2V Contract Specialist Archives Contract on CLM Tool (LEO)', 'Final archiving', '1 business day');
     }
 
+    function getL3NotS2VNotLEOContent() {
+      return makeStep('1️⃣', '👤', 'actor-user', 'Contact Legal', '👤 Contract Requestor reach out to Legal (if not done yet) to present the planned transaction', '1-2 business days') +
+        makeStep('2️⃣', '👤', 'actor-user', 'Clear Contract Prerequisites', '👤 Contract Requestor clears the Contract Prerequisites', '2-3 business days') +
+        makeStep('3️⃣', '👤', 'actor-user', 'Select Opella Template', '👤 Contract Requestor aligns internally with all 🤝 Opella stakeholders and ⚖️ Contract Drafter selects the adequate Opella Template or Third-party Contractor draft', '2-3 business days') +
+        makeStep('4️⃣', '👤', 'actor-user', 'Preparation of Draft Contract', 'Internal Opella phase led by 👤 Contract Requestor. Preparation of the first Draft Contract by the ⚖️ Contract Drafter (or first review of Third-party Contractor draft) with cross-functions interactions if needed', '5-10 business days') +
+        makeStep('5️⃣', '👤', 'actor-user', 'Internal Reviews &amp; Negotiations', '👤 Contract Requestor organizes the necessary rounds of internal reviews, secures 🤝 Opella functions inputs and external negotiations with Third-party Contractor', 'as needed') +
+        makeStep('6️⃣', '👤', 'actor-user', 'Signature Process', 'When contract drafted is agreed on by all the Parties, 👤 Contract Requestor runs the signature process', 'as needed') +
+        makeStep('7️⃣', '👤', 'actor-user', 'Create MyAlliance Request', '👤 Contract Requestor creates a contract request(s) in MyAlliance with the signed contract for archiving', 'as needed');
+    }
+
     function getNPL3NotS2VContent() {
       return makeStep('1️⃣', '👤', 'actor-user', 'Contract Requestor Reaches Out to Legal', '👤 Contract Requestor presents the planned transaction to Legal', '1-2 business days') +
         makeStep('2️⃣', '👤', 'actor-user', 'Contract Requestor Clears the Contract Prerequisites', '👤 Contract Requestor fulfills all required contract prerequisites', '2-3 business days') +
@@ -2871,6 +2881,11 @@
       const isNPL3NotS2V = selectedType === 'NP' && NP_L3_NOT_S2V_IDS.includes(trans.id) && !trans.s2v && trans.leo &&
         (currentRiskLevel === 'L3' || (typeof currentRiskLevel === 'string' && currentRiskLevel.includes('L3')));
 
+      // NP L3 NOT S2V AND NOT archived on LEO — show 7-step procedure without LEO archiving step
+      const L3_NOT_S2V_NOT_LEO_IDS = ['STRAT001', 'MA_NDA', 'MA_EQUITY', 'AM001', 'AM002', 'IP001'];
+      const isL3NotS2VNotLEO = selectedType === 'NP' && L3_NOT_S2V_NOT_LEO_IDS.includes(trans.id) && !trans.s2v && !trans.leo &&
+        (currentRiskLevel === 'L3' || (typeof currentRiskLevel === 'string' && currentRiskLevel.includes('L3')));
+
       // NP L2 reclassified via RC Legal Templates (DIST001, MK001, PHARM001, DIST002) — show 8-step L2 procedure
       const isRCLegalL2 = selectedType === 'NP' && RC_LEGAL_TEMPLATE_IDS.indexOf(trans.id) !== -1 &&
         (currentRiskLevel === 'L2' || (typeof currentRiskLevel === 'string' && currentRiskLevel.includes('L2')));
@@ -2878,7 +2893,7 @@
       // NP L2 logic: the 9 specific NP contracts eligible for the L2 procedure
       // Note: MS003 appears here to handle its reclassified-to-L2 case (isMSL3S2V covers L3 case)
       const NP_L2_CONTRACT_IDS = ['RD_NDA', 'RD_DEV', 'MS002', 'MS003', 'MS005', 'DP001', 'ALL001', 'ALL002', 'ALL003', 'ALL004'];
-      if (selectedType === 'NP' && !isMedL2NotS2V && !isMSL3S2V && !isNPL3NotS2V && !isRCLegalL2) {
+      if (selectedType === 'NP' && !isMedL2NotS2V && !isMSL3S2V && !isNPL3NotS2V && !isRCLegalL2 && !isL3NotS2VNotLEO) {
         const isInNpL2List = NP_L2_CONTRACT_IDS.includes(trans.id);
         // For NDA: only show NP L2 modal when department is Global R&D
         const isNdaOutsideGlobalRD = trans.id === 'RD_NDA' && selectedDepartment !== 'Global R&D';
@@ -2895,6 +2910,8 @@
         content = getMSL3S2VContent();
       } else if (isNPL3NotS2V) {
         content = getNPL3NotS2VContent();
+      } else if (isL3NotS2VNotLEO) {
+        content = getL3NotS2VNotLEOContent();
       } else if (isRCLegalL2) {
         content = getRCLegalL2Content();
       } else {
@@ -2903,7 +2920,7 @@
 
       const legendEl = document.querySelector('#nextStepsModal .next-steps-legend');
       if (legendEl) {
-        if (isRCLegalL2) {
+        if (isRCLegalL2 || isL3NotS2VNotLEO) {
           legendEl.innerHTML =
             '<span class="legend-item">👤 Contract Requestor</span>' +
             '<span class="legend-separator">|</span>' +
