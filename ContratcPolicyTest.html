@@ -147,6 +147,11 @@
       margin-bottom: 2rem;
       border-left: 4px solid #042B0B;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      transition: box-shadow 0.25s ease, transform 0.25s ease;
+    }
+
+    .result-card:hover {
+      box-shadow: 0 4px 16px rgba(4, 43, 11, 0.1);
     }
 
     .result-card.pink-left {
@@ -299,34 +304,56 @@
 
     .empty-state {
       text-align: center;
-      color: #999;
-      padding: 3rem 2rem;
+      color: #042B0B;
+      padding: 3.5rem 2.5rem;
       font-size: 1rem;
+      background: #F7EFE6;
+      border-radius: 16px;
+      max-width: 480px;
+      margin: 3rem auto;
+      border: 1px solid #E7EAE7;
     }
 
     .empty-state svg {
-      width: 4rem;
-      height: 4rem;
-      margin-bottom: 1rem;
-      opacity: 0.5;
+      width: 4.5rem;
+      height: 4.5rem;
+      margin-bottom: 1.25rem;
+      color: #042B0B;
+      opacity: 0.65;
+    }
+
+    .empty-state p {
+      font-weight: 600;
+      font-size: 1.05rem;
+      color: #042B0B;
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-state-sub {
+      font-size: 0.875rem;
+      color: #555;
+      font-weight: 400;
     }
 
     ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
     }
 
     ::-webkit-scrollbar-track {
-      background: #E7EAE7;
+      background: linear-gradient(to bottom, #E7EAE7, #F7EFE6);
+      border-radius: 5px;
     }
 
     ::-webkit-scrollbar-thumb {
-      background: #263F26;
-      border-radius: 4px;
+      background: linear-gradient(to bottom, #042B0B, #FF78D2);
+      border-radius: 5px;
+      transition: filter 0.2s ease, opacity 0.2s ease;
     }
 
     ::-webkit-scrollbar-thumb:hover {
-      background: #042B0B;
+      filter: brightness(1.2);
+      opacity: 0.9;
     }
 
     .criteria-list {
@@ -476,6 +503,20 @@
 
     .animate-fadeIn {
       animation: fadeIn 0.3s ease-out forwards;
+    }
+
+    /* Section SVG Icons */
+    .section-icon {
+      display: inline-flex;
+      align-items: center;
+      vertical-align: middle;
+      width: 20px;
+      height: 20px;
+      color: #042B0B;
+      margin-right: 0.4rem;
+      flex-shrink: 0;
+      position: relative;
+      top: -1px;
     }
 
     .fade-hidden {
@@ -714,7 +755,7 @@
     }
 
     .next-steps-card::after {
-      content: ' →';
+      content: '';
     }
 
     @keyframes pulse {
@@ -1172,6 +1213,8 @@
       margin-bottom: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
     }
 
     /* =============================================
@@ -1325,10 +1368,10 @@
     </div><!-- CONTENT AREA: Results Display -->
     <div class="content-area" id="contentArea">
      <div class="empty-state">
-      <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"></path>
-      </svg>
-      <p>Select a transaction type to begin</p>
-     </div>
+       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+       <p>Select a contract type and transaction to get started</p>
+       <span class="empty-state-sub">Use the panel on the left to choose your transaction type and details</span>
+      </div>
     </div>
    </div>
   </div>
@@ -1971,10 +2014,9 @@
       if (!selectedType) {
         contentArea.innerHTML = `
           <div class="empty-state content-transition">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"></path>
-            </svg>
-            <p>Select a transaction type to begin</p>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+            <p>Select a contract type and transaction to get started</p>
+            <span class="empty-state-sub">Use the panel on the left to choose your transaction type and details</span>
           </div>
         `;
         return;
@@ -1983,10 +2025,9 @@
       if (selectedType === 'NP' && !selectedDepartment) {
         contentArea.innerHTML = `
           <div class="empty-state content-transition">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 5v14M5 12h14"></path>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z"/></svg>
             <p>Select a department to view available transactions</p>
+            <span class="empty-state-sub">Choose a department from the panel on the left</span>
           </div>
         `;
         return;
@@ -1995,10 +2036,9 @@
       if (!selectedTransaction) {
         contentArea.innerHTML = `
           <div class="empty-state content-transition">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 5v14M5 12h14"></path>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z"/></svg>
             <p>Select a specific transaction to view details</p>
+            <span class="empty-state-sub">Pick a transaction from the dropdown to see contract requirements</span>
           </div>
         `;
         return;
@@ -2060,7 +2100,7 @@
       if (isRCLegalTemplate) {
         var rcDescId = 'rc-desc-' + trans.id;
         return '<div class="reclassification-conditions-container downgrade-conditions">' +
-          '<h3 class="reclassification-conditions-title">📋 RECLASSIFICATION CONDITIONS</h3>' +
+          '<h3 class="reclassification-conditions-title"><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;vertical-align:middle;margin-right:0.35rem;flex-shrink:0;"><path d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg> RECLASSIFICATION CONDITIONS</h3>' +
           '<p id="' + rcDescId + '" class="reclassification-conditions-description">Did your local legal share templates for these types of transaction?</p>' +
           '<div class="reclassification-checklist" aria-describedby="' + rcDescId + '">' +
             '<div class="reclassification-item">' +
@@ -2096,7 +2136,7 @@
         }).join('');
 
         return '<div class="reclassification-conditions-container">' +
-          '<h3 class="reclassification-conditions-title">⚠️ RECLASSIFICATION CONDITIONS</h3>' +
+          '<h3 class="reclassification-conditions-title"><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;vertical-align:middle;margin-right:0.35rem;flex-shrink:0;"><path d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/></svg> RECLASSIFICATION CONDITIONS</h3>' +
           '<p id="' + descId + '" class="reclassification-conditions-description">This transaction can be escalated to L3 if it includes:</p>' +
           '<div class="reclassification-checklist" aria-describedby="' + descId + '">' + checkboxesHtml + '</div>' +
           '<div id="risk-reclassification-msg-' + trans.id + '" class="risk-updated-message" style="display:none;">' +
@@ -2114,7 +2154,7 @@
         }).join('');
 
         return '<div class="reclassification-conditions-container downgrade-conditions">' +
-          '<h3 class="reclassification-conditions-title">📋 RECLASSIFICATION CONDITIONS (EXCEPTION → L2 POSSIBLE)</h3>' +
+          '<h3 class="reclassification-conditions-title"><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;vertical-align:middle;margin-right:0.35rem;flex-shrink:0;"><path d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg> RECLASSIFICATION CONDITIONS (EXCEPTION → L2 POSSIBLE)</h3>' +
           '<p id="' + downDescId + '" class="reclassification-conditions-description">This transaction can be downgraded to L2 if it includes:</p>' +
           '<div class="reclassification-checklist" aria-describedby="' + downDescId + '">' + downCheckboxesHtml + '</div>' +
           '<div id="risk-downgrade-msg-' + trans.id + '" class="risk-updated-message downgraded" style="display:none;">' +
@@ -2487,7 +2527,7 @@
 
           <!-- Next Steps (card, opens modal) -->
           <div class="next-steps-container">
-            <button class="next-steps-card" onclick="openNextStepsModal()">Next Steps</button>
+            <button class="next-steps-card" onclick="openNextStepsModal()">Next Steps <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;margin-left:0.4rem;vertical-align:middle;"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg></button>
           </div>
 
           <!-- Detailed Analysis Accordion (collapsed by default) -->
@@ -2497,7 +2537,7 @@
 
               <!-- 1. Contract Drafter Details -->
               <div class="detail-section">
-                <h4 class="detail-section-title">📝 Contract Drafter Details</h4>
+                <h4 class="detail-section-title"><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;vertical-align:middle;margin-right:0.35rem;color:#042B0B;position:relative;top:-1px;"><path d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/></svg>Contract Drafter &amp; Risk Assessment</h4>
                 <div class="result-item">
                   <div class="result-label">Who Drafts</div>
                   <div class="result-value" id="drafter-roles-${trans.id}">${getDrafterInfo(effectiveRiskLevel)}</div>
@@ -2515,7 +2555,7 @@
 
               <!-- 2. Contract Requestor Details -->
               <div class="detail-section">
-                <h4 class="detail-section-title">👤 Contract Requestor Details</h4>
+                <h4 class="detail-section-title"><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;vertical-align:middle;margin-right:0.35rem;color:#042B0B;position:relative;top:-1px;"><path d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/></svg>Contract Requestor Details</h4>
                 <div class="result-item">
                   <div class="result-label">Who Requests</div>
                   <div class="result-value">${selectedType === 'P' ? 'Procurement' : 'Transaction Owner'}</div>
@@ -2530,7 +2570,7 @@
 
               <!-- 3. LEO Archiving Status -->
               <div class="detail-section">
-                <h4 class="detail-section-title">🗂️ LEO Archiving Status</h4>
+                <h4 class="detail-section-title"><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;vertical-align:middle;margin-right:0.35rem;color:#042B0B;position:relative;top:-1px;"><path d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z"/></svg>LEO Archiving Status</h4>
                 <div class="result-item">
                   <div class="result-label">Required</div>
                   <div class="result-value">${selectedType === 'P' ? '✓ Yes' : (trans.leo ? '✓ Yes' : '✗ No')}</div>
@@ -2539,7 +2579,7 @@
 
               <!-- 4. S2V Support -->
               <div class="detail-section">
-                <h4 class="detail-section-title">🤝 S2V Support</h4>
+                <h4 class="detail-section-title"><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;vertical-align:middle;margin-right:0.35rem;color:#042B0B;position:relative;top:-1px;"><path d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>S2V Support</h4>
                 <div class="result-item">
                   <div class="result-value">${getS2VInfo(trans, selectedType)}</div>
                 </div>
@@ -2547,7 +2587,7 @@
 
               <!-- Templates & Clauses -->
               <div class="detail-section">
-                <h4 class="detail-section-title">📄 Templates & Clauses</h4>
+                <h4 class="detail-section-title"><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;vertical-align:middle;margin-right:0.35rem;color:#042B0B;position:relative;top:-1px;"><path d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>Templates &amp; Clauses</h4>
                 <ul class="criteria-list">
                   <li>
                     <strong>Available:</strong>
@@ -2777,7 +2817,7 @@
 
     function makeStep(number, icon, actorClass, title, description, timeline) {
       const iconHtml = icon ? '<span class="step-actor ' + actorClass + '">' + icon + '</span> ' : '';
-      const timelineHtml = timeline ? '<div class="step-timeline">⏱️ Timeline: ' + timeline + '</div>' : '';
+      const timelineHtml = timeline ? '<div class="step-timeline"><svg style="width:14px;height:14px;display:inline;vertical-align:middle;margin-right:0.25rem;position:relative;top:-1px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg> Timeline: ' + timeline + '</div>' : '';
       return '<div class="next-steps-step">' +
         '<div class="step-number">' + number + '</div>' +
         '<div class="step-content">' +
