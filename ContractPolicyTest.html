@@ -489,7 +489,6 @@
       width: 90%;
       max-width: 460px;
       position: relative;
-      animation: fadeIn 0.2s ease-out;
     }
 
     .confirm-modal-icon {
@@ -1924,6 +1923,226 @@
       transform: translateY(0);
       box-shadow: none;
     }
+
+    /* =============================================
+       MODAL ENTER / EXIT ANIMATIONS
+       ============================================= */
+    @keyframes modalFadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    @keyframes modalFadeOut {
+      from { opacity: 1; }
+      to   { opacity: 0; }
+    }
+
+    @keyframes modalBoxIn {
+      from { opacity: 0; transform: translateY(-10px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes modalBoxOut {
+      from { opacity: 1; transform: translateY(0) scale(1); }
+      to   { opacity: 0; transform: translateY(-8px) scale(0.97); }
+    }
+
+    .modal-entering {
+      animation: modalFadeIn 0.2s ease forwards;
+    }
+
+    .modal-entering > div:first-child {
+      animation: modalBoxIn 0.25s cubic-bezier(0.34, 1.4, 0.64, 1) forwards;
+    }
+
+    .modal-leaving {
+      animation: modalFadeOut 0.2s ease forwards;
+    }
+
+    .modal-leaving > div:first-child {
+      animation: modalBoxOut 0.18s ease forwards;
+    }
+
+    /* Corporate approval modal uses .corporate-modal-box as first child */
+    #corporateApprovalModal.modal-entering .corporate-modal-box {
+      animation: modalBoxIn 0.25s cubic-bezier(0.34, 1.4, 0.64, 1) forwards;
+    }
+
+    #corporateApprovalModal.modal-leaving .corporate-modal-box {
+      animation: modalBoxOut 0.18s ease forwards;
+    }
+
+    /* =============================================
+       RESULT CARD HOVER EFFECT
+       ============================================= */
+    .result-card {
+      transition: box-shadow 0.25s ease;
+    }
+
+    .result-card:hover {
+      box-shadow: 0 6px 22px rgba(4, 43, 11, 0.14);
+    }
+
+    /* =============================================
+       ACCORDION SUMMARY HOVER
+       ============================================= */
+    .result-card details summary:hover {
+      background: rgba(4, 43, 11, 0.04);
+      border-radius: var(--radius-sm);
+    }
+
+    /* =============================================
+       EMPTY STATE FLOAT ANIMATION
+       ============================================= */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-8px); }
+    }
+
+    .empty-state-icon {
+      animation: float 3s ease-in-out infinite;
+    }
+
+    /* =============================================
+       BUTTON LOADING SPINNER
+       ============================================= */
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .btn-loading {
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    .btn-loading::after {
+      content: '';
+      display: inline-block;
+      width: 0.875rem;
+      height: 0.875rem;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-top-color: rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      animation: spin 0.65s linear infinite;
+      vertical-align: middle;
+      margin-left: 0.4rem;
+    }
+
+    /* =============================================
+       DISABLED BUTTON STATE
+       ============================================= */
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed !important;
+      pointer-events: none;
+    }
+
+    /* =============================================
+       TOAST NOTIFICATION TYPES
+       ============================================= */
+    .toast.toast-success {
+      background: var(--color-success);
+    }
+
+    .toast.toast-warning {
+      background: var(--color-warning);
+    }
+
+    .toast.toast-info {
+      background: var(--color-info);
+    }
+
+    .toast.toast-error {
+      background: var(--color-error);
+    }
+
+    /* =============================================
+       RECLASSIFICATION ITEM HOVER
+       ============================================= */
+    .reclassification-item {
+      transition: background 0.15s ease;
+      border-radius: var(--radius-sm);
+    }
+
+    .reclassification-item:hover {
+      background: rgba(4, 43, 11, 0.04);
+    }
+
+    /* =============================================
+       PROGRESS BAR SHEEN EFFECT
+       ============================================= */
+    .progress-bar {
+      position: relative;
+      overflow: hidden;
+    }
+
+    @keyframes progressSheen {
+      0%   { transform: translateX(-200%); }
+      100% { transform: translateX(600%); }
+    }
+
+    .progress-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 20%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+      animation: progressSheen 2.8s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    /* =============================================
+       CHECKLIST STEP HOVER
+       ============================================= */
+    .checklist-step:hover:not(.completed) {
+      background: rgba(4, 43, 11, 0.03);
+      border-color: var(--color-primary-hover);
+    }
+
+    /* =============================================
+       BREADCRUMB COMPLETED HOVER
+       ============================================= */
+    .breadcrumb-item.completed span {
+      transition: color 0.2s ease;
+    }
+
+    .breadcrumb-item.completed:hover span {
+      color: var(--color-primary);
+    }
+
+    /* =============================================
+       CORPORATE CHECKBOX ITEM CHECKED STATE
+       ============================================= */
+    .corporate-checkbox-item:has(input:checked) {
+      border-color: var(--color-primary);
+      background: #F0F5F0;
+    }
+
+    /* =============================================
+       NEXT STEPS STEP BORDER TRANSITION
+       ============================================= */
+    .next-steps-step {
+      transition: all 0.25s ease;
+    }
+
+    .next-steps-step:hover {
+      box-shadow: var(--shadow-sm);
+      transform: translateX(2px);
+    }
+
+    /* =============================================
+       PREFERS-REDUCED-MOTION
+       ============================================= */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
   </style>
   <style>body { box-sizing: border-box; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
@@ -2607,7 +2826,7 @@
         setTimeout(function() { populateTransactions(); renderContent(); }, 250);
       }
 
-      showToast('✓ Step 1 Complete!\nProceeding to Step 2...');
+      showToast('✓ Step 1 Complete!\nProceeding to Step 2...', 'success');
     }
 
     function updateSectionLabel(label) {
@@ -2680,7 +2899,7 @@
       setTimeout(function() {
         populateTransactions();
         renderContent();
-        showToast('✓ Selection saved');
+        showToast('✓ Selection saved', 'success');
       }, 250);
     }
 
@@ -2769,7 +2988,7 @@
         updateProgress(4);
         renderContent();
         var prevStep = AppState.transactionType === 'IE' ? 2 : 3;
-        showToast('✓ Step ' + prevStep + ' Complete!\nProceeding to Step ' + (prevStep + 1) + '...');
+        showToast('✓ Step ' + prevStep + ' Complete!\nProceeding to Step ' + (prevStep + 1) + '...', 'success');
       }, 250);
     }
 
@@ -3530,14 +3749,21 @@
 
     function openRolesModal() {
       const modal = document.getElementById('rolesModal');
-      modal.classList.remove('hidden');
+      modal.classList.remove('hidden', 'modal-leaving');
       modal.style.display = 'flex';
+      modal.classList.add('modal-entering');
+      setTimeout(function() { modal.classList.remove('modal-entering'); }, 300);
     }
 
     function closeRolesModal() {
       const modal = document.getElementById('rolesModal');
-      modal.style.display = 'none';
-      modal.classList.add('hidden');
+      modal.classList.remove('modal-entering');
+      modal.classList.add('modal-leaving');
+      setTimeout(function() {
+        modal.style.display = 'none';
+        modal.classList.add('hidden');
+        modal.classList.remove('modal-leaving');
+      }, 200);
     }
 
     // =============================================
@@ -3638,14 +3864,21 @@
         '</div>';
 
       const modal = document.getElementById('checklistModal');
-      modal.classList.remove('hidden');
+      modal.classList.remove('hidden', 'modal-leaving');
       modal.style.display = 'flex';
+      modal.classList.add('modal-entering');
+      setTimeout(function() { modal.classList.remove('modal-entering'); }, 300);
     }
 
     function closeChecklistModal() {
       const modal = document.getElementById('checklistModal');
-      modal.style.display = 'none';
-      modal.classList.add('hidden');
+      modal.classList.remove('modal-entering');
+      modal.classList.add('modal-leaving');
+      setTimeout(function() {
+        modal.style.display = 'none';
+        modal.classList.add('hidden');
+        modal.classList.remove('modal-leaving');
+      }, 200);
     }
 
     // =============================================
@@ -3841,14 +4074,21 @@
             'onmouseout="this.style.background=\'#042B0B\'">Close</button>' +
         '</div>';
       const modal = document.getElementById('nextStepsModal');
-      modal.classList.remove('hidden');
+      modal.classList.remove('hidden', 'modal-leaving');
       modal.style.display = 'flex';
+      modal.classList.add('modal-entering');
+      setTimeout(function() { modal.classList.remove('modal-entering'); }, 300);
     }
 
     function closeNextStepsModal() {
       const modal = document.getElementById('nextStepsModal');
-      modal.style.display = 'none';
-      modal.classList.add('hidden');
+      modal.classList.remove('modal-entering');
+      modal.classList.add('modal-leaving');
+      setTimeout(function() {
+        modal.style.display = 'none';
+        modal.classList.add('hidden');
+        modal.classList.remove('modal-leaving');
+      }, 200);
     }
 
     function toggleChecklistItem(index, transId) {
@@ -3992,7 +4232,10 @@
     function _doCorporateApprovalModal() {
       var modal = document.getElementById('corporateApprovalModal');
       if (modal) {
+        modal.classList.remove('modal-leaving');
         modal.style.display = 'flex';
+        modal.classList.add('modal-entering');
+        setTimeout(function() { modal.classList.remove('modal-entering'); }, 300);
         // Reset to Stage 1
         document.getElementById('corporateStage1').style.display = 'block';
         document.getElementById('corporateStage2').style.display = 'none';
@@ -4021,15 +4264,25 @@
     function dismissCorporateApprovalModal() {
       var modal = document.getElementById('corporateApprovalModal');
       if (modal) {
-        modal.style.display = 'none';
+        modal.classList.remove('modal-entering');
+        modal.classList.add('modal-leaving');
+        setTimeout(function() {
+          modal.style.display = 'none';
+          modal.classList.remove('modal-leaving');
+        }, 200);
       }
     }
 
     function closeCorporateApprovalModal() {
       var modal = document.getElementById('corporateApprovalModal');
       if (modal) {
-        modal.style.display = 'none';
-        showToast('✓ Corporate approval check completed');
+        modal.classList.remove('modal-entering');
+        modal.classList.add('modal-leaving');
+        setTimeout(function() {
+          modal.style.display = 'none';
+          modal.classList.remove('modal-leaving');
+          showToast('✓ Corporate approval check completed', 'success');
+        }, 200);
       }
     }
 
@@ -4169,10 +4422,12 @@
      * Displays a toast notification that auto-dismisses after 3 seconds.
      * @param {string} message - The message to display.
      */
-    function showToast(message) {
+    function showToast(message, type) {
       var container = document.getElementById('toast-container');
       var toast = document.createElement('div');
-      toast.className = 'toast';
+      var validTypes = ['success', 'warning', 'info', 'error'];
+      var toastType = validTypes.indexOf(type) !== -1 ? type : null;
+      toast.className = 'toast' + (toastType ? ' toast-' + toastType : '');
       toast.textContent = message;
       container.appendChild(toast);
       setTimeout(function() {
@@ -4221,7 +4476,9 @@
       _confirmLastFocus = document.activeElement;
 
       var modal = document.getElementById('confirmationModal');
-      modal.classList.add('active');
+      modal.classList.remove('modal-leaving');
+      modal.classList.add('active', 'modal-entering');
+      setTimeout(function() { modal.classList.remove('modal-entering'); }, 300);
 
       // Default focus on Cancel (safest option per WCAG)
       var cancelBtn = document.getElementById('confirmModalCancelBtn');
@@ -4230,16 +4487,21 @@
 
     function _resolveConfirmation(confirmed) {
       var modal = document.getElementById('confirmationModal');
-      modal.classList.remove('active');
+      modal.classList.remove('modal-entering');
+      modal.classList.add('modal-leaving');
       var cb = _confirmCallbacks;
       _confirmCallbacks = null;
-      // Restore focus to the element that triggered the modal
-      if (_confirmLastFocus && typeof _confirmLastFocus.focus === 'function') {
-        try { _confirmLastFocus.focus(); } catch (e) {}
-      }
+      var lastFocus = _confirmLastFocus;
       _confirmLastFocus = null;
-      if (confirmed && cb && cb.onConfirm) cb.onConfirm();
-      if (!confirmed && cb && cb.onCancel) cb.onCancel();
+      setTimeout(function() {
+        modal.classList.remove('active', 'modal-leaving');
+        // Restore focus to the element that triggered the modal
+        if (lastFocus && typeof lastFocus.focus === 'function') {
+          try { lastFocus.focus(); } catch (e) {}
+        }
+        if (confirmed && cb && cb.onConfirm) cb.onConfirm();
+        if (!confirmed && cb && cb.onCancel) cb.onCancel();
+      }, 220);
     }
 
     // =============================================
