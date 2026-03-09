@@ -3868,13 +3868,13 @@
 
   </script><!-- Roles Definition Modal -->
   <div id="rolesModal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="rolesModalTitle" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.4); align-items: center; justify-content: center; z-index: 50;">
-   <div style="background: white; width: 90%; max-width: 700px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); padding: 2rem; position: relative; max-height: 85vh; overflow-y: auto;">
-    <button onclick="closeRolesModal()" aria-label="Close Definition of Roles dialog" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: #767676; cursor: pointer; padding: 0; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.color='#042B0B'" onmouseout="this.style.color='#767676'"> × </button>
-    <h2 id="rolesModalTitle" style="font-size: 1.25rem; font-weight: 700; color: #042B0B; margin-bottom: 1.5rem; padding-right: 2rem;">📘 Definition of Roles</h2><!-- Contract Requestor -->
-    <div style="margin-bottom: 1.5rem;">
-     <h3 style="font-weight: 700; color: #263F26; font-size: 1rem; margin-bottom: 0.75rem;">Contract Requestor</h3>
-     <p style="font-size: 0.9rem; color: #3D3D3D; line-height: 1.6; margin-bottom: 0.75rem;">The Contract Requestor is responsible for leading the overall Contracting Process, including:</p>
-     <ul style="list-style-type: disc; margin-left: 1.5rem; font-size: 0.9rem; color: #3D3D3D; line-height: 1.7;">
+   <div style="background: var(--color-surface); width: 90%; max-width: 700px; border-radius: var(--radius-lg); box-shadow: var(--shadow-xl); padding: var(--space-8); position: relative; max-height: 85vh; overflow-y: auto;">
+    <button onclick="closeRolesModal()" aria-label="Close Definition of Roles dialog" style="position: absolute; top: var(--space-4); right: var(--space-4); background: none; border: none; font-size: var(--font-size-2xl); color: var(--color-text-disabled); cursor: pointer; padding: 0; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.color='#042B0B'" onmouseout="this.style.color='var(--color-text-disabled)'"> × </button>
+    <h2 id="rolesModalTitle" style="font-size: var(--font-size-xl); font-weight: 700; color: var(--color-primary); margin-bottom: var(--space-6); padding-right: var(--space-8);">📘 Definition of Roles</h2><!-- Contract Requestor -->
+    <div style="margin-bottom: var(--space-6);">
+     <h3 style="font-weight: 700; color: var(--color-primary-hover); font-size: var(--font-size-base); margin-bottom: var(--space-3);">Contract Requestor</h3>
+     <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary); line-height: var(--line-height-base); margin-bottom: var(--space-3);">The Contract Requestor is responsible for leading the overall Contracting Process, including:</p>
+     <ul style="list-style-type: disc; margin-left: var(--space-6); font-size: var(--font-size-sm); color: var(--color-text-secondary); line-height: var(--line-height-loose);">
       <li>Assessing Contract needed based on Transaction Risk-level.</li>
       <li>Onboarding internal stakeholders, including Contract Drafter, where applicable.</li>
       <li>Clearing the Contract Prerequisites during the Contract Determination Phase for non S2V-Supported Transactions.</li>
@@ -3884,29 +3884,29 @@
       <li>Overseeing Contract Administration and filling in the Contract Repository (with S2V support for CLM-processed contracts).</li>
      </ul>
     </div><!-- Contract Drafter -->
-    <div style="margin-bottom: 1.5rem;">
-     <h3 style="font-weight: 700; color: #263F26; font-size: 1rem; margin-bottom: 0.75rem;">Contract Drafter</h3>
-     <p style="font-size: 0.9rem; color: #3D3D3D; line-height: 1.6;">The person who is responsible for drafting and negotiating the Contract.</p>
+    <div style="margin-bottom: var(--space-6);">
+     <h3 style="font-weight: 700; color: var(--color-primary-hover); font-size: var(--font-size-base); margin-bottom: var(--space-3);">Contract Drafter</h3>
+     <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary); line-height: var(--line-height-base);">The person who is responsible for drafting and negotiating the Contract.</p>
     </div><!-- Transaction Owner -->
     <div>
-     <h3 style="font-weight: 700; color: #263F26; font-size: 1rem; margin-bottom: 0.75rem;">Transaction Owner</h3>
-     <p style="font-size: 0.9rem; color: #3D3D3D; line-height: 1.6; margin-bottom: 0.75rem;">The Transaction Owner:</p>
-     <ul style="list-style-type: disc; margin-left: 1.5rem; font-size: 0.9rem; color: #3D3D3D; line-height: 1.7; margin-bottom: 1rem;">
+     <h3 style="font-weight: 700; color: var(--color-primary-hover); font-size: var(--font-size-base); margin-bottom: var(--space-3);">Transaction Owner</h3>
+     <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary); line-height: var(--line-height-base); margin-bottom: var(--space-3);">The Transaction Owner:</p>
+     <ul style="list-style-type: disc; margin-left: var(--space-6); font-size: var(--font-size-sm); color: var(--color-text-secondary); line-height: var(--line-height-loose); margin-bottom: var(--space-4);">
       <li>Provides timely business and/or technical input.</li>
       <li>Defines strategic contractual and negotiation options (in alignment with the Contract Requestor).</li>
       <li>Prioritizes when multiple Transactions are ongoing.</li>
       <li>Approves any final decision within negotiations, based on recommendations from internal stakeholders.</li>
       <li>Oversees Transaction's implementation and evolution (including amendments, renewals or terminations).</li>
      </ul>
-     <p style="font-size: 0.85rem; color: #555555; font-style: italic;"><strong>Note:</strong> in the current CLM Tool, this function is denominated "Contract Owner".</p>
+     <p style="font-size: var(--font-size-xs); color: var(--color-text-muted); font-style: italic;"><strong>Note:</strong> in the current CLM Tool, this function is denominated "Contract Owner".</p>
     </div>
    </div>
   </div>
   <!-- Checklist Modal -->
   <div id="checklistModal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="checklistModalTitle" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.4); align-items: center; justify-content: center; z-index: 50;">
-   <div style="background: white; width: 90%; max-width: 650px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); padding: 2rem; position: relative; max-height: 85vh; overflow-y: auto;">
-    <button onclick="closeChecklistModal()" aria-label="Close Contract Execution Checklist dialog" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: #767676; cursor: pointer; padding: 0; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; transition: color 0.25s ease;" onmouseover="this.style.color='#042B0B'" onmouseout="this.style.color='#767676'"> × </button>
-    <h2 id="checklistModalTitle" style="font-size: 1.25rem; font-weight: 700; color: #042B0B; margin-bottom: 1.5rem; padding-right: 2rem; display: flex; align-items: center; gap: 0.5rem;">
+   <div style="background: var(--color-surface); width: 90%; max-width: 650px; border-radius: var(--radius-lg); box-shadow: var(--shadow-xl); padding: var(--space-8); position: relative; max-height: 85vh; overflow-y: auto;">
+    <button onclick="closeChecklistModal()" aria-label="Close Contract Execution Checklist dialog" style="position: absolute; top: var(--space-4); right: var(--space-4); background: none; border: none; font-size: var(--font-size-2xl); color: var(--color-text-disabled); cursor: pointer; padding: 0; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; transition: color 0.25s ease;" onmouseover="this.style.color='#042B0B'" onmouseout="this.style.color='var(--color-text-disabled)'"> × </button>
+    <h2 id="checklistModalTitle" style="font-size: var(--font-size-xl); font-weight: 700; color: var(--color-primary); margin-bottom: var(--space-6); padding-right: var(--space-8); display: flex; align-items: center; gap: var(--space-2);">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="22" height="22"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
       Contract Execution Checklist
     </h2>
@@ -3915,9 +3915,9 @@
   </div>
   <!-- Next Steps Modal -->
   <div id="nextStepsModal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="nextStepsModalTitle" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5); align-items: center; justify-content: center; z-index: 50;">
-   <div style="background: white; width: 90%; max-width: 700px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); padding: 2rem; position: relative; max-height: 80vh; overflow-y: auto;">
-    <button onclick="closeNextStepsModal()" aria-label="Close Next Steps dialog" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: #767676; cursor: pointer; padding: 0; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; transition: color 0.25s ease;" onmouseover="this.style.color='#042B0B'" onmouseout="this.style.color='#767676'"> × </button>
-    <h2 id="nextStepsModalTitle" style="color: #042B0B; font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; border-bottom: 3px solid #042B0B; padding-bottom: 1rem; padding-right: 2rem; display: flex; align-items: center; gap: 0.5rem;">
+   <div style="background: var(--color-surface); width: 90%; max-width: 700px; border-radius: var(--radius-lg); box-shadow: var(--shadow-xl); padding: var(--space-8); position: relative; max-height: 80vh; overflow-y: auto;">
+    <button onclick="closeNextStepsModal()" aria-label="Close Next Steps dialog" style="position: absolute; top: var(--space-4); right: var(--space-4); background: none; border: none; font-size: var(--font-size-2xl); color: var(--color-text-disabled); cursor: pointer; padding: 0; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; transition: color 0.25s ease;" onmouseover="this.style.color='#042B0B'" onmouseout="this.style.color='var(--color-text-disabled)'"> × </button>
+    <h2 id="nextStepsModalTitle" style="color: var(--color-primary); font-size: var(--font-size-2xl); font-weight: 700; margin-bottom: var(--space-6); border-bottom: 3px solid var(--color-primary); padding-bottom: var(--space-4); padding-right: var(--space-8); display: flex; align-items: center; gap: var(--space-2);">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
       NEXT STEPS
     </h2>
