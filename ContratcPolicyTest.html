@@ -3060,13 +3060,12 @@
     // =============================================
 
     function makeStep(number, icon, actorClass, title, description, timeline) {
-      const iconHtml = icon ? '<span class="step-actor ' + actorClass + '">' + icon + '</span> ' : '';
       const clockSvg = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="14" height="14" style="vertical-align: middle; margin-right: 2px;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>';
       const timelineHtml = timeline ? '<div class="step-timeline">' + clockSvg + ' Timeline: ' + timeline + '</div>' : '';
       return '<div class="next-steps-step">' +
         '<div class="step-number">' + number + '</div>' +
         '<div class="step-content">' +
-          '<div class="step-title">' + iconHtml + title + '</div>' +
+          '<div class="step-title">' + title + '</div>' +
           '<div class="step-description">' + description + '</div>' +
           timelineHtml +
         '</div>' +
