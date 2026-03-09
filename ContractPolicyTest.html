@@ -2769,7 +2769,7 @@
         updateProgress(4);
         renderContent();
         var prevStep = AppState.transactionType === 'IE' ? 2 : 3;
-        showToast('✓ Step ' + prevStep + ' Complete!\nProceeding to Step 4...');
+        showToast('✓ Step ' + prevStep + ' Complete!\nProceeding to Step ' + (prevStep + 1) + '...');
       }, 250);
     }
 
@@ -4210,7 +4210,7 @@
      * @param {string} icon - Emoji icon to display at the top.
      * @param {string} title - Modal heading text.
      * @param {string} message - Explanatory body text.
-     * @param {Function} [onConfirm] - Called when the user clicks "Confirmer & Continuer".
+     * @param {Function} [onConfirm] - Called when the user clicks "Confirm & Continue".
      * @param {Function} [onCancel] - Called when the user dismisses the modal.
      */
     function showConfirmation(icon, title, message, onConfirm, onCancel) {
@@ -4385,8 +4385,8 @@
       <h2 id="confirmModalTitle" class="confirm-modal-title"></h2>
       <p id="confirmModalMessage" class="confirm-modal-message"></p>
       <div class="confirm-modal-actions">
-        <button id="confirmModalCancelBtn" class="confirm-btn-cancel">Annuler</button>
-        <button id="confirmModalConfirmBtn" class="confirm-btn-confirm">Confirmer &amp; Continuer</button>
+        <button id="confirmModalCancelBtn" class="confirm-btn-cancel">Cancel</button>
+        <button id="confirmModalConfirmBtn" class="confirm-btn-confirm">Confirm &amp; Continue</button>
       </div>
     </div>
   </div>
