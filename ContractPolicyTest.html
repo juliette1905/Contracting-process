@@ -346,6 +346,9 @@
       font-weight: 700;
       font-size: var(--font-size-xs);
       letter-spacing: 0.5px;
+      /* Tooltip positioning anchor */
+      position: relative;
+      cursor: help;
     }
 
     .risk-l1 {
@@ -361,6 +364,207 @@
     .risk-l3 {
       background: var(--color-accent);
       color: white;
+    }
+
+    /* =============================================
+       TOOLTIPS ON RISK BADGES (L1 / L2 / L3)
+       ============================================= */
+
+    /* Shared tooltip shell */
+    .risk-badge::after,
+    .risk-badge::before {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.18s ease;
+      z-index: 1000;
+    }
+
+    /* Tooltip bubble */
+    .risk-badge::after {
+      content: attr(data-tooltip);
+      bottom: calc(100% + 8px);
+      background: #042B0B;
+      color: #fff;
+      border-radius: 4px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0;
+      white-space: normal;
+      width: max-content;
+      max-width: 200px;
+      text-align: center;
+      line-height: 1.4;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Tooltip arrow */
+    .risk-badge::before {
+      content: '';
+      bottom: calc(100% + 2px);
+      border: 6px solid transparent;
+      border-top-color: #042B0B;
+    }
+
+    .risk-badge:hover::after,
+    .risk-badge:hover::before,
+    .risk-badge:focus-visible::after,
+    .risk-badge:focus-visible::before {
+      opacity: 1;
+    }
+
+    /* =============================================
+       SKELETON LOADERS
+       ============================================= */
+
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, #E7EAE7 0%, #F7EFE6 50%, #E7EAE7 100%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s ease-in-out infinite;
+      border-radius: var(--radius-sm);
+    }
+
+    .skeleton-line {
+      height: 0.875rem;
+      margin-bottom: var(--space-3);
+    }
+
+    .skeleton-line.short  { width: 35%; }
+    .skeleton-line.medium { width: 60%; }
+    .skeleton-line.long   { width: 88%; }
+
+    .skeleton-card {
+      background: var(--color-surface);
+      border-radius: var(--radius-base);
+      padding: var(--space-6);
+      margin-bottom: var(--space-4);
+      box-shadow: var(--shadow-base);
+      border-left: 4px solid var(--color-border);
+    }
+
+    .skeleton-title {
+      height: 1rem;
+      width: 45%;
+      margin-bottom: var(--space-4);
+    }
+
+    .skeleton-badge {
+      display: inline-block;
+      height: 1.25rem;
+      width: 2.5rem;
+      border-radius: var(--radius-full);
+    }
+
+    /* =============================================
+       CONFIRMATION MODAL
+       ============================================= */
+
+    #confirmationModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      align-items: center;
+      justify-content: center;
+      z-index: 300;
+    }
+
+    #confirmationModal.active {
+      display: flex;
+    }
+
+    .confirm-modal-box {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xl);
+      padding: var(--space-8);
+      width: 90%;
+      max-width: 460px;
+      position: relative;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .confirm-modal-icon {
+      font-size: 2rem;
+      margin-bottom: var(--space-3);
+      display: block;
+      text-align: center;
+    }
+
+    .confirm-modal-title {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--color-primary);
+      margin-bottom: var(--space-3);
+      text-align: center;
+      line-height: var(--line-height-tight);
+    }
+
+    .confirm-modal-message {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      line-height: var(--line-height-base);
+      text-align: center;
+      margin-bottom: var(--space-6);
+    }
+
+    .confirm-modal-actions {
+      display: flex;
+      gap: var(--space-3);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .confirm-btn-cancel {
+      background: var(--color-bg-secondary);
+      color: var(--color-primary);
+      border: 1px solid var(--color-border);
+      padding: var(--space-3) var(--space-5);
+      border-radius: var(--radius-base);
+      font-weight: 600;
+      font-size: var(--font-size-sm);
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .confirm-btn-cancel:hover {
+      background: var(--color-border);
+    }
+
+    .confirm-btn-cancel:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+      box-shadow: var(--focus-ring);
+    }
+
+    .confirm-btn-confirm {
+      background: var(--color-primary);
+      color: var(--color-bg-secondary);
+      border: none;
+      padding: var(--space-3) var(--space-5);
+      border-radius: var(--radius-base);
+      font-weight: 600;
+      font-size: var(--font-size-sm);
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .confirm-btn-confirm:hover {
+      background: var(--color-primary-hover);
+    }
+
+    .confirm-btn-confirm:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+      box-shadow: var(--focus-ring);
     }
 
     .timeline {
@@ -2365,6 +2569,9 @@
       });
       if (el) el.classList.add(type === 'P' ? 'active' : 'active-pink');
 
+      // Show skeleton in content area immediately for perceived performance
+      showContentSkeleton();
+
       // Show appropriate selection sections with animation
       const deptSection = document.getElementById('departmentSection');
       const transSection = document.getElementById('transactionSection');
@@ -2376,8 +2583,9 @@
         deptSection.classList.add('animate-fadeIn');
         transSection.classList.add('fade-hidden');
         transSection.classList.remove('animate-fadeIn');
-        populateDepartments();
+        showSelectSkeleton('departmentSelect');
         updateProgress(2);
+        setTimeout(function() { populateDepartments(); renderContent(); }, 250);
       } else if (type === 'P') {
         updateSectionLabel('Step 2: Select Procurement Domain');
         document.getElementById('departmentHelp').textContent = '💡 Choose the procurement domain relevant to your purchase.';
@@ -2385,19 +2593,20 @@
         deptSection.classList.add('animate-fadeIn');
         transSection.classList.add('fade-hidden');
         transSection.classList.remove('animate-fadeIn');
-        populateDomains();
+        showSelectSkeleton('departmentSelect');
         updateProgress(2);
+        setTimeout(function() { populateDomains(); renderContent(); }, 250);
       } else if (type === 'IE') {
         deptSection.classList.add('fade-hidden');
         deptSection.classList.remove('animate-fadeIn');
         transSection.classList.remove('fade-hidden');
         transSection.classList.add('animate-fadeIn');
         updateSectionLabel('Step 2: Select Transaction');
-        populateTransactions();
+        showSelectSkeleton('transactionSelect');
         updateProgress(2, 'Select Transaction', 'Step 2 of 4');
+        setTimeout(function() { populateTransactions(); renderContent(); }, 250);
       }
 
-      renderContent();
       showToast('✓ Step 1 Complete!\nProceeding to Step 2...');
     }
 
@@ -2423,6 +2632,7 @@
         select.appendChild(option);
       });
       select.value = '';
+      select.disabled = false; // re-enable after skeleton loading
     }
 
     /** Populates the department select with Procurement domains. */
@@ -2445,7 +2655,8 @@
         document.getElementById('transactionSection').classList.add('fade-hidden');
         document.getElementById('transactionSection').classList.remove('animate-fadeIn');
         updateProgress(2);
-        renderContent();
+        showContentSkeleton();
+        setTimeout(function() { renderContent(); }, 250);
         return;
       }
 
@@ -2462,11 +2673,15 @@
       } else if (AppState.transactionType === 'NP') {
         updateTransactionLabel('Step 3: Select Transaction');
       }
-      
-      populateTransactions();
+
+      showSelectSkeleton('transactionSelect');
+      showContentSkeleton();
       updateProgress(3);
-      renderContent();
-      showToast('✓ Selection saved');
+      setTimeout(function() {
+        populateTransactions();
+        renderContent();
+        showToast('✓ Selection saved');
+      }, 250);
     }
 
     function updateTransactionLabel(label) {
@@ -2477,6 +2692,7 @@
     function populateTransactions() {
       const select = document.getElementById('transactionSelect');
       select.innerHTML = '<option value="">-- Choose a transaction --</option>';
+      select.disabled = false; // re-enable after skeleton loading
       
       let transactions = [];
 
@@ -2516,7 +2732,8 @@
       if (!transId) {
         AppState.selectedTransaction = null;
         updateProgress(AppState.transactionType === 'IE' ? 2 : 3);
-        renderContent();
+        showContentSkeleton();
+        setTimeout(function() { renderContent(); }, 250);
         return;
       }
 
@@ -2540,15 +2757,20 @@
       if (!found) {
         console.warn('Transaction not found in data:', transId);
         AppState.selectedTransaction = null;
-        renderContent();
+        showContentSkeleton();
+        setTimeout(function() { renderContent(); }, 250);
         return;
       }
-      AppState.selectedTransaction = found;
-      updateProgress(4);
-      renderContent();
-      var prevStep = AppState.transactionType === 'IE' ? 2 : 3;
-      var nextStep = 4;
-      showToast('✓ Step ' + prevStep + ' Complete!\nProceeding to Step ' + nextStep + '...');
+
+      // Show skeleton immediately, then render real content after brief delay
+      showContentSkeleton();
+      setTimeout(function() {
+        AppState.selectedTransaction = found;
+        updateProgress(4);
+        renderContent();
+        var prevStep = AppState.transactionType === 'IE' ? 2 : 3;
+        showToast('✓ Step ' + prevStep + ' Complete!\nProceeding to Step ' + (prevStep + 1) + '...');
+      }, 250);
     }
 
     /**
@@ -2623,6 +2845,14 @@
       if (riskLevel.includes('L3') || riskLevel === 'L3') return 'risk-l3';
       if (riskLevel.includes('L2') || riskLevel === 'L2') return 'risk-l2';
       return 'risk-l1';
+    }
+
+    /** Returns the tooltip text for a given risk level. */
+    function getRiskTooltip(riskLevel) {
+      if (typeof riskLevel !== 'string') return 'Low Risk \u2013 Standard contract, minimal compliance review required';
+      if (riskLevel.includes('L3') || riskLevel === 'L3') return 'High Risk \u2013 Mandatory legal approval, executive sign-off required';
+      if (riskLevel.includes('L2') || riskLevel === 'L2') return 'Medium Risk \u2013 Enhanced review, legal & compliance involvement';
+      return 'Low Risk \u2013 Standard contract, minimal compliance review required';
     }
 
     // =============================================
@@ -2745,25 +2975,22 @@
       var riskBadge = document.getElementById('risk-badge-risk-level-' + transactionId);
       var msgEl = document.getElementById('risk-reclassification-msg-' + transactionId);
 
+      function applyBadge(el, text, cls) {
+        if (!el) return;
+        var level = text.replace('⚠️ ', '');
+        el.textContent = text;
+        el.className = cls;
+        el.setAttribute('data-tooltip', getRiskTooltip(level));
+        el.setAttribute('aria-label', level + ': ' + getRiskTooltip(level));
+      }
+
       if (riskLevel === 'L2' && anyChecked) {
-        if (summaryBadge) {
-          summaryBadge.textContent = '⚠️ L3';
-          summaryBadge.className = 'risk-badge risk-l3 escalated';
-        }
-        if (riskBadge) {
-          riskBadge.textContent = '⚠️ L3';
-          riskBadge.className = 'risk-badge risk-l3 escalated';
-        }
+        applyBadge(summaryBadge, '⚠️ L3', 'risk-badge risk-l3 escalated');
+        applyBadge(riskBadge,   '⚠️ L3', 'risk-badge risk-l3 escalated');
         if (msgEl) { msgEl.style.display = 'block'; }
       } else {
-        if (summaryBadge) {
-          summaryBadge.textContent = riskLevel;
-          summaryBadge.className = 'risk-badge ' + getRiskClass(riskLevel);
-        }
-        if (riskBadge) {
-          riskBadge.textContent = riskLevel;
-          riskBadge.className = 'risk-badge ' + getRiskClass(riskLevel);
-        }
+        applyBadge(summaryBadge, riskLevel, 'risk-badge ' + getRiskClass(riskLevel));
+        applyBadge(riskBadge,   riskLevel, 'risk-badge ' + getRiskClass(riskLevel));
         if (msgEl) { msgEl.style.display = 'none'; }
       }
 
@@ -2847,6 +3074,8 @@
       if (riskBadgeEl) {
         riskBadgeEl.textContent = currentRiskLevel;
         riskBadgeEl.className = 'risk-badge ' + getRiskClass(currentRiskLevel);
+        riskBadgeEl.setAttribute('data-tooltip', getRiskTooltip(currentRiskLevel));
+        riskBadgeEl.setAttribute('aria-label', currentRiskLevel + ': ' + getRiskTooltip(currentRiskLevel));
       }
       var labelEl = document.getElementById('checklistRiskLabel');
       if (labelEl) labelEl.textContent = getChecklistLabel(currentRiskLevel);
@@ -2859,6 +3088,32 @@
     }
 
     function toggleException(transactionId, exceptionIndex) {
+      var trans = AppState.selectedTransaction;
+      if (!trans) return;
+
+      var state = loadExceptionState(transactionId);
+      var wasPreviouslyChecked = !!(state && state[exceptionIndex]);
+
+      if (!wasPreviouslyChecked) {
+        // User is checking this condition — risk level will escalate L2 → L3
+        showConfirmation(
+          '⚠️',
+          'Reclassify Risk Level?',
+          'You are confirming that this exception applies. This will escalate the risk level from L2 to L3, requiring mandatory legal approval and executive sign-off.',
+          function() { _doToggleException(transactionId, exceptionIndex); },
+          function() {
+            // User cancelled — revert the checkbox to unchecked
+            var cb = document.getElementById('recl-' + transactionId + '-' + exceptionIndex);
+            if (cb) cb.checked = false;
+          }
+        );
+      } else {
+        // User is unchecking — no confirmation needed
+        _doToggleException(transactionId, exceptionIndex);
+      }
+    }
+
+    function _doToggleException(transactionId, exceptionIndex) {
       var trans = AppState.selectedTransaction;
       if (!trans) return;
 
@@ -2918,6 +3173,37 @@
     function toggleRCLegalTemplate(transactionId, answer) {
       var currentState = loadRCLegalTemplateState(transactionId);
       var newAnswer = (currentState === answer) ? null : answer;
+
+      // Only ask for confirmation when the action changes the effective risk level
+      // (selecting 'yes' moves L3 → L2; reverting from 'yes' moves L2 back → L3)
+      var willChangeRisk = (newAnswer === 'yes' && currentState !== 'yes') ||
+                           (newAnswer !== 'yes' && currentState === 'yes');
+
+      if (willChangeRisk) {
+        var isDowngrade = (newAnswer === 'yes');
+        showConfirmation(
+          isDowngrade ? '🔄' : '⚠️',
+          'Reclassify Risk Level?',
+          isDowngrade
+            ? 'You are confirming that a legal template is available. This will downgrade the risk level from L3 to L2, changing the required approvals and drafting process.'
+            : 'You are removing the legal template confirmation. This will revert the risk level back to L3, requiring mandatory legal approval.',
+          function() { _doToggleRCLegalTemplate(transactionId, answer); },
+          function() {
+            // User cancelled — revert the checkbox to its prior state
+            var yesBox = document.getElementById('rc-yes-' + transactionId);
+            var noBox  = document.getElementById('rc-no-' + transactionId);
+            if (yesBox) yesBox.checked = (currentState === 'yes');
+            if (noBox)  noBox.checked  = (currentState === 'no');
+          }
+        );
+      } else {
+        _doToggleRCLegalTemplate(transactionId, answer);
+      }
+    }
+
+    function _doToggleRCLegalTemplate(transactionId, answer) {
+      var currentState = loadRCLegalTemplateState(transactionId);
+      var newAnswer = (currentState === answer) ? null : answer;
       saveRCLegalTemplateState(transactionId, newAnswer);
 
       var yesBox = document.getElementById('rc-yes-' + transactionId);
@@ -2929,25 +3215,24 @@
       var yesMsgEl = document.getElementById('risk-rc-yes-msg-' + transactionId);
       var noMsgEl = document.getElementById('risk-rc-no-msg-' + transactionId);
 
+      function setBadge(el, text, cls) {
+        if (!el) return;
+        el.textContent = text;
+        el.className = cls;
+        el.setAttribute('data-tooltip', getRiskTooltip(text));
+        el.setAttribute('aria-label', text + ': ' + getRiskTooltip(text));
+      }
+
       if (newAnswer === 'yes') {
-        if (summaryBadge) {
-          summaryBadge.textContent = 'L2';
-          summaryBadge.className = 'risk-badge risk-l2 downgraded';
-        }
+        setBadge(summaryBadge, 'L2', 'risk-badge risk-l2 downgraded');
         if (yesMsgEl) { yesMsgEl.style.display = 'block'; }
         if (noMsgEl) { noMsgEl.style.display = 'none'; }
       } else if (newAnswer === 'no') {
-        if (summaryBadge) {
-          summaryBadge.textContent = 'L3';
-          summaryBadge.className = 'risk-badge risk-l3';
-        }
+        setBadge(summaryBadge, 'L3', 'risk-badge risk-l3');
         if (yesMsgEl) { yesMsgEl.style.display = 'none'; }
         if (noMsgEl) { noMsgEl.style.display = 'block'; }
       } else {
-        if (summaryBadge) {
-          summaryBadge.textContent = 'L3';
-          summaryBadge.className = 'risk-badge risk-l3';
-        }
+        setBadge(summaryBadge, 'L3', 'risk-badge risk-l3');
         if (yesMsgEl) { yesMsgEl.style.display = 'none'; }
         if (noMsgEl) { noMsgEl.style.display = 'none'; }
       }
@@ -2959,6 +3244,32 @@
     }
 
     function toggleDowngradeException(transactionId, exceptionIndex) {
+      var trans = AppState.selectedTransaction;
+      if (!trans) return;
+
+      var state = loadDowngradeExceptionState(transactionId);
+      var wasPreviouslyChecked = !!(state && state[exceptionIndex]);
+
+      if (!wasPreviouslyChecked) {
+        // User is checking this condition — risk level will downgrade L3 → L2
+        showConfirmation(
+          '🔄',
+          'Reclassify Risk Level?',
+          'You are confirming that this exception applies. This will downgrade the risk level from L3 to L2, changing the required approvals and drafting process.',
+          function() { _doToggleDowngradeException(transactionId, exceptionIndex); },
+          function() {
+            // User cancelled — revert the checkbox to unchecked
+            var cb = document.getElementById('downgrade-' + transactionId + '-' + exceptionIndex);
+            if (cb) cb.checked = false;
+          }
+        );
+      } else {
+        // User is unchecking — no confirmation needed
+        _doToggleDowngradeException(transactionId, exceptionIndex);
+      }
+    }
+
+    function _doToggleDowngradeException(transactionId, exceptionIndex) {
       var trans = AppState.selectedTransaction;
       if (!trans) return;
 
@@ -2976,17 +3287,19 @@
       var summaryBadge = document.getElementById('risk-badge-summary-' + transactionId);
       var msgEl = document.getElementById('risk-downgrade-msg-' + transactionId);
 
+      function setBadge(el, text, cls) {
+        if (!el) return;
+        el.textContent = text;
+        el.className = cls;
+        el.setAttribute('data-tooltip', getRiskTooltip(text));
+        el.setAttribute('aria-label', text + ': ' + getRiskTooltip(text));
+      }
+
       if (anyChecked) {
-        if (summaryBadge) {
-          summaryBadge.textContent = 'L2';
-          summaryBadge.className = 'risk-badge risk-l2 downgraded';
-        }
+        setBadge(summaryBadge, 'L2', 'risk-badge risk-l2 downgraded');
         if (msgEl) { msgEl.style.display = 'block'; }
       } else {
-        if (summaryBadge) {
-          summaryBadge.textContent = 'L3';
-          summaryBadge.className = 'risk-badge risk-l3';
-        }
+        setBadge(summaryBadge, 'L3', 'risk-badge risk-l3');
         if (msgEl) { msgEl.style.display = 'none'; }
       }
 
@@ -2999,7 +3312,6 @@
 
       updateDrafterBasedOnRiskLevel(transactionId, currentRiskLevel);
       updateChecklistStepsIfOpen();
-
     }
 
     function initializeExceptionsChecklist() {
@@ -3027,7 +3339,7 @@
             <div class="summary-grid">
               <div class="summary-item">
                 <strong>Risk Level:</strong>
-                <span id="risk-badge-summary-${trans.id}" class="risk-badge ${getRiskClass(trans.riskLevel)}">${trans.riskLevel}</span>
+                <span id="risk-badge-summary-${trans.id}" class="risk-badge ${getRiskClass(trans.riskLevel)}" tabindex="0" aria-label="${trans.riskLevel}: ${getRiskTooltip(trans.riskLevel)}" data-tooltip="${getRiskTooltip(trans.riskLevel)}">${trans.riskLevel}</span>
               </div>
               <div class="summary-item">
                 <strong>Contract Needed:</strong>
@@ -3070,7 +3382,7 @@
                 <div class="result-item">
                   <div class="result-label">Risk Level</div>
                   <div class="result-value">
-                    <span id="risk-badge-risk-level-${trans.id}" class="risk-badge ${getRiskClass(trans.riskLevel)}">${trans.riskLevel}</span>
+                    <span id="risk-badge-risk-level-${trans.id}" class="risk-badge ${getRiskClass(trans.riskLevel)}" tabindex="0" aria-label="${trans.riskLevel}: ${getRiskTooltip(trans.riskLevel)}" data-tooltip="${getRiskTooltip(trans.riskLevel)}">${trans.riskLevel}</span>
                   </div>
                 </div>
                 <div id="risk-criteria-${trans.id}">${renderRiskCriteria(trans)}</div>
@@ -3303,7 +3615,7 @@
             '<strong style="color: #042B0B;">' + trans.name + '</strong>' +
           '</div>' +
           '<div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">' +
-            '<span class="risk-badge ' + riskClass + '">' + currentRiskLevel + '</span>' +
+            '<span class="risk-badge ' + riskClass + '" tabindex="0" data-tooltip="' + getRiskTooltip(currentRiskLevel) + '" aria-label="' + currentRiskLevel + ': ' + getRiskTooltip(currentRiskLevel) + '">' + currentRiskLevel + '</span>' +
             '<span id="checklistRiskLabel" style="font-size: 0.9rem; color: #555;">' + getChecklistLabel(currentRiskLevel) + '</span>' +
           '</div>' +
         '</div>' +
@@ -3515,7 +3827,11 @@
 
       document.getElementById('nextStepsContent').innerHTML =
         '<div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">' +
-          '<span class="risk-badge ' + riskClass + '">' + currentRiskLevel + '</span>' +
+          '<span class="risk-badge ' + riskClass + '" tabindex="0"' +
+            ' data-tooltip="' + getRiskTooltip(currentRiskLevel) + '"' +
+            ' aria-label="' + currentRiskLevel + ': ' + getRiskTooltip(currentRiskLevel) + '">' +
+            currentRiskLevel +
+          '</span>' +
         '</div>' +
         content +
         '<div style="margin-top: 1.5rem; border-top: 1px solid #E7EAE7; padding-top: 1.5rem;">' +
@@ -3615,6 +3931,45 @@
           }
         });
       }
+
+      // Confirmation modal: wire buttons and focus trap
+      var confirmModal = document.getElementById('confirmationModal');
+      if (confirmModal) {
+        document.getElementById('confirmModalCancelBtn').addEventListener('click', function() {
+          _resolveConfirmation(false);
+        });
+        document.getElementById('confirmModalConfirmBtn').addEventListener('click', function() {
+          _resolveConfirmation(true);
+        });
+
+        // Close on backdrop click
+        confirmModal.addEventListener('click', function(e) {
+          if (e.target === confirmModal) { _resolveConfirmation(false); }
+        });
+
+        // Focus trap — keeps Tab/Shift+Tab inside the modal
+        confirmModal.addEventListener('keydown', function(e) {
+          if (e.key !== 'Tab') return;
+          var focusable = confirmModal.querySelectorAll('button:not([disabled])');
+          var first = focusable[0];
+          var last  = focusable[focusable.length - 1];
+          if (e.shiftKey) {
+            if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+          } else {
+            if (document.activeElement === last)  { e.preventDefault(); first.focus(); }
+          }
+        });
+      }
+    });
+
+    // Dismiss confirmation modal on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        var confirmModal = document.getElementById('confirmationModal');
+        if (confirmModal && confirmModal.classList.contains('active')) {
+          _resolveConfirmation(false);
+        }
+      }
     });
 
     // =============================================
@@ -3626,6 +3981,15 @@
     }
 
     function openCorporateApprovalModal() {
+      showConfirmation(
+        '🏛️',
+        'Confirm Corporate Approval?',
+        'You are confirming that this contract requires corporate-level approval. This will trigger the approval workflow.',
+        function() { _doCorporateApprovalModal(); }
+      );
+    }
+
+    function _doCorporateApprovalModal() {
       var modal = document.getElementById('corporateApprovalModal');
       if (modal) {
         modal.style.display = 'flex';
@@ -3835,6 +4199,89 @@
     }
 
     // =============================================
+    // CONFIRMATION MODAL
+    // =============================================
+
+    var _confirmCallbacks = null;
+    var _confirmLastFocus = null;
+
+    /**
+     * Shows the reusable confirmation modal.
+     * @param {string} icon - Emoji icon to display at the top.
+     * @param {string} title - Modal heading text.
+     * @param {string} message - Explanatory body text.
+     * @param {Function} [onConfirm] - Called when the user clicks "Confirm & Continue".
+     * @param {Function} [onCancel] - Called when the user dismisses the modal.
+     */
+    function showConfirmation(icon, title, message, onConfirm, onCancel) {
+      document.getElementById('confirmModalIcon').textContent = icon || '⚠️';
+      document.getElementById('confirmModalTitle').textContent = title;
+      document.getElementById('confirmModalMessage').textContent = message;
+      _confirmCallbacks = { onConfirm: onConfirm || null, onCancel: onCancel || null };
+      _confirmLastFocus = document.activeElement;
+
+      var modal = document.getElementById('confirmationModal');
+      modal.classList.add('active');
+
+      // Default focus on Cancel (safest option per WCAG)
+      var cancelBtn = document.getElementById('confirmModalCancelBtn');
+      if (cancelBtn) setTimeout(function() { cancelBtn.focus(); }, 50);
+    }
+
+    function _resolveConfirmation(confirmed) {
+      var modal = document.getElementById('confirmationModal');
+      modal.classList.remove('active');
+      var cb = _confirmCallbacks;
+      _confirmCallbacks = null;
+      // Restore focus to the element that triggered the modal
+      if (_confirmLastFocus && typeof _confirmLastFocus.focus === 'function') {
+        try { _confirmLastFocus.focus(); } catch (e) {}
+      }
+      _confirmLastFocus = null;
+      if (confirmed && cb && cb.onConfirm) cb.onConfirm();
+      if (!confirmed && cb && cb.onCancel) cb.onCancel();
+    }
+
+    // =============================================
+    // SKELETON LOADERS
+    // =============================================
+
+    /** Renders three placeholder skeleton cards in the main content area. */
+    function showContentSkeleton() {
+      var contentArea = document.getElementById('contentArea');
+      if (!contentArea) return;
+      contentArea.innerHTML =
+        '<div class="skeleton-card">' +
+          '<div class="skeleton skeleton-title"></div>' +
+          '<div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:var(--space-4);">' +
+            '<div class="skeleton skeleton-badge"></div>' +
+            '<div class="skeleton skeleton-line medium" style="flex:1;margin:0;"></div>' +
+          '</div>' +
+          '<div class="skeleton skeleton-line long"></div>' +
+          '<div class="skeleton skeleton-line medium"></div>' +
+        '</div>' +
+        '<div class="skeleton-card">' +
+          '<div class="skeleton skeleton-title"></div>' +
+          '<div class="skeleton skeleton-line long"></div>' +
+          '<div class="skeleton skeleton-line medium"></div>' +
+          '<div class="skeleton skeleton-line short"></div>' +
+        '</div>' +
+        '<div class="skeleton-card">' +
+          '<div class="skeleton skeleton-title"></div>' +
+          '<div class="skeleton skeleton-line long"></div>' +
+          '<div class="skeleton skeleton-line long"></div>' +
+        '</div>';
+    }
+
+    /** Shows a loading placeholder inside a <select> and disables it temporarily. */
+    function showSelectSkeleton(selectId) {
+      var select = document.getElementById(selectId);
+      if (!select) return;
+      select.innerHTML = '<option value="">Loading options\u2026</option>';
+      select.disabled = true;
+    }
+
+    // =============================================
     // ACCORDION CLOSE ANIMATION
     // =============================================
 
@@ -3930,6 +4377,18 @@
     </div>
     <div id="nextStepsContent"></div>
    </div>
+  </div>
+  <!-- Confirmation Modal (reusable) -->
+  <div id="confirmationModal" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+    <div class="confirm-modal-box">
+      <span id="confirmModalIcon" class="confirm-modal-icon" aria-hidden="true"></span>
+      <h2 id="confirmModalTitle" class="confirm-modal-title"></h2>
+      <p id="confirmModalMessage" class="confirm-modal-message"></p>
+      <div class="confirm-modal-actions">
+        <button id="confirmModalCancelBtn" class="confirm-btn-cancel">Cancel</button>
+        <button id="confirmModalConfirmBtn" class="confirm-btn-confirm">Confirm &amp; Continue</button>
+      </div>
+    </div>
   </div>
   <!-- Toast notification container -->
   <div id="toast-container"></div>
