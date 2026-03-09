@@ -2379,7 +2379,7 @@
       return { conditions: conditions, targetLevel: targetLevel };
     }
 
-    var RC_LEGAL_TEMPLATE_IDS = ['DIST001', 'MK001', 'PHARM001', 'DIST002'];
+    var RC_LEGAL_TEMPLATE_IDS = ['DIST001', 'MK001', 'PHARM001', 'DIST002', 'MA_NDA', 'RD_DEV'];
 
     function renderExceptionsSection(trans) {
       var isRCLegalTemplate = selectedType === 'NP' && RC_LEGAL_TEMPLATE_IDS.indexOf(trans.id) !== -1;
@@ -3170,7 +3170,7 @@
 
       // NP L2 logic: the 9 specific NP contracts eligible for the L2 procedure
       // Note: MS003 appears here to handle its reclassified-to-L2 case (isMSL3S2V covers L3 case)
-      const NP_L2_CONTRACT_IDS = ['RD_NDA', 'RD_DEV', 'MS002', 'MS003', 'MS005', 'DP001', 'ALL001', 'ALL002', 'ALL003', 'ALL004'];
+      const NP_L2_CONTRACT_IDS = ['RD_NDA', 'MS002', 'MS003', 'MS005', 'DP001', 'ALL001', 'ALL002', 'ALL003', 'ALL004'];
       if (selectedType === 'NP' && !isMedL2NotS2V && !isMSL3S2V && !isNPL3NotS2V && !isRCLegalL2 && !isL3NotS2VNotLEO) {
         const isInNpL2List = NP_L2_CONTRACT_IDS.includes(trans.id);
         // For NDA: only show NP L2 modal when department is Global R&D
