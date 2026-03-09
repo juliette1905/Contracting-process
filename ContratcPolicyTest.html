@@ -711,38 +711,42 @@
     .next-steps-container {
       display: flex;
       justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
       margin: 2rem 0;
     }
 
     .next-steps-card {
-      display: inline-block;
-      border: 1px solid #E7EAE7;
-      border-radius: 6px;
-      padding: 1rem 2rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      justify-content: center;
+      background: linear-gradient(135deg, #FF78D2, #e056b8);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.75rem 1.5rem;
       cursor: pointer;
-      transition: all 0.3s ease;
-      background: white;
-      color: #042B0B;
       font-weight: 700;
       font-size: 1rem;
-      width: auto;
-      max-width: 300px;
-      text-align: center;
+      box-shadow: 0 4px 14px rgba(255, 120, 210, 0.45);
+      transition: all 0.25s ease;
     }
 
     .next-steps-card:hover {
-      border-color: #042B0B;
-      background: #FAFAF8;
+      background: linear-gradient(135deg, #e056b8, #FF78D2);
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 6px 20px rgba(255, 120, 210, 0.55);
     }
 
     .next-steps-card:active {
       transform: translateY(0);
+      box-shadow: 0 4px 14px rgba(255, 120, 210, 0.45);
     }
 
     .next-steps-card::after {
-      content: ' →';
+      content: none;
     }
 
     @keyframes pulse {
@@ -963,21 +967,38 @@
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      background: #042B0B;
-      color: #F7EFE6;
-      border: none;
+      background: white;
+      color: #042B0B;
+      border: 2px solid #042B0B;
       padding: 0.75rem 1.5rem;
       border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
       font-size: 0.95rem;
-      transition: background 0.2s ease, transform 0.1s ease;
-      margin-top: 0.75rem;
+      transition: all 0.25s ease;
     }
 
     .corp-approval-trigger-btn:hover {
-      background: #263F26;
+      background: #f0f7f0;
       transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(4, 43, 11, 0.15);
+    }
+
+    .corp-approval-trigger-btn:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    @media (max-width: 600px) {
+      .next-steps-container {
+        flex-direction: column-reverse;
+        align-items: stretch;
+      }
+      .next-steps-card,
+      .corp-approval-trigger-btn {
+        width: 100%;
+        justify-content: center;
+      }
     }
 
     /* Corporate Approval Modal Styles */
@@ -1453,20 +1474,6 @@
        ============================================= */
     .risk-badge {
       transition: background 0.25s ease, color 0.25s ease;
-    }
-
-    /* =============================================
-       NEXT STEPS CARD ICON
-       ============================================= */
-    .next-steps-card {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      justify-content: center;
-    }
-
-    .next-steps-card::after {
-      content: none;
     }
 
     /* =============================================
