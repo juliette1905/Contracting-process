@@ -2215,6 +2215,327 @@
         transition: opacity 0.2s ease !important;
       }
     }
+
+    /* =============================================
+       TRANSACTION OWNER DETERMINATION WIDGET
+       ============================================= */
+
+    /* Trigger button – fixed top-right, always accessible */
+    #txOwnerBtn {
+      position: fixed;
+      top: var(--space-4);
+      right: var(--space-4);
+      z-index: 90;
+      background: var(--color-accent);
+      color: var(--color-primary);
+      border: none;
+      border-radius: var(--radius-full);
+      padding: var(--space-2) var(--space-5);
+      font-size: var(--font-size-sm);
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow-lg);
+      transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      white-space: nowrap;
+    }
+
+    #txOwnerBtn:hover {
+      background: var(--color-accent-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-xl);
+    }
+
+    #txOwnerBtn:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 3px;
+      box-shadow: var(--focus-ring-accent);
+    }
+
+    #txOwnerBtn:active {
+      transform: translateY(0);
+    }
+
+    /* Modal overlay */
+    #txOwnerModal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-4);
+    }
+
+    #txOwnerModal.tx-open {
+      display: flex;
+    }
+
+    /* Inner card */
+    .tx-owner-card {
+      background: var(--color-surface);
+      width: 100%;
+      max-width: 540px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xl);
+      overflow: hidden;
+      position: relative;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Card header */
+    .tx-owner-header {
+      background: var(--color-primary);
+      color: white;
+      padding: var(--space-5) var(--space-8) var(--space-5) var(--space-6);
+      flex-shrink: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-4);
+    }
+
+    .tx-owner-header h1 {
+      font-size: var(--font-size-lg);
+      font-weight: 700;
+      margin: 0;
+      line-height: var(--line-height-tight);
+    }
+
+    .tx-owner-close {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: var(--font-size-2xl);
+      cursor: pointer;
+      padding: 0;
+      width: 2rem;
+      height: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      transition: color 0.2s ease, background 0.2s ease;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .tx-owner-close:hover {
+      color: white;
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .tx-owner-close:focus-visible {
+      outline: 2px solid white;
+      outline-offset: 2px;
+    }
+
+    /* Card body */
+    .tx-owner-body {
+      padding: var(--space-6) var(--space-6) var(--space-8);
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    /* Step indicator */
+    .tx-owner-step-indicator {
+      font-size: var(--font-size-xs);
+      font-weight: 700;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: var(--space-3);
+    }
+
+    /* Progress bar */
+    .tx-owner-progress-track {
+      height: 4px;
+      background: var(--color-border);
+      border-radius: var(--radius-full);
+      margin-bottom: var(--space-5);
+      overflow: hidden;
+    }
+
+    .tx-owner-progress-fill {
+      height: 100%;
+      background: var(--color-primary);
+      border-radius: var(--radius-full);
+      transition: width 0.3s ease;
+    }
+
+    /* Question text */
+    .tx-owner-question {
+      font-size: var(--font-size-base);
+      font-weight: 600;
+      color: var(--color-text);
+      line-height: var(--line-height-base);
+      margin-bottom: var(--space-6);
+    }
+
+    /* Action buttons row */
+    .tx-owner-actions {
+      display: flex;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+
+    .tx-owner-btn-yes {
+      background: var(--color-primary);
+      color: white;
+      border: 2px solid var(--color-primary);
+      border-radius: var(--radius-base);
+      padding: var(--space-3) var(--space-6);
+      font-size: var(--font-size-base);
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+      flex: 1;
+      min-width: 80px;
+    }
+
+    .tx-owner-btn-yes:hover {
+      background: var(--color-primary-hover);
+      border-color: var(--color-primary-hover);
+    }
+
+    .tx-owner-btn-yes:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+      box-shadow: var(--focus-ring);
+    }
+
+    .tx-owner-btn-no {
+      background: var(--color-error-bg);
+      color: var(--color-error);
+      border: 2px solid var(--color-error);
+      border-radius: var(--radius-base);
+      padding: var(--space-3) var(--space-6);
+      font-size: var(--font-size-base);
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      flex: 1;
+      min-width: 80px;
+    }
+
+    .tx-owner-btn-no:hover {
+      background: #f5c6c3;
+    }
+
+    .tx-owner-btn-no:focus-visible {
+      outline: 2px solid var(--color-error);
+      outline-offset: 2px;
+    }
+
+    .tx-owner-btn-back {
+      background: none;
+      color: var(--color-text-secondary);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-base);
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .tx-owner-btn-back:hover {
+      background: var(--color-bg);
+      border-color: var(--color-text-disabled);
+    }
+
+    .tx-owner-btn-back:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+      box-shadow: var(--focus-ring);
+    }
+
+    /* Verdict card */
+    .tx-owner-verdict {
+      border-radius: var(--radius-base);
+      padding: var(--space-5) var(--space-6);
+      margin-bottom: var(--space-5);
+      border: 2px solid transparent;
+    }
+
+    .tx-owner-verdict.tx-owner-is-owner {
+      background: var(--color-success-bg);
+      border-color: var(--color-success);
+    }
+
+    .tx-owner-verdict.tx-owner-not-owner {
+      background: var(--color-error-bg);
+      border-color: var(--color-error);
+    }
+
+    .tx-owner-verdict h2 {
+      font-size: var(--font-size-lg);
+      font-weight: 700;
+      margin-bottom: var(--space-4);
+      line-height: var(--line-height-tight);
+    }
+
+    .tx-owner-verdict.tx-owner-is-owner h2 {
+      color: var(--color-success);
+    }
+
+    .tx-owner-verdict.tx-owner-not-owner h2 {
+      color: var(--color-error);
+    }
+
+    .tx-owner-verdict ul {
+      list-style-type: disc;
+      padding-left: var(--space-6);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      line-height: var(--line-height-loose);
+    }
+
+    .tx-owner-verdict p {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      line-height: var(--line-height-base);
+    }
+
+    /* Restart button */
+    .tx-owner-btn-restart {
+      background: var(--color-primary);
+      color: white;
+      border: 2px solid var(--color-primary);
+      border-radius: var(--radius-base);
+      padding: var(--space-3) var(--space-6);
+      font-size: var(--font-size-base);
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      width: 100%;
+    }
+
+    .tx-owner-btn-restart:hover {
+      background: var(--color-primary-hover);
+      border-color: var(--color-primary-hover);
+    }
+
+    .tx-owner-btn-restart:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+      box-shadow: var(--focus-ring);
+    }
+
+    /* Responsive: on small screens, stack action buttons */
+    @media (max-width: 400px) {
+      .tx-owner-actions {
+        flex-direction: column;
+      }
+
+      #txOwnerBtn {
+        font-size: var(--font-size-xs);
+        padding: var(--space-2) var(--space-3);
+      }
+    }
   </style>
   <style>body { box-sizing: border-box; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
@@ -2324,6 +2645,10 @@
     </div>
    </div>
   </div>
+  <!-- Transaction Owner Determination Button (always accessible, fixed top-right) -->
+  <button id="txOwnerBtn" onclick="openTxOwnerModal()" aria-label="Open Transaction Owner Determination widget" aria-haspopup="dialog">
+    &#128100; Are You the Transaction Owner?
+  </button>
   <div class="app-wrapper">
    <div class="header">
     <h1><a href="ContractPolicyTest.html" class="header-home-link" aria-label="Opella Contract Decision Assistant – Return to home"><span aria-hidden="true">🏢</span> Opella Contract Decision Assistant</a></h1>
@@ -4661,6 +4986,211 @@
       }
     }, true);
 
+    // =============================================
+    // TRANSACTION OWNER DETERMINATION WIDGET
+    // =============================================
+
+    var txOwnerQuestions = [
+      {
+        id: 'q1',
+        text: 'Does the need for this transaction originate from YOUR project / activity / department?',
+        noReason: 'The need does not originate from your project/department.',
+        yesCriteria: 'The need originates from your project / activity / department.'
+      },
+      {
+        id: 'q2',
+        text: 'Does this transaction enable an operation within YOUR department / team?',
+        noReason: 'Your department/team is not the beneficiary.',
+        yesCriteria: 'This transaction enables an operation within your department / team.'
+      },
+      {
+        id: 'q3',
+        text: 'Is this transaction funded by the budget of YOUR team / department?',
+        noReason: 'The budget is not owned by your team/department.',
+        yesCriteria: 'This transaction is funded by the budget of your team / department.'
+      },
+      {
+        id: 'q4',
+        text: 'Are you operationally responsible for the related project (deliverables, performance, follow-up)?',
+        noReason: 'You do not hold operational responsibility for the project.',
+        yesCriteria: 'You are operationally responsible for the related project.'
+      },
+      {
+        id: 'q5',
+        text: 'Are you one of the persons who must provide the essential business/technical inputs to move the contract forward?',
+        noReason: 'You are not the primary source of essential business/technical inputs.',
+        yesCriteria: 'You are a key provider of essential business/technical inputs.'
+      }
+    ];
+
+    var txOwnerState = {
+      step: 0,
+      responses: {},
+      firstNoReason: null,
+      verdict: null
+    };
+
+    function openTxOwnerModal() {
+      txOwnerState = { step: 0, responses: {}, firstNoReason: null, verdict: null };
+      renderTxOwnerContent();
+      var modal = document.getElementById('txOwnerModal');
+      modal.classList.add('tx-open');
+      setTimeout(function() {
+        var first = modal.querySelector('.tx-owner-btn-yes, .tx-owner-btn-restart');
+        if (first) { first.focus(); }
+      }, 50);
+    }
+
+    function closeTxOwnerModal() {
+      var modal = document.getElementById('txOwnerModal');
+      modal.classList.remove('tx-open');
+      var btn = document.getElementById('txOwnerBtn');
+      if (btn) { btn.focus(); }
+    }
+
+    function renderTxOwnerContent() {
+      var body = document.getElementById('txOwnerBody');
+      if (!body) { return; }
+      if (txOwnerState.verdict) {
+        renderTxOwnerVerdict(body);
+      } else {
+        renderTxOwnerQuestion(body);
+      }
+    }
+
+    function renderTxOwnerQuestion(body) {
+      var step = txOwnerState.step;
+      var q = txOwnerQuestions[step];
+      var stepNum = step + 1;
+      var total = txOwnerQuestions.length;
+      var fillPct = Math.round(((stepNum - 1) / total) * 100);
+      var backBtnHtml = (step > 0)
+        ? '<button class="tx-owner-btn-back" onclick="txOwnerBack()" aria-label="Go back to previous question">\u2190 Back</button>'
+        : '';
+      body.innerHTML =
+        '<div class="tx-owner-step-indicator" aria-live="polite" aria-atomic="true">Step ' + stepNum + ' of ' + total + '</div>' +
+        '<div class="tx-owner-progress-track" role="progressbar" aria-valuenow="' + stepNum + '" aria-valuemin="1" aria-valuemax="' + total + '" aria-label="Question progress">' +
+          '<div class="tx-owner-progress-fill" style="width:' + fillPct + '%"></div>' +
+        '</div>' +
+        '<p class="tx-owner-question" id="txOwnerCurrentQuestion">' + txOwnerEscape(q.text) + '</p>' +
+        '<div class="tx-owner-actions">' +
+          '<button class="tx-owner-btn-yes" onclick="txOwnerAnswer(true)" aria-label="Yes">\u2713 Yes</button>' +
+          '<button class="tx-owner-btn-no" onclick="txOwnerAnswer(false)" aria-label="No">\u2717 No</button>' +
+          backBtnHtml +
+        '</div>';
+      setTimeout(function() {
+        var yesBtn = body.querySelector('.tx-owner-btn-yes');
+        if (yesBtn) { yesBtn.focus(); }
+      }, 50);
+    }
+
+    function renderTxOwnerVerdict(body) {
+      var isOwner = (txOwnerState.verdict === 'owner');
+      var verdictClass = isOwner ? 'tx-owner-is-owner' : 'tx-owner-not-owner';
+      var title = isOwner ? 'You are the Transaction Owner.' : 'You are probably not the Transaction Owner.';
+      var icon = isOwner ? '\u2705' : '\u274C';
+      var content;
+      if (isOwner) {
+        var items = txOwnerQuestions.map(function(q) {
+          return '<li>' + txOwnerEscape(q.yesCriteria) + '</li>';
+        }).join('');
+        content = '<ul>' + items + '</ul>';
+      } else {
+        content = '<p>' + txOwnerEscape(txOwnerState.firstNoReason) + '</p>';
+      }
+      body.innerHTML =
+        '<div class="tx-owner-verdict ' + verdictClass + '">' +
+          '<h2>' + icon + ' ' + txOwnerEscape(title) + '</h2>' +
+          content +
+        '</div>' +
+        '<button class="tx-owner-btn-restart" onclick="openTxOwnerModal()" aria-label="Restart the Transaction Owner determination">\u21BA Restart</button>';
+      setTimeout(function() {
+        var restartBtn = body.querySelector('.tx-owner-btn-restart');
+        if (restartBtn) { restartBtn.focus(); }
+      }, 50);
+    }
+
+    function txOwnerAnswer(isYes) {
+      var step = txOwnerState.step;
+      var q = txOwnerQuestions[step];
+      txOwnerState.responses[q.id] = isYes;
+      if (!isYes) {
+        txOwnerState.firstNoReason = q.noReason;
+        txOwnerState.verdict = 'not-owner';
+        fireTxOwnerEvent();
+        renderTxOwnerContent();
+        return;
+      }
+      if (step + 1 >= txOwnerQuestions.length) {
+        txOwnerState.verdict = 'owner';
+        txOwnerState.firstNoReason = null;
+        fireTxOwnerEvent();
+      } else {
+        txOwnerState.step = step + 1;
+      }
+      renderTxOwnerContent();
+    }
+
+    function txOwnerBack() {
+      if (txOwnerState.step > 0) {
+        txOwnerState.step -= 1;
+        var q = txOwnerQuestions[txOwnerState.step];
+        delete txOwnerState.responses[q.id];
+        txOwnerState.verdict = null;
+        txOwnerState.firstNoReason = null;
+        renderTxOwnerContent();
+      }
+    }
+
+    function fireTxOwnerEvent() {
+      var payload = {
+        isOwner: (txOwnerState.verdict === 'owner'),
+        responses: {
+          q1: (txOwnerState.responses.q1 !== undefined) ? txOwnerState.responses.q1 : null,
+          q2: (txOwnerState.responses.q2 !== undefined) ? txOwnerState.responses.q2 : null,
+          q3: (txOwnerState.responses.q3 !== undefined) ? txOwnerState.responses.q3 : null,
+          q4: (txOwnerState.responses.q4 !== undefined) ? txOwnerState.responses.q4 : null,
+          q5: (txOwnerState.responses.q5 !== undefined) ? txOwnerState.responses.q5 : null
+        },
+        firstNoReason: txOwnerState.firstNoReason,
+        timestamp: new Date().toISOString()
+      };
+      document.dispatchEvent(new CustomEvent('transaction-owner-complete', { detail: payload, bubbles: true }));
+    }
+
+    function txOwnerEscape(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // Close Transaction Owner modal on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        var modal = document.getElementById('txOwnerModal');
+        if (modal && modal.classList.contains('tx-open')) {
+          closeTxOwnerModal();
+        }
+      }
+    });
+
+    // Trap focus inside Transaction Owner modal when open
+    document.getElementById('txOwnerModal').addEventListener('keydown', function(e) {
+      if (e.key !== 'Tab') { return; }
+      var focusable = this.querySelectorAll('button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      var first = focusable[0];
+      var last = focusable[focusable.length - 1];
+      if (!first) { return; }
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+      } else {
+        if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    });
+
   </script><!-- Roles Definition Modal -->
   <div id="rolesModal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="rolesModalTitle" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.4); align-items: center; justify-content: center; z-index: 50;">
    <div style="background: var(--color-surface); width: 90%; max-width: 700px; border-radius: var(--radius-lg); box-shadow: var(--shadow-xl); padding: var(--space-8); position: relative; max-height: 85vh; overflow-y: auto;">
@@ -4735,6 +5265,18 @@
       <div class="confirm-modal-actions">
         <button id="confirmModalCancelBtn" class="confirm-btn-cancel">Cancel</button>
         <button id="confirmModalConfirmBtn" class="confirm-btn-confirm">Confirm &amp; Continue</button>
+      </div>
+    </div>
+  </div>
+  <!-- Transaction Owner Determination Modal -->
+  <div id="txOwnerModal" role="dialog" aria-modal="true" aria-labelledby="txOwnerTitle" aria-describedby="txOwnerBody">
+    <div class="tx-owner-card" role="document">
+      <div class="tx-owner-header">
+        <h1 id="txOwnerTitle">Are You the Transaction Owner?</h1>
+        <button class="tx-owner-close" onclick="closeTxOwnerModal()" aria-label="Close Transaction Owner Determination widget">&#x2715;</button>
+      </div>
+      <div class="tx-owner-body" id="txOwnerBody">
+        <!-- Content rendered dynamically by JavaScript -->
       </div>
     </div>
   </div>
