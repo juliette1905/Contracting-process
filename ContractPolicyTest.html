@@ -3182,7 +3182,7 @@
             label: 'M&A, Divestments',
             transactions: [
               { id: 'MA_NDA', name: 'NDA - M&A / Divestment', description: 'Confidentiality agreements for M&A transactions', riskLevel: 'L3', templates: ['Legal Template (if provided)'], exceptions: 'L2 if Legal template provided & no changes beyond User Guidelines', s2v: false, leo: false },
-              { id: 'MA_ACQD', name: 'Acquisition / Disposal of Assets or Shares', description: 'Acquisition, disposal, exchange of assets, shares, or interests in companies, joint ventures, product or product rights', riskLevel: 'L3', templates: [], s2v: false, leo: true },
+              { id: 'MA_ACQD', name: 'Acquisition / Disposal of Assets or Shares', description: 'Acquisition, disposal, exchange of assets, shares, or interests in companies, joint ventures, product or product rights', riskLevel: 'L3', templates: [], s2v: false, leo: false },
               { id: 'MA_ACQQ', name: 'M&A Disposal of Assets', description: 'Disposal of assets in M&A context', riskLevel: 'L3', templates: [], s2v: false, leo: false },
               { id: 'MA_EQUITY', name: 'Minority Equity Investment / Divestment', description: 'Minority equity investment or divestment in relation to third parties', riskLevel: 'L3', templates: [], s2v: false, leo: false }
             ]
@@ -4759,7 +4759,7 @@
         (currentRiskLevel === 'L3' || (typeof currentRiskLevel === 'string' && currentRiskLevel.includes('L3')));
 
       // NP L3 NOT S2V AND NOT archived on LEO — show 7-step procedure without LEO archiving step
-      const L3_NOT_S2V_NOT_LEO_IDS = ['STRAT001', 'MA_NDA', 'MA_EQUITY', 'MA_ACQQ', 'AM001', 'AM002', 'IP001'];
+      const L3_NOT_S2V_NOT_LEO_IDS = ['STRAT001', 'MA_NDA', 'MA_EQUITY', 'MA_ACQQ', 'MA_ACQD', 'AM001', 'AM002', 'IP001'];
       const isL3NotS2VNotLEO = AppState.transactionType === 'NP' && L3_NOT_S2V_NOT_LEO_IDS.includes(trans.id) && !trans.s2v && !trans.leo &&
         (currentRiskLevel === 'L3' || (typeof currentRiskLevel === 'string' && currentRiskLevel.includes('L3')));
 
