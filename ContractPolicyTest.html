@@ -3472,6 +3472,20 @@
         return;
       }
 
+      if (AppState.transactionType === 'IE' && AppState.selectedTransaction) {
+        contentArea.innerHTML = `
+          <div class="empty-state content-transition">
+            <!-- Beaker/lab icon indicating data in preparation -->
+            <svg class="empty-state-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.718 1.96M9.75 3.104A24.331 24.331 0 0112 2.25m0 0v5.714c0 .597.237 1.17.659 1.591L16.5 14.5M12 2.25m0 0V3.75m0 14.75v2.25m0-15.708v5.714c0 .597-.237 1.17-.659 1.591M3 14.5h18m-18 0v2.25m18 0v2.25" />
+            </svg>
+            <div class="empty-state-title">Coming Soon</div>
+            <div class="empty-state-subtitle">Internal Expert transaction data is currently being prepared. Please check back soon for detailed contract requirements and guidance.</div>
+          </div>
+        `;
+        return;
+      }
+
       try {
         contentArea.innerHTML = renderAnalysis();
         const trans = AppState.selectedTransaction;
