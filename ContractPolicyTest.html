@@ -1249,6 +1249,58 @@
       color: #7A2700; /* darkened from #FF9800 for better contrast */
     }
 
+    /* Contract Prerequisites Help Icon & Tooltip */
+    .prerequisites-help-icon {
+      display: inline-block;
+      width: 1.25rem;
+      height: 1.25rem;
+      margin-left: 0.5rem;
+      background-color: var(--color-primary);
+      color: white;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 1.25rem;
+      font-weight: bold;
+      font-size: 0.85rem;
+      cursor: help;
+      position: relative;
+      vertical-align: middle;
+    }
+
+    .prerequisites-help-icon::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #2c3e50;
+      color: white;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
+      white-space: pre-line;
+      font-size: 0.75rem;
+      z-index: 100;
+      font-weight: normal;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      pointer-events: none;
+      width: max-content;
+      max-width: 280px;
+      text-align: left;
+      line-height: 1.5;
+      opacity: 0;
+      transition: opacity 0.2s ease-out;
+    }
+
+    .prerequisites-help-icon:hover::after {
+      opacity: 1;
+      animation: fadeInTooltip 0.2s ease-out;
+    }
+
+    @keyframes fadeInTooltip {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
     /* Next Steps Legend Styles */
     .next-steps-legend {
       display: flex;
@@ -4372,8 +4424,22 @@
       '</div>';
     }
 
+    const PREREQUISITES_TOOLTIP_TEXT =
+      'A preliminary set of Contract clauses, or appendices, or standalone Contract (Opella Template when available) necessary to ensure compliance with law and Opella Standards.\n\n' +
+      '\u2022 Data Privacy\n' +
+      '\u2022 Cybersecurity\n' +
+      '\u2022 Quality\n' +
+      '\u2022 Audit\n' +
+      '\u2022 Pharmacovigilance\n' +
+      '\u2022 Anti-Bribery / Anti-Corruption\n' +
+      '\u2022 Other Applicable';
+
+    function addPrerequisitesTooltip(stepTitle) {
+      return stepTitle + ' <span class="prerequisites-help-icon" data-tooltip="' + PREREQUISITES_TOOLTIP_TEXT + '" aria-label="Contract Prerequisites Info">?</span>';
+    }
+
     function getMedL2NotS2VContent() {
-      return makeStep('1', '👤', 'actor-user', 'Contract Requestor Clears Contract Prerequisites', 'Preparation phase', '1-2 business days') +
+      return makeStep('1', '👤', 'actor-user', addPrerequisitesTooltip('Contract Requestor Clears Contract Prerequisites'), 'Preparation phase', '1-2 business days') +
         makeStep('2', '👤', 'actor-user', 'Align with Opella Stakeholders & Select Template', 'Contract Requestor aligns internally with all Opella stakeholders<br>Contract Drafter selects adequate Opella Template or Third-party Contractor draft', '2-3 business days') +
         makeStep('3', '👤', 'actor-user', 'Internal Opella Phase - Prepare First Draft', 'Led by Contract Requestor<br>Preparation of first Draft Contract or first review of Third-party Contractor draft<br>With cross-functions interactions if needed', '5-7 business days') +
         makeStep('4', '👤', 'actor-user', 'Organize Reviews & Negotiations', 'Contract Requestor organizes necessary rounds of internal reviews<br>Secures Opella functions inputs<br>External negotiations with Third-party Contractor', '7-14 business days') +
@@ -4394,7 +4460,7 @@
 
     function getL3NotS2VNotLEOContent() {
       return makeStep('1', '👤', 'actor-user', 'Contact Legal', 'Contract Requestor reach out to Legal (if not done yet) to present the planned transaction', '1-2 business days') +
-        makeStep('2', '👤', 'actor-user', 'Clear Contract Prerequisites', 'Contract Requestor clears the Contract Prerequisites', '2-3 business days') +
+        makeStep('2', '👤', 'actor-user', addPrerequisitesTooltip('Clear Contract Prerequisites'), 'Contract Requestor clears the Contract Prerequisites', '2-3 business days') +
         makeStep('3', '👤', 'actor-user', 'Select Opella Template', 'Contract Requestor aligns internally with all 🤝 Opella stakeholders and Contract Drafter selects the adequate Opella Template or Third-party Contractor draft', '2-3 business days') +
         makeStep('4', '👤', 'actor-user', 'Preparation of Draft Contract', 'Internal Opella phase led by Contract Requestor. Preparation of the first Draft Contract by the Contract Drafter (or first review of Third-party Contractor draft) with cross-functions interactions if needed', '5-10 business days') +
         makeStep('5', '👤', 'actor-user', 'Internal Reviews &amp; Negotiations', 'Contract Requestor organizes the necessary rounds of internal reviews, secures 🤝 Opella functions inputs and external negotiations with Third-party Contractor', 'as needed') +
@@ -4404,7 +4470,7 @@
 
     function getNPL3NotS2VContent() {
       return makeStep('1', '👤', 'actor-user', 'Contract Requestor Reaches Out to Legal', 'Contract Requestor presents the planned transaction to Legal', '1-2 business days') +
-        makeStep('2', '👤', 'actor-user', 'Contract Requestor Clears the Contract Prerequisites', 'Contract Requestor fulfills all required contract prerequisites', '2-3 business days') +
+        makeStep('2', '👤', 'actor-user', addPrerequisitesTooltip('Contract Requestor Clears the Contract Prerequisites'), 'Contract Requestor fulfills all required contract prerequisites', '2-3 business days') +
         makeStep('3', '👤', 'actor-user', 'Internal Alignment & Template Selection', 'Contract Requestor aligns internally with all 🤝 Opella Stakeholders<br>Contract Drafter (Legal) selects the adequate Opella Template or Third-party Contractor draft', '3-5 business days') +
         makeStep('4', '👤 ⚖️', 'actor-legal', 'Internal Opella Phase – First Draft Preparation', 'Internal Opella phase led by Contract Requestor<br>Contract Drafter prepares the first Draft Contract with cross-functions interactions if needed', '5-10 business days') +
         makeStep('5', '👤', 'actor-user', 'Organize Rounds of Internal Reviews & Negotiations', 'Contract Requestor organizes rounds of internal reviews<br>Secures 🤝 Opella functions inputs and external negotiations with Third-party Contractor', '7-14 business days') +
@@ -4414,7 +4480,7 @@
 
     function getGenericL3SevenStepContent() {
       return makeStep('1', '👤', 'actor-user', 'Contract Requestor Reaches Out to Legal', 'Contract Requestor presents the planned transaction to Legal', '1-2 business days') +
-        makeStep('2', '👤', 'actor-user', 'Contract Requestor Clears the Contract Prerequisites', 'Contract Requestor fulfills all required contract prerequisites', '2-3 business days') +
+        makeStep('2', '👤', 'actor-user', addPrerequisitesTooltip('Contract Requestor Clears the Contract Prerequisites'), 'Contract Requestor fulfills all required contract prerequisites', '2-3 business days') +
         makeStep('3', '👤', 'actor-user', 'Internal Alignment & Template Selection', 'Contract Requestor aligns internally with all Opella Stakeholders<br>Contract Drafter (Legal) selects the adequate Opella Template or Third-party Contractor draft', '3-5 business days') +
         makeStep('4', '👤 ⚖️', 'actor-legal', 'Internal Opella Phase – First Draft Preparation', 'Internal Opella phase led by Contract Requestor<br>Contract Drafter prepares the first Draft Contract with cross-functions interactions if needed', '5-10 business days') +
         makeStep('5', '👤', 'actor-user', 'Organize Rounds of Internal Reviews & Negotiations', 'Contract Requestor organizes rounds of internal reviews<br>Secures Opella functions inputs and external negotiations with Third-party Contractor', '7-14 business days') +
@@ -4431,7 +4497,7 @@
     }
 
     function getRCLegalL2Content() {
-      return makeStep('1', '👤', 'actor-user', 'Clear Contract Prerequisites', 'Contract Requestor fulfills all required contract prerequisites', '1-2 business days') +
+      return makeStep('1', '👤', 'actor-user', addPrerequisitesTooltip('Clear Contract Prerequisites'), 'Contract Requestor fulfills all required contract prerequisites', '1-2 business days') +
         makeStep('2', '👤', 'actor-user', 'Select Opella Template', 'Contract Requestor aligns internally with all 🤝 Opella Stakeholders and Contract Drafter selects the adequate Opella Template shared by local legal', '2-3 business days') +
         makeStep('3', '👤', 'actor-user', 'Preparation of Draft Contract', 'Internal Opella phase led by Contract Requestor. Preparation of the first Draft Contract (or first review of Third-party Contractor draft) with cross-functions interactions if needed', '5-10 business days') +
         makeStep('4', '👤', 'actor-user', '<span style="color: #FF78D2; font-weight: 700;">⚠️ Template Restrictions</span>', '<span style="color: #FF78D2; font-weight: 700;">NO CHANGES ARE ALLOWED ON THE TEMPLATE (other than the ones authorized by the user\'s guidelines)</span>', null) +
