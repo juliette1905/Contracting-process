@@ -1109,6 +1109,70 @@
       animation: pulse 0.5s ease-out;
     }
 
+    .risk-badge.risk-pending {
+      background: #E0E0E0;
+      color: #555;
+    }
+
+    .classification-conditions-container {
+      background: var(--color-surface);
+      border-left: 4px solid var(--color-primary);
+      border-radius: var(--radius-base);
+      padding: var(--space-6);
+      margin: var(--space-8) auto;
+      max-width: 700px;
+      box-shadow: var(--shadow-base);
+    }
+
+    .classification-conditions-title {
+      color: var(--color-primary);
+      font-weight: 700;
+      font-size: var(--font-size-lg);
+      margin-bottom: var(--space-4);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .classification-conditions-description {
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-sm);
+      margin-bottom: var(--space-5);
+    }
+
+    .classification-checklist {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .classification-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .classification-item input[type="radio"] {
+      width: 1.25rem;
+      height: 1.25rem;
+      cursor: pointer;
+      accent-color: var(--color-primary);
+    }
+
+    .classification-item input[type="radio"]:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+      box-shadow: var(--focus-ring);
+    }
+
+    .classification-item label {
+      cursor: pointer;
+      color: var(--color-text);
+      font-size: var(--font-size-sm);
+      margin: 0;
+      line-height: var(--line-height-base);
+    }
+
     .contract-needed-field {
       font-weight: 600;
       color: var(--color-primary);
@@ -3154,7 +3218,7 @@
               { id: 'MS004', name: 'Quality & PV (M&S Related)', description: 'Quality and Pharmacovigilance agreements related to Manufacturing & Supply', riskLevel: 'L3', templates: [], s2v: true, leo: true },
               { id: 'MS005', name: 'Technology & IP Out-Licensing (M&S)', description: 'Technology and IP out-licensing related to Manufacturing & Supply', riskLevel: 'L3', templates: [], exceptions: 'Term extension not beyond 5 years from initial licensing date = L2', s2v: false, leo: true },
               { id: 'MS006', name: 'Dispute Settlements (M&S)', description: 'Dispute settlements in relation to Manufacturing & Supply matters', riskLevel: 'L3', templates: [], s2v: false, leo: true },
-              { id: 'MS007', name: 'NDA - Manufacturing & Supply', description: 'NDAs in Manufacturing & Supply context', riskLevel: 'L2/L3', templates: [], s2v: false, leo: true }
+              { id: 'MS007', name: 'NDA - Manufacturing & Supply', description: 'NDAs in Manufacturing & Supply context', riskLevel: null, templates: [], s2v: false, leo: true, classificationConditions: { question: 'Is your NDA linked to an L2 or L3 (future) transaction?', options: [{ label: 'L2', value: 'L2' }, { label: 'L3', value: 'L3' }], exclusive: true } }
             ]
           },
           'All Departments': {
@@ -3544,6 +3608,9 @@
         if (trans && (trans.exceptions || (AppState.transactionType === 'NP' && RC_LEGAL_TEMPLATE_IDS.indexOf(trans.id) !== -1))) {
           initializeExceptionsChecklist(trans.id, trans.riskLevel, trans.exceptions);
         }
+        if (trans && trans.classificationConditions) {
+          initializeMSClassificationUI(trans.id);
+        }
       } catch (e) {
         console.error('Render error:', e);
         contentArea.innerHTML = `
@@ -3559,6 +3626,7 @@
     }
 
     function getRiskClass(riskLevel) {
+      if (riskLevel === null || riskLevel === undefined) return 'risk-pending';
       if (typeof riskLevel !== 'string') return 'risk-l1';
       if (riskLevel.includes('L3') || riskLevel === 'L3') return 'risk-l3';
       if (riskLevel.includes('L2') || riskLevel === 'L2') return 'risk-l2';
@@ -3567,6 +3635,7 @@
 
     /** Returns the tooltip text for a given risk level. */
     function getRiskTooltip(riskLevel) {
+      if (riskLevel === null || riskLevel === undefined) return 'Classification pending \u2013 select L2 or L3 to set the risk level';
       if (typeof riskLevel !== 'string') return 'Low Risk \u2013 Standard contract, minimal compliance review required';
       if (riskLevel.includes('L3') || riskLevel === 'L3') return 'High Risk \u2013 Mandatory legal approval, executive sign-off required';
       if (riskLevel.includes('L2') || riskLevel === 'L2') return 'Medium Risk \u2013 Enhanced review, legal & compliance involvement';
@@ -3596,6 +3665,139 @@
     }
 
     var RC_LEGAL_TEMPLATE_IDS = ['DIST001', 'MK001', 'PHARM001', 'DIST002', 'MA_NDA', 'RD_DEV'];
+
+    // =============================================
+    // MS007 CLASSIFICATION CONDITIONS FUNCTIONS
+    // =============================================
+
+    function loadMSClassificationState(transactionId) {
+      try {
+        return localStorage.getItem('ms_classification_' + transactionId) || null;
+      } catch(e) {
+        return null;
+      }
+    }
+
+    function saveMSClassificationState(transactionId, level) {
+      try {
+        if (level === null) {
+          localStorage.removeItem('ms_classification_' + transactionId);
+        } else {
+          localStorage.setItem('ms_classification_' + transactionId, level);
+        }
+      } catch(e) {
+        console.warn('localStorage unavailable:', e);
+      }
+    }
+
+    function toggleMSClassification(transactionId, selectedLevel) {
+      var trans = AppState.selectedTransaction;
+      if (!trans) return;
+
+      var currentLevel = loadMSClassificationState(transactionId);
+      var newLevel = (currentLevel === selectedLevel) ? null : selectedLevel;
+
+      saveMSClassificationState(transactionId, newLevel);
+
+      // Reset radio buttons (allow deselection by unchecking the active one)
+      var radios = document.querySelectorAll('input[name="class-' + transactionId + '"]');
+      radios.forEach(function(r) { r.checked = (r.value === newLevel); });
+
+      // Update badges
+      var summaryBadge = document.getElementById('risk-badge-summary-' + transactionId);
+      var riskBadge = document.getElementById('risk-badge-risk-level-' + transactionId);
+      var msgEl = document.getElementById('risk-class-msg-' + transactionId);
+
+      function setBadge(el, text, cls) {
+        if (!el) return;
+        el.textContent = text;
+        el.className = cls;
+        el.setAttribute('data-tooltip', getRiskTooltip(newLevel));
+        el.setAttribute('aria-label', text + ': ' + getRiskTooltip(newLevel));
+      }
+
+      if (newLevel) {
+        setBadge(summaryBadge, newLevel, 'risk-badge ' + getRiskClass(newLevel));
+        setBadge(riskBadge, newLevel, 'risk-badge ' + getRiskClass(newLevel));
+        if (msgEl) {
+          msgEl.textContent = '\u2713 NDA classified as ' + newLevel;
+          msgEl.style.display = 'block';
+        }
+        showToast('\u2713 NDA classified as ' + newLevel, 'success');
+      } else {
+        setBadge(summaryBadge, 'Pending', 'risk-badge risk-pending');
+        setBadge(riskBadge, 'Pending', 'risk-badge risk-pending');
+        if (msgEl) {
+          msgEl.style.display = 'none';
+        }
+      }
+
+      // Update risk criteria section
+      var fakeTrans = { riskLevel: newLevel };
+      var criteriaEl = document.getElementById('risk-criteria-' + transactionId);
+      if (criteriaEl) {
+        criteriaEl.innerHTML = renderRiskCriteria(fakeTrans);
+      }
+
+      updateDrafterBasedOnRiskLevel(transactionId, newLevel);
+      updateChecklistStepsIfOpen();
+    }
+
+    function initializeMSClassificationUI(transactionId) {
+      var savedLevel = loadMSClassificationState(transactionId);
+      if (!savedLevel) return;
+
+      // Restore radio button selection
+      var radio = document.getElementById('class-' + savedLevel + '-' + transactionId);
+      if (radio) radio.checked = true;
+
+      // Update badges
+      var summaryBadge = document.getElementById('risk-badge-summary-' + transactionId);
+      var riskBadge = document.getElementById('risk-badge-risk-level-' + transactionId);
+      var msgEl = document.getElementById('risk-class-msg-' + transactionId);
+
+      if (summaryBadge) {
+        summaryBadge.textContent = savedLevel;
+        summaryBadge.className = 'risk-badge ' + getRiskClass(savedLevel);
+        summaryBadge.setAttribute('data-tooltip', getRiskTooltip(savedLevel));
+        summaryBadge.setAttribute('aria-label', savedLevel + ': ' + getRiskTooltip(savedLevel));
+      }
+      if (riskBadge) {
+        riskBadge.textContent = savedLevel;
+        riskBadge.className = 'risk-badge ' + getRiskClass(savedLevel);
+        riskBadge.setAttribute('data-tooltip', getRiskTooltip(savedLevel));
+        riskBadge.setAttribute('aria-label', savedLevel + ': ' + getRiskTooltip(savedLevel));
+      }
+      if (msgEl) {
+        msgEl.textContent = '\u2713 NDA classified as ' + savedLevel;
+        msgEl.style.display = 'block';
+      }
+
+      updateDrafterBasedOnRiskLevel(transactionId, savedLevel);
+    }
+
+    function renderClassificationConditionsSection(trans) {
+      var cc = trans.classificationConditions;
+      var descId = 'class-desc-' + trans.id;
+      var optionsHtml = cc.options.map(function(opt) {
+        return '<div class="classification-item">' +
+          '<input type="radio" id="class-' + opt.value + '-' + trans.id + '" ' +
+          'name="class-' + trans.id + '" value="' + opt.value + '" ' +
+          'onclick="toggleMSClassification(\'' + trans.id + '\', \'' + opt.value + '\')">' +
+          '<label for="class-' + opt.value + '-' + trans.id + '">' + opt.label + '</label>' +
+          '</div>';
+      }).join('');
+
+      return '<div class="classification-conditions-container">' +
+        '<h3 class="classification-conditions-title">' +
+          '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg> ' +
+          'CLASSIFICATION CONDITIONS' +
+        '</h3>' +
+        '<p id="' + descId + '" class="classification-conditions-description">' + cc.question + '</p>' +
+        '<div class="classification-checklist" aria-describedby="' + descId + '">' + optionsHtml + '</div>' +
+        '<div id="risk-class-msg-' + trans.id + '" class="risk-updated-message" style="display:none;"></div>' +
+        '</div>';
+    }
 
     function renderExceptionsSection(trans) {
       var isRCLegalTemplate = AppState.transactionType === 'NP' && RC_LEGAL_TEMPLATE_IDS.indexOf(trans.id) !== -1;
@@ -3724,6 +3926,9 @@
     }
 
     function getCurrentRiskLevel(trans) {
+      if (trans.classificationConditions) {
+        return loadMSClassificationState(trans.id);
+      }
       if (AppState.transactionType === 'NP' && RC_LEGAL_TEMPLATE_IDS.indexOf(trans.id) !== -1) {
         var rcState = loadRCLegalTemplateState(trans.id);
         if (rcState === 'yes') return 'L2';
@@ -3788,10 +3993,11 @@
       if (stepsEl) stepsEl.innerHTML = stepsHtml;
       var riskBadgeEl = document.querySelector('#checklistContent .risk-badge');
       if (riskBadgeEl) {
-        riskBadgeEl.textContent = currentRiskLevel;
+        var displayLevel = currentRiskLevel || 'Pending';
+        riskBadgeEl.textContent = displayLevel;
         riskBadgeEl.className = 'risk-badge ' + getRiskClass(currentRiskLevel);
         riskBadgeEl.setAttribute('data-tooltip', getRiskTooltip(currentRiskLevel));
-        riskBadgeEl.setAttribute('aria-label', currentRiskLevel + ': ' + getRiskTooltip(currentRiskLevel));
+        riskBadgeEl.setAttribute('aria-label', displayLevel + ': ' + getRiskTooltip(currentRiskLevel));
       }
       var labelEl = document.getElementById('checklistRiskLabel');
       if (labelEl) labelEl.textContent = getChecklistLabel(currentRiskLevel);
@@ -4085,7 +4291,7 @@
             <div class="summary-grid">
               <div class="summary-item">
                 <strong>Risk Level:</strong>
-                <span id="risk-badge-summary-${trans.id}" class="risk-badge ${getRiskClass(trans.riskLevel)}" tabindex="0" aria-label="${trans.riskLevel}: ${getRiskTooltip(trans.riskLevel)}" data-tooltip="${getRiskTooltip(trans.riskLevel)}">${trans.riskLevel}</span>
+                <span id="risk-badge-summary-${trans.id}" class="risk-badge ${getRiskClass(effectiveRiskLevel)}" tabindex="0" aria-label="${effectiveRiskLevel || 'Pending'}: ${getRiskTooltip(effectiveRiskLevel)}" data-tooltip="${getRiskTooltip(effectiveRiskLevel)}">${effectiveRiskLevel || 'Pending'}</span>
               </div>
               <div class="summary-item">
                 <strong>Contract Needed:</strong>
@@ -4100,6 +4306,9 @@
 
           <!-- Reclassification Conditions (if applicable) -->
           ${(trans.exceptions || (AppState.transactionType === 'NP' && RC_LEGAL_TEMPLATE_IDS.indexOf(trans.id) !== -1)) ? renderExceptionsSection(trans) : ''}
+
+          <!-- Classification Conditions (if applicable) -->
+          ${trans.classificationConditions ? renderClassificationConditionsSection(trans) : ''}
 
           <!-- Next Steps (card, opens modal) -->
           <div class="next-steps-container">
@@ -4128,7 +4337,7 @@
                 <div class="result-item">
                   <div class="result-label">Risk Level</div>
                   <div class="result-value">
-                    <span id="risk-badge-risk-level-${trans.id}" class="risk-badge ${getRiskClass(trans.riskLevel)}" tabindex="0" aria-label="${trans.riskLevel}: ${getRiskTooltip(trans.riskLevel)}" data-tooltip="${getRiskTooltip(trans.riskLevel)}">${trans.riskLevel}</span>
+                    <span id="risk-badge-risk-level-${trans.id}" class="risk-badge ${getRiskClass(effectiveRiskLevel)}" tabindex="0" aria-label="${effectiveRiskLevel || 'Pending'}: ${getRiskTooltip(effectiveRiskLevel)}" data-tooltip="${getRiskTooltip(effectiveRiskLevel)}">${effectiveRiskLevel || 'Pending'}</span>
                   </div>
                 </div>
                 <div id="risk-criteria-${trans.id}">${renderRiskCriteria(trans)}</div>
@@ -4216,6 +4425,7 @@
 
 
     function getDrafterInfo(riskLevel) {
+      if (!riskLevel) return 'Pending – select L2 or L3 to determine the drafter';
       if (riskLevel === 'L1') return 'None (PO-based)';
       if (riskLevel === 'L2') {
         if (AppState.transactionType === 'P') return 'S2V Contract Specialist';
@@ -4232,6 +4442,7 @@
     }
 
     function getLegalInfo(riskLevel) {
+      if (!riskLevel) return 'Pending';
       if (riskLevel === 'L1') return 'No';
       if (riskLevel === 'L2') return 'Indirect – Provides templates & guidelines only';
       if (riskLevel.includes('L3') || riskLevel === 'L3') return 'Yes – From start';
@@ -4241,7 +4452,9 @@
     function renderRiskCriteria(trans) {
       let html = '<div class="result-item"><ul class="criteria-list">';
       
-      if (trans.riskLevel === 'L1') {
+      if (!trans.riskLevel) {
+        html += '<li>Classification pending \u2013 please select L2 or L3 in the Classification Conditions card above</li>';
+      } else if (trans.riskLevel === 'L1') {
         html += '<li>Managed through a Purchase Order only</li>';
         html += '<li>No Contract required</li>';
         html += '<li>No Legal or Contracting Team involvement</li>';
@@ -4363,7 +4576,7 @@
             '<strong style="color: #042B0B;">' + trans.name + '</strong>' +
           '</div>' +
           '<div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">' +
-            '<span class="risk-badge ' + riskClass + '" tabindex="0" data-tooltip="' + getRiskTooltip(currentRiskLevel) + '" aria-label="' + currentRiskLevel + ': ' + getRiskTooltip(currentRiskLevel) + '">' + currentRiskLevel + '</span>' +
+            '<span class="risk-badge ' + riskClass + '" tabindex="0" data-tooltip="' + getRiskTooltip(currentRiskLevel) + '" aria-label="' + (currentRiskLevel || 'Pending') + ': ' + getRiskTooltip(currentRiskLevel) + '">' + (currentRiskLevel || 'Pending') + '</span>' +
             '<span id="checklistRiskLabel" style="font-size: 0.9rem; color: #555;">' + getChecklistLabel(currentRiskLevel) + '</span>' +
           '</div>' +
         '</div>' +
@@ -4546,7 +4759,7 @@
         (currentRiskLevel === 'L3' || (typeof currentRiskLevel === 'string' && currentRiskLevel.includes('L3')));
 
       // NP L3 NOT S2V contracts archived on LEO — show 7-step procedure with role badges and contracts concerned
-      const NP_L3_NOT_S2V_IDS = ['DIST001', 'MK001', 'PHARM001', 'DIST002', 'RD_LIC', 'RD_COLL', 'MS006', 'ALL005'];
+      const NP_L3_NOT_S2V_IDS = ['DIST001', 'MK001', 'PHARM001', 'DIST002', 'RD_LIC', 'RD_COLL', 'MS006', 'MS007', 'ALL005'];
       const isNPL3NotS2V = AppState.transactionType === 'NP' && NP_L3_NOT_S2V_IDS.includes(trans.id) && !trans.s2v && trans.leo &&
         (currentRiskLevel === 'L3' || (typeof currentRiskLevel === 'string' && currentRiskLevel.includes('L3')));
 
@@ -4569,7 +4782,7 @@
 
       // NP L2 logic: the 9 specific NP contracts eligible for the L2 procedure
       // Note: MS003 appears here to handle its reclassified-to-L2 case (isMSL3S2V covers L3 case)
-      const NP_L2_CONTRACT_IDS = ['RD_NDA', 'MS002', 'MS003', 'MS005', 'DP001', 'ALL001', 'ALL002', 'ALL003', 'ALL004'];
+      const NP_L2_CONTRACT_IDS = ['RD_NDA', 'MS002', 'MS003', 'MS005', 'MS007', 'DP001', 'ALL001', 'ALL002', 'ALL003', 'ALL004'];
       if (AppState.transactionType === 'NP' && !isMedL2NotS2V && !isMSL3S2V && !isNPL3NotS2V && !isRCLegalL2 && !isL3NotS2VNotLEO && !isRD_DEV_L3 && !isMS_005_L3) {
         const isInNpL2List = NP_L2_CONTRACT_IDS.includes(trans.id);
         // For NDA: only show NP L2 modal when department is Global R&D
@@ -4636,8 +4849,8 @@
         '<div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">' +
           '<span class="risk-badge ' + riskClass + '" tabindex="0"' +
             ' data-tooltip="' + getRiskTooltip(currentRiskLevel) + '"' +
-            ' aria-label="' + currentRiskLevel + ': ' + getRiskTooltip(currentRiskLevel) + '">' +
-            currentRiskLevel +
+            ' aria-label="' + (currentRiskLevel || 'Pending') + ': ' + getRiskTooltip(currentRiskLevel) + '">' +
+            (currentRiskLevel || 'Pending') +
           '</span>' +
         '</div>' +
         content +
