@@ -44,6 +44,7 @@
       --color-success-bg:     #E8F5E9;
       --color-error:          #B71C1C;
       --color-error-bg:       #FDECEA;
+      --color-error-bg-hover: #FAD4D1;
       --color-warning:        #E65100;
       --color-warning-bg:     #FFF3E0;
       --color-info:           #1565C0;
@@ -2421,7 +2422,7 @@
     }
 
     .tx-owner-btn-no:hover {
-      background: #f5c6c3;
+      background: var(--color-error-bg-hover);
     }
 
     .tx-owner-btn-no:focus-visible {
@@ -5031,7 +5032,7 @@
     };
 
     function openTxOwnerModal() {
-      txOwnerState = { step: 0, responses: {}, firstNoReason: null, verdict: null };
+      txOwnerResetState();
       renderTxOwnerContent();
       var modal = document.getElementById('txOwnerModal');
       modal.classList.add('tx-open');
@@ -5041,11 +5042,27 @@
       }, 50);
     }
 
+    function txOwnerResetState() {
+      txOwnerState = { step: 0, responses: {}, firstNoReason: null, verdict: null };
+    }
+
     function closeTxOwnerModal() {
       var modal = document.getElementById('txOwnerModal');
       modal.classList.remove('tx-open');
       var btn = document.getElementById('txOwnerBtn');
       if (btn) { btn.focus(); }
+    }
+
+    function txOwnerRestart() {
+      txOwnerResetState();
+      renderTxOwnerContent();
+      setTimeout(function() {
+        var body = document.getElementById('txOwnerBody');
+        if (body) {
+          var first = body.querySelector('.tx-owner-btn-yes');
+          if (first) { first.focus(); }
+        }
+      }, 50);
     }
 
     function renderTxOwnerContent() {
@@ -5103,7 +5120,7 @@
           '<h2>' + icon + ' ' + txOwnerEscape(title) + '</h2>' +
           content +
         '</div>' +
-        '<button class="tx-owner-btn-restart" onclick="openTxOwnerModal()" aria-label="Restart the Transaction Owner determination">\u21BA Restart</button>';
+        '<button class="tx-owner-btn-restart" onclick="txOwnerRestart()" aria-label="Restart the Transaction Owner determination">\u21BA Restart</button>';
       setTimeout(function() {
         var restartBtn = body.querySelector('.tx-owner-btn-restart');
         if (restartBtn) { restartBtn.focus(); }
@@ -5135,7 +5152,7 @@
       if (txOwnerState.step > 0) {
         txOwnerState.step -= 1;
         var q = txOwnerQuestions[txOwnerState.step];
-        delete txOwnerState.responses[q.id];
+        txOwnerState.responses[q.id] = null;
         txOwnerState.verdict = null;
         txOwnerState.firstNoReason = null;
         renderTxOwnerContent();
@@ -5143,15 +5160,13 @@
     }
 
     function fireTxOwnerEvent() {
+      var responses = txOwnerQuestions.reduce(function(acc, q) {
+        acc[q.id] = (txOwnerState.responses[q.id] != null) ? txOwnerState.responses[q.id] : null;
+        return acc;
+      }, {});
       var payload = {
         isOwner: (txOwnerState.verdict === 'owner'),
-        responses: {
-          q1: (txOwnerState.responses.q1 !== undefined) ? txOwnerState.responses.q1 : null,
-          q2: (txOwnerState.responses.q2 !== undefined) ? txOwnerState.responses.q2 : null,
-          q3: (txOwnerState.responses.q3 !== undefined) ? txOwnerState.responses.q3 : null,
-          q4: (txOwnerState.responses.q4 !== undefined) ? txOwnerState.responses.q4 : null,
-          q5: (txOwnerState.responses.q5 !== undefined) ? txOwnerState.responses.q5 : null
-        },
+        responses: responses,
         firstNoReason: txOwnerState.firstNoReason,
         timestamp: new Date().toISOString()
       };
