@@ -3784,6 +3784,8 @@
 
       if (state[exceptionIndex]) {
         showToast('✓ Risk escalated to L3\nLegal approval required', 'success');
+      } else {
+        showToast('✓ Risk reverted to L2', 'success');
       }
     }
 
@@ -3866,6 +3868,7 @@
       if (noBox) noBox.checked = (newAnswer === 'no');
 
       var summaryBadge = document.getElementById('risk-badge-summary-' + transactionId);
+      var riskBadge = document.getElementById('risk-badge-risk-level-' + transactionId);
       var yesMsgEl = document.getElementById('risk-rc-yes-msg-' + transactionId);
       var noMsgEl = document.getElementById('risk-rc-no-msg-' + transactionId);
 
@@ -3879,14 +3882,17 @@
 
       if (newAnswer === 'yes') {
         setBadge(summaryBadge, 'L2', 'risk-badge risk-l2 downgraded');
+        setBadge(riskBadge, 'L2', 'risk-badge risk-l2 downgraded');
         if (yesMsgEl) { yesMsgEl.style.display = 'block'; }
         if (noMsgEl) { noMsgEl.style.display = 'none'; }
       } else if (newAnswer === 'no') {
         setBadge(summaryBadge, 'L3', 'risk-badge risk-l3');
+        setBadge(riskBadge, 'L3', 'risk-badge risk-l3');
         if (yesMsgEl) { yesMsgEl.style.display = 'none'; }
         if (noMsgEl) { noMsgEl.style.display = 'block'; }
       } else {
         setBadge(summaryBadge, 'L3', 'risk-badge risk-l3');
+        setBadge(riskBadge, 'L3', 'risk-badge risk-l3');
         if (yesMsgEl) { yesMsgEl.style.display = 'none'; }
         if (noMsgEl) { noMsgEl.style.display = 'none'; }
       }
@@ -3949,6 +3955,7 @@
       var currentRiskLevel = anyChecked ? 'L2' : 'L3';
 
       var summaryBadge = document.getElementById('risk-badge-summary-' + transactionId);
+      var riskBadge = document.getElementById('risk-badge-risk-level-' + transactionId);
       var msgEl = document.getElementById('risk-downgrade-msg-' + transactionId);
 
       function setBadge(el, text, cls) {
@@ -3961,9 +3968,11 @@
 
       if (anyChecked) {
         setBadge(summaryBadge, 'L2', 'risk-badge risk-l2 downgraded');
+        setBadge(riskBadge, 'L2', 'risk-badge risk-l2 downgraded');
         if (msgEl) { msgEl.style.display = 'block'; }
       } else {
         setBadge(summaryBadge, 'L3', 'risk-badge risk-l3');
+        setBadge(riskBadge, 'L3', 'risk-badge risk-l3');
         if (msgEl) { msgEl.style.display = 'none'; }
       }
 
@@ -3974,11 +3983,14 @@
         contractNeededEl.className = 'contract-needed-field' + (currentRiskLevel === 'L1' ? ' no' : '');
       }
 
+      updateRiskLevelCard(transactionId, currentRiskLevel);
       updateDrafterBasedOnRiskLevel(transactionId, currentRiskLevel);
       updateChecklistStepsIfOpen();
 
       if (state[exceptionIndex]) {
         showToast('✓ Risk downgraded to L2\nApproval requirements updated', 'success');
+      } else {
+        showToast('✓ Risk reverted to L3\nLegal approval required', 'success');
       }
     }
 
