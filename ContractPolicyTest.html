@@ -4333,15 +4333,7 @@
                   <div class="result-label">Who Drafts</div>
                   <div class="result-value" id="drafter-roles-${trans.id}">${getDrafterInfo(effectiveRiskLevel)}</div>
                 </div>
-                ${AppState.transactionType !== 'P' ? `
-                <div class="result-item">
-                  <div class="result-label">Risk Level</div>
-                  <div class="result-value">
-                    <span id="risk-badge-risk-level-${trans.id}" class="risk-badge ${getRiskClass(effectiveRiskLevel)}" tabindex="0" aria-label="${effectiveRiskLevel || 'Pending'}: ${getRiskTooltip(effectiveRiskLevel)}" data-tooltip="${getRiskTooltip(effectiveRiskLevel)}">${effectiveRiskLevel || 'Pending'}</span>
-                  </div>
-                </div>
-                <div id="risk-criteria-${trans.id}">${renderRiskCriteria(trans)}</div>
-                ` : ''}
+
               </div>
 
               <!-- 2. Contract Requestor Details -->
