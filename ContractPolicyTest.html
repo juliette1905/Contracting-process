@@ -2200,7 +2200,7 @@
      <div class="corp-progress-connector"></div>
      <div class="corp-progress-step" id="corp-prog-step2">
       <span class="corp-progress-dot">2</span>
-      <span>Reclassification Conditions</span>
+      <span>Board Approval</span>
      </div>
     </div>
     <!-- Modal Body -->
@@ -2214,37 +2214,30 @@
        <div class="corporate-checkbox-item">
         <input type="checkbox" id="corp-cb-1">
         <label for="corp-cb-1">Disposal and acquisition: any transactions involving direct or indirect disposal or acquisition of assets, whether relating to the full ownership of any such asset or a portion thereof, assessed to be material for the Opella group</label>
-        <span class="corp-checkbox-badge no">✗ No</span>
        </div>
        <div class="corporate-checkbox-item">
         <input type="checkbox" id="corp-cb-2">
         <label for="corp-cb-2">Material contract: execution, termination or amendment of any contract above 10 million EUR of yearly value (including on an amortized basis)</label>
-        <span class="corp-checkbox-badge no">✗ No</span>
        </div>
        <div class="corporate-checkbox-item">
         <input type="checkbox" id="corp-cb-3">
         <label for="corp-cb-3">Capital expenditure: CAPEX transaction above 5 million EUR, individually or in the aggregate in any financial year</label>
-        <span class="corp-checkbox-badge no">✗ No</span>
        </div>
        <div class="corporate-checkbox-item">
         <input type="checkbox" id="corp-cb-4">
         <label for="corp-cb-4">Related Party Transaction: any transaction, arrangement or agreement (or material amendment thereto) between (i) any member of the Opella group and (ii) either Sanofi or CD&amp;R or their representatives</label>
-        <span class="corp-checkbox-badge no">✗ No</span>
        </div>
        <div class="corporate-checkbox-item">
         <input type="checkbox" id="corp-cb-5">
         <label for="corp-cb-5">Joint Venture: the entry into any material joint venture</label>
-        <span class="corp-checkbox-badge no">✗ No</span>
        </div>
        <div class="corporate-checkbox-item">
         <input type="checkbox" id="corp-cb-6">
         <label for="corp-cb-6">Business restrictions: any agreement which includes restrictions on any Opella Group Company's freedom to operate and develop its existing business</label>
-        <span class="corp-checkbox-badge no">✗ No</span>
        </div>
        <div class="corporate-checkbox-item">
         <input type="checkbox" id="corp-cb-7">
         <label for="corp-cb-7">Litigation settlement agreement: settlement agreement for any dispute and/or litigation with an amount at stake in excess of 5 million EUR</label>
-        <span class="corp-checkbox-badge no">✗ No</span>
        </div>
       </div>
       <hr class="corporate-divider">
@@ -2266,7 +2259,7 @@
      </div>
      <!-- Stage 2 -->
      <div id="corporateStage2" style="display:none;">
-      <div class="corporate-stage-label">Stage 2 — Reclassification Conditions</div>
+      <div class="corporate-stage-label">Stage 2 — Board Approval</div>
       <div class="corporate-modal-title">📋 Board Approval Required</div>
       <div class="corporate-modal-subtitle">Your transaction needs Opella Board Approval. Do you already have it?</div>
       <div class="corporate-radio-group">
@@ -4268,7 +4261,7 @@
       showConfirmation(
         '🏛️',
         'Confirm Corporate Approval?',
-        'You are confirming that this contract requires corporate-level approval. This will trigger the approval workflow.',
+        '',
         function() { _doCorporateApprovalModal(); }
       );
     }
@@ -4288,11 +4281,6 @@
         clearRadioGroup('corpStage2');
         document.querySelectorAll('#corporateStage1 input[type="checkbox"]').forEach(function(cb) {
           cb.checked = false;
-        });
-        // Reset badge states
-        document.querySelectorAll('.corp-checkbox-badge').forEach(function(badge) {
-          badge.className = 'corp-checkbox-badge no';
-          badge.textContent = '✗ No';
         });
         // Hide messages and next button
         document.getElementById('corp-s1-message').style.display = 'none';
@@ -4372,23 +4360,6 @@
       }
     }
 
-    // Update badge when checkbox is toggled
-    document.addEventListener('DOMContentLoaded', function() {
-      document.querySelectorAll('.corporate-checkbox-item input[type="checkbox"]').forEach(function(cb) {
-        cb.addEventListener('change', function() {
-          var badge = this.closest('.corporate-checkbox-item').querySelector('.corp-checkbox-badge');
-          if (badge) {
-            if (this.checked) {
-              badge.className = 'corp-checkbox-badge yes';
-              badge.textContent = '✓ Yes';
-            } else {
-              badge.className = 'corp-checkbox-badge no';
-              badge.textContent = '✗ No';
-            }
-          }
-        });
-      });
-    });
 
     // =============================================
     // PROGRESS BAR & UX FUNCTIONS
