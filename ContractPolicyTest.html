@@ -4745,6 +4745,9 @@
       // Medical L2 NOT S2V (HCP/HCO Agreements archived on LEO) — show 6-step procedure
       const isMedL2NotS2V = AppState.transactionType === 'NP' && trans.id === 'MED001' && currentRiskLevel === 'L2' && !trans.s2v && trans.leo;
 
+      // MS007 L2 NOT S2V (NDA Manufacturing & Supply archived on LEO) — S2V does not work on NDAs
+      const isMS007L2 = AppState.transactionType === 'NP' && trans.id === 'MS007' && currentRiskLevel === 'L2';
+
       // M&S L3 S2V contracts (MS001, MS003, MS004) — show 8-step M&S L3 procedure
       const MS_L3_S2V_IDS = ['MS001', 'MS003', 'MS004'];
       const isMSL3S2V = AppState.transactionType === 'NP' && MS_L3_S2V_IDS.includes(trans.id) && trans.s2v && trans.leo &&
@@ -4775,7 +4778,7 @@
       // NP L2 logic: the 9 specific NP contracts eligible for the L2 procedure
       // Note: MS003 appears here to handle its reclassified-to-L2 case (isMSL3S2V covers L3 case)
       const NP_L2_CONTRACT_IDS = ['RD_NDA', 'MS002', 'MS003', 'MS005', 'MS007', 'DP001', 'ALL001', 'ALL002', 'ALL003', 'ALL004'];
-      if (AppState.transactionType === 'NP' && !isMedL2NotS2V && !isMSL3S2V && !isNPL3NotS2V && !isRCLegalL2 && !isL3NotS2VNotLEO && !isRD_DEV_L3 && !isMS_005_L3) {
+      if (AppState.transactionType === 'NP' && !isMedL2NotS2V && !isMS007L2 && !isMSL3S2V && !isNPL3NotS2V && !isRCLegalL2 && !isL3NotS2VNotLEO && !isRD_DEV_L3 && !isMS_005_L3) {
         const isInNpL2List = NP_L2_CONTRACT_IDS.includes(trans.id);
         // For NDA: only show NP L2 modal when department is Global R&D
         const isNdaOutsideGlobalRD = trans.id === 'RD_NDA' && AppState.selectedDepartment !== 'Global R&D';
@@ -4786,7 +4789,7 @@
 
       const riskClass = getRiskClass(currentRiskLevel);
       let content;
-      if (isMedL2NotS2V) {
+      if (isMedL2NotS2V || isMS007L2) {
         content = getMedL2NotS2VContent();
       } else if (isMSL3S2V) {
         content = getMSL3S2VContent();
