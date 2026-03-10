@@ -3067,6 +3067,7 @@
             transactions: [
               { id: 'MA_NDA', name: 'NDA - M&A / Divestment', description: 'Confidentiality agreements for M&A transactions', riskLevel: 'L3', templates: ['Legal Template (if provided)'], exceptions: 'L2 if Legal template provided & no changes beyond User Guidelines', s2v: false, leo: false },
               { id: 'MA_ACQD', name: 'Acquisition / Disposal of Assets or Shares', description: 'Acquisition, disposal, exchange of assets, shares, or interests in companies, joint ventures, product or product rights', riskLevel: 'L3', templates: [], s2v: false, leo: true },
+              { id: 'MA_ACQQ', name: 'M&A Disposal of Assets', description: 'Disposal of assets in M&A context', riskLevel: 'L3', templates: [], s2v: false, leo: false },
               { id: 'MA_EQUITY', name: 'Minority Equity Investment / Divestment', description: 'Minority equity investment or divestment in relation to third parties', riskLevel: 'L3', templates: [], s2v: false, leo: false }
             ]
           },
@@ -4385,6 +4386,24 @@
         makeStep('7', '👤', 'actor-user', 'Create Contract Request(s) in CLM Tool (LEO)', 'Contract Requestor creates contract request(s) in CLM Tool with the signed contract for archiving', '1 business day');
     }
 
+    function getGenericL3SevenStepContent() {
+      return makeStep('1', '👤', 'actor-user', 'Contract Requestor Reaches Out to Legal', 'Contract Requestor presents the planned transaction to Legal', '1-2 business days') +
+        makeStep('2', '👤', 'actor-user', 'Contract Requestor Clears the Contract Prerequisites', 'Contract Requestor fulfills all required contract prerequisites', '2-3 business days') +
+        makeStep('3', '👤', 'actor-user', 'Internal Alignment & Template Selection', 'Contract Requestor aligns internally with all Opella Stakeholders<br>Contract Drafter (Legal) selects the adequate Opella Template or Third-party Contractor draft', '3-5 business days') +
+        makeStep('4', '⚖️', 'actor-legal', 'Internal Opella Phase – First Draft Preparation', 'Internal Opella phase led by Contract Requestor<br>Contract Drafter prepares the first Draft Contract with cross-functions interactions if needed', '5-10 business days') +
+        makeStep('5', '👤', 'actor-user', 'Organize Rounds of Internal Reviews & Negotiations', 'Contract Requestor organizes rounds of internal reviews<br>Secures Opella functions inputs and external negotiations with Third-party Contractor', '7-14 business days') +
+        makeStep('6', '👤', 'actor-user', 'Run the Signature Process', 'When contract draft is agreed – Contract Requestor runs the signature process', '2-3 business days') +
+        makeStep('7', '👤', 'actor-user', 'Create Contract Request(s) in CLM Tool (LEO)', 'Contract Requestor creates contract request(s) in CLM Tool with the signed contract for archiving', '1 business day');
+    }
+
+    function getRD_DEV_L3_Content() {
+      return getGenericL3SevenStepContent();
+    }
+
+    function getMS_005_L3_Content() {
+      return getGenericL3SevenStepContent();
+    }
+
     function getRCLegalL2Content() {
       return makeStep('1', '👤', 'actor-user', 'Clear Contract Prerequisites', 'Contract Requestor fulfills all required contract prerequisites', '1-2 business days') +
         makeStep('2', '👤', 'actor-user', 'Select Opella Template', 'Contract Requestor aligns internally with all 🤝 Opella Stakeholders and Contract Drafter selects the adequate Opella Template shared by local legal', '2-3 business days') +
@@ -4443,7 +4462,7 @@
         (currentRiskLevel === 'L3' || (typeof currentRiskLevel === 'string' && currentRiskLevel.includes('L3')));
 
       // NP L3 NOT S2V AND NOT archived on LEO — show 7-step procedure without LEO archiving step
-      const L3_NOT_S2V_NOT_LEO_IDS = ['STRAT001', 'MA_NDA', 'MA_EQUITY', 'AM001', 'AM002', 'IP001'];
+      const L3_NOT_S2V_NOT_LEO_IDS = ['STRAT001', 'MA_NDA', 'MA_EQUITY', 'MA_ACQQ', 'AM001', 'AM002', 'IP001'];
       const isL3NotS2VNotLEO = AppState.transactionType === 'NP' && L3_NOT_S2V_NOT_LEO_IDS.includes(trans.id) && !trans.s2v && !trans.leo &&
         (currentRiskLevel === 'L3' || (typeof currentRiskLevel === 'string' && currentRiskLevel.includes('L3')));
 
@@ -4451,10 +4470,18 @@
       const isRCLegalL2 = AppState.transactionType === 'NP' && RC_LEGAL_TEMPLATE_IDS.indexOf(trans.id) !== -1 &&
         (currentRiskLevel === 'L2' || (typeof currentRiskLevel === 'string' && currentRiskLevel.includes('L2')));
 
+      // RD_DEV L3 — show custom 7-step procedure
+      const isRD_DEV_L3 = AppState.transactionType === 'NP' && trans.id === 'RD_DEV' &&
+        (currentRiskLevel === 'L3' || (typeof currentRiskLevel === 'string' && currentRiskLevel.includes('L3')));
+
+      // MS_005 L3 — show custom 7-step procedure
+      const isMS_005_L3 = AppState.transactionType === 'NP' && trans.id === 'MS005' &&
+        (currentRiskLevel === 'L3' || (typeof currentRiskLevel === 'string' && currentRiskLevel.includes('L3')));
+
       // NP L2 logic: the 9 specific NP contracts eligible for the L2 procedure
       // Note: MS003 appears here to handle its reclassified-to-L2 case (isMSL3S2V covers L3 case)
       const NP_L2_CONTRACT_IDS = ['RD_NDA', 'MS002', 'MS003', 'MS005', 'DP001', 'ALL001', 'ALL002', 'ALL003', 'ALL004'];
-      if (AppState.transactionType === 'NP' && !isMedL2NotS2V && !isMSL3S2V && !isNPL3NotS2V && !isRCLegalL2 && !isL3NotS2VNotLEO) {
+      if (AppState.transactionType === 'NP' && !isMedL2NotS2V && !isMSL3S2V && !isNPL3NotS2V && !isRCLegalL2 && !isL3NotS2VNotLEO && !isRD_DEV_L3 && !isMS_005_L3) {
         const isInNpL2List = NP_L2_CONTRACT_IDS.includes(trans.id);
         // For NDA: only show NP L2 modal when department is Global R&D
         const isNdaOutsideGlobalRD = trans.id === 'RD_NDA' && AppState.selectedDepartment !== 'Global R&D';
@@ -4475,6 +4502,10 @@
         content = getL3NotS2VNotLEOContent();
       } else if (isRCLegalL2) {
         content = getRCLegalL2Content();
+      } else if (isRD_DEV_L3) {
+        content = getRD_DEV_L3_Content();
+      } else if (isMS_005_L3) {
+        content = getMS_005_L3_Content();
       } else {
         content = getNextStepsContent(currentRiskLevel);
       }
@@ -4488,7 +4519,7 @@
             '<span class="legend-item">⚖️ Legal</span>' +
             '<span class="legend-separator">|</span>' +
             '<span class="legend-item">🤝 Opella Stakeholders</span>';
-        } else if (isNPL3NotS2V) {
+        } else if (isNPL3NotS2V || isRD_DEV_L3 || isMS_005_L3) {
           legendEl.innerHTML =
             '<span class="legend-item">👤 Contract Requestor</span>' +
             '<span class="legend-separator">|</span>' +
