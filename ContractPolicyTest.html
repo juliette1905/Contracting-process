@@ -938,6 +938,20 @@
       color: var(--color-text-disabled);
     }
 
+    .checklist-bullet {
+      font-size: 1.25rem;
+      min-width: 1.25rem;
+      text-align: center;
+      color: var(--color-primary);
+      margin-top: 0.05rem;
+      line-height: 1.5;
+      user-select: none;
+    }
+
+    .checklist-step.completed .checklist-bullet {
+      color: var(--color-primary-hover);
+    }
+
     .checklist-checkbox {
       width: 1.25rem;
       height: 1.25rem;
@@ -1736,6 +1750,33 @@
       box-shadow: var(--focus-ring);
     }
 
+    .corporate-back-btn {
+      background: transparent;
+      color: var(--color-primary);
+      border: 1px solid var(--color-primary);
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-base);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: var(--font-size-sm);
+      transition: background 0.2s ease, color 0.2s ease, transform 0.1s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .corporate-back-btn:hover {
+      background: var(--color-primary);
+      color: var(--color-bg-secondary);
+      transform: translateY(-1px);
+    }
+
+    .corporate-back-btn:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+      box-shadow: var(--focus-ring);
+    }
+
     .corporate-divider {
       border: none;
       border-top: 1px solid var(--color-border);
@@ -2244,12 +2285,12 @@
       <div class="corporate-modal-subtitle">Does your transaction fall into any of the above categories?</div>
       <div class="corporate-radio-group">
        <div class="corporate-radio-item">
-        <input type="radio" name="corpStage1" id="corp-s1-no" value="no" onchange="handleStage1Change('no')">
-        <label for="corp-s1-no">✗ NO</label>
-       </div>
-       <div class="corporate-radio-item">
         <input type="radio" name="corpStage1" id="corp-s1-yes" value="yes" onchange="handleStage1Change('yes')">
         <label for="corp-s1-yes">✓ YES</label>
+       </div>
+       <div class="corporate-radio-item">
+        <input type="radio" name="corpStage1" id="corp-s1-no" value="no" onchange="handleStage1Change('no')">
+        <label for="corp-s1-no">✗ NO</label>
        </div>
       </div>
       <div id="corp-s1-message" style="display:none;"></div>
@@ -2275,6 +2316,9 @@
       <div id="corp-s2-message" style="display:none;"></div>
       <div id="corp-s2-next" style="display:none;">
        <button class="corporate-next-btn" onclick="closeCorporateApprovalModal()">Confirm &amp; Close ✓</button>
+      </div>
+      <div style="margin-top: 1rem;">
+       <button class="corporate-back-btn" onclick="goBackToStage1()">← Back</button>
       </div>
      </div>
     </div>
@@ -3299,11 +3343,9 @@
       var percentage = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
       var stepsHtml = steps.map(function(step, i) {
         var isChecked = saved[i] === true;
-        return '<div class="checklist-step' + (isChecked ? ' completed' : '') + '" id="checklist-step-' + i + '">' +
-          '<input type="checkbox" class="checklist-checkbox" id="check-' + i + '" ' +
-          (isChecked ? 'checked' : '') +
-          ' onchange="toggleChecklistItem(' + i + ', \'' + trans.id + '\')">' +
-          '<label for="check-' + i + '" class="step-text" style="font-size: 0.9rem; color: #555; line-height: 1.5; cursor: pointer; flex: 1;">' + step + '</label>' +
+        return '<div class="checklist-step' + (isChecked ? ' completed' : '') + '" id="checklist-step-' + i + '" onclick="toggleChecklistItem(' + i + ', \'' + trans.id + '\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();toggleChecklistItem(' + i + ', \'' + trans.id + '\');}" tabindex="0" role="checkbox" aria-checked="' + (isChecked ? 'true' : 'false') + '" style="cursor: pointer;">' +
+          '<span class="checklist-bullet" id="check-' + i + '">' + (isChecked ? '✓' : '•') + '</span>' +
+          '<span class="step-text" style="font-size: 0.9rem; color: #555; line-height: 1.5; flex: 1;">' + step + '</span>' +
           '</div>';
       }).join('');
       var stepsEl = document.getElementById('checklistSteps');
@@ -3862,11 +3904,9 @@
 
       const stepsHtml = steps.map(function(step, i) {
         const isChecked = saved[i] === true;
-        return '<div class="checklist-step' + (isChecked ? ' completed' : '') + '" id="checklist-step-' + i + '">' +
-          '<input type="checkbox" class="checklist-checkbox" id="check-' + i + '" ' +
-          (isChecked ? 'checked' : '') +
-          ' onchange="toggleChecklistItem(' + i + ', \'' + trans.id + '\')">' +
-          '<label for="check-' + i + '" class="step-text" style="font-size: 0.9rem; color: #555; line-height: 1.5; cursor: pointer; flex: 1;">' + step + '</label>' +
+        return '<div class="checklist-step' + (isChecked ? ' completed' : '') + '" id="checklist-step-' + i + '" onclick="toggleChecklistItem(' + i + ', \'' + trans.id + '\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();toggleChecklistItem(' + i + ', \'' + trans.id + '\');}" tabindex="0" role="checkbox" aria-checked="' + (isChecked ? 'true' : 'false') + '" style="cursor: pointer;">' +
+          '<span class="checklist-bullet" id="check-' + i + '">' + (isChecked ? '✓' : '•') + '</span>' +
+          '<span class="step-text" style="font-size: 0.9rem; color: #555; line-height: 1.5; flex: 1;">' + step + '</span>' +
           '</div>';
       }).join('');
 
@@ -4154,6 +4194,12 @@
         } else {
           stepEl.classList.remove('completed');
         }
+        stepEl.setAttribute('aria-checked', saved[index] ? 'true' : 'false');
+      }
+
+      const bulletEl = document.getElementById('check-' + index);
+      if (bulletEl) {
+        bulletEl.textContent = saved[index] ? '✓' : '•';
       }
 
       const completedCount = saved.filter(Boolean).length;
@@ -4258,12 +4304,7 @@
     }
 
     function openCorporateApprovalModal() {
-      showConfirmation(
-        '🏛️',
-        'Confirm Corporate Approval?',
-        '',
-        function() { _doCorporateApprovalModal(); }
-      );
+      _doCorporateApprovalModal();
     }
 
     function _doCorporateApprovalModal() {
@@ -4358,6 +4399,25 @@
         msgEl.style.display = 'block';
         nextEl.style.display = 'none';
       }
+    }
+
+    function goBackToStage1() {
+      // Reset progress indicators
+      var step1 = document.getElementById('corp-prog-step1');
+      var step2 = document.getElementById('corp-prog-step2');
+      if (step1) { step1.className = 'corp-progress-step active'; }
+      if (step2) { step2.className = 'corp-progress-step'; }
+      // Hide Stage 2, show Stage 1
+      document.getElementById('corporateStage2').style.display = 'none';
+      document.getElementById('corporateStage1').style.display = 'block';
+      // Reset Stage 1 radio buttons and message
+      clearRadioGroup('corpStage1');
+      document.getElementById('corp-s1-message').style.display = 'none';
+      document.getElementById('corp-s1-next').style.display = 'none';
+      // Reset Stage 2 state
+      clearRadioGroup('corpStage2');
+      document.getElementById('corp-s2-message').style.display = 'none';
+      document.getElementById('corp-s2-next').style.display = 'none';
     }
 
 
